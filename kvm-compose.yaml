@@ -1,0 +1,10 @@
+machines:
+  - name: server1
+    interfaces:
+      - ipv4_address: 10.2.50.254
+        ipv4_mask: 255.255.255.0
+  - name: server2
+    interfaces:
+      - ipv4_address: 10.2.40.254
+        ipv4_mask: 255.255.255.0
+

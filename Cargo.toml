@@ -1,0 +1,19 @@
+[package]
+name = "kvm-compose"
+version = "0.1.0"
+authors = ["Jacob Halsey <jacob@jhalsey.com>"]
+edition = "2018"
+
+# See more keys and their definitions at https://doc.rust-lang.org/cargo/reference/manifest.html
+
+[dependencies]
+virt = {version = "0.2.11", git = "https://github.com/jacob-pro/libvirt-rust", rev = "bcb1d9a"}
+clap = "3.0.0-beta.2"
+serde = {version = "1.0.123", features = ["derive"]}
+thiserror = "1.0"
+anyhow = "1.0"
+serde_yaml = "0.8"
+simple_logger = "1.11.0"
+log = "0.4.14"
+xml-rs = "0.8"
+
