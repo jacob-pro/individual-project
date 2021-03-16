@@ -11,6 +11,7 @@ use crate::config::Config;
 mod config;
 mod actions;
 mod virt_util;
+mod ovs;
 
 #[derive(Clap)]
 #[clap(version = "1.0", author = "Jacob Halsey")]

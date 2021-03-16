@@ -23,7 +23,8 @@ impl DomainXml {
         let mem = self.memory.to_string();
         write_text_element(w, XmlEvent::start_element("name"), self.name.as_str());
         write_text_element(w, XmlEvent::start_element("vcpu"), cpus.as_str());
-        write_text_element(w, XmlEvent::start_element("memory").attr("unit", "MiB"), mem.as_str());
+        write_text_element(w, XmlEvent::start_element("memory")
+            .attr("unit", "MiB"), mem.as_str());
         write_wrapped_element(w, XmlEvent::start_element("os"),
                               |x| {self.os.xml_events(x)});
 
