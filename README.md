@@ -12,5 +12,7 @@ describing the configuration you wish to create / destroy.
 ## Dependencies
 
 ```
+sudo apt install qemu-kvm libvirt-daemon-system libvirt-clients libvirt-dev
 sudo apt install openvswitch-switch
 ```
+
