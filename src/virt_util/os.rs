@@ -1,5 +1,4 @@
-use crate::virt_util::xml::{write_text_element, WriteXML};
-use xml::writer::XmlEvent;
+use crate::virt_util::xml::*;
 use xml::EventWriter;
 
 pub struct Os {}

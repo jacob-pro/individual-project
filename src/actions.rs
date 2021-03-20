@@ -1,3 +1,4 @@
+use crate::virt_util::devices::{DeviceXML, Disk, DiskDevice};
 use crate::virt_util::domain::DomainXml;
 use crate::Common;
 use anyhow::Context;
@@ -6,15 +7,24 @@ use virt::domain::Domain;
 pub fn up(common: Common) -> anyhow::Result<()> {
     for machine in &common.config.machines {
         let name = format!("{}-{}", common.project, machine.name);
+
+        let image_path = machine.get_image_path(&common)?.canonicalize()?;
+        let cdrom = Disk::new(
+            "raw".to_owned(),
+            image_path.to_str().unwrap().to_owned(),
+            DiskDevice::CdRom,
+            true,
+            "hdc".to_string(),
+        );
+
         let xml = DomainXml::builder()
             .name(&name)
             .memory(machine.memory)
             .cpus(machine.cpus)
+            .device(DeviceXML::Disk(cdrom))
             .build()
             .unwrap()
             .to_xml();
-
-        let image_path = machine.get_image_path(&common)?;
 
         log::trace!("{}", xml);
         if domain_lookup_by_name(&common, &name)?.is_some() {

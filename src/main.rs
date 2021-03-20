@@ -1,14 +1,15 @@
-use std::string::String;
-
-use anyhow::anyhow;
-use clap::Clap;
-use log::LevelFilter;
-use simple_logger::SimpleLogger;
-use virt::connect::Connect;
+#[macro_use]
+extern crate derive_new;
 
 use crate::config::Config;
+use anyhow::anyhow;
+use clap::Clap;
 use directories::UserDirs;
+use log::LevelFilter;
+use simple_logger::SimpleLogger;
 use std::path::PathBuf;
+use std::string::String;
+use virt::connect::Connect;
 
 mod actions;
 mod config;

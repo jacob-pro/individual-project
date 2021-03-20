@@ -1,8 +1,8 @@
-use crate::virt_util::devices::Device;
+use crate::virt_util::devices::DeviceXML;
 use crate::virt_util::os::Os;
 use crate::virt_util::xml::{write_text_element, write_wrapped_element, WriteXML};
 use anyhow::Context;
-use xml::writer::{EventWriter, XmlEvent};
+use xml::writer::EventWriter;
 use xml::EmitterConfig;
 
 // https://libvirt.org/formatdomain.html
@@ -11,7 +11,7 @@ pub struct DomainXml {
     cpus: u32,
     os: Os,
     memory: u32,
-    devices: Vec<Device>,
+    devices: Vec<DeviceXML>,
 }
 
 impl DomainXml {
@@ -38,7 +38,12 @@ impl<W: std::io::Write> WriteXML<W> for DomainXml {
         write_text_element(w, "name", vec![], self.name.as_str());
         write_text_element(w, "vcpu", vec![], cpus.as_str());
         write_text_element(w, "memory", vec![("unit", "MiB")], mem.as_str());
-        write_wrapped_element(w, "os", vec![], |x| self.os.write_xml(x));
+        write_wrapped_element(w, "os", vec![], |w| self.os.write_xml(w));
+        write_wrapped_element(w, "devices", vec![], |w| {
+            for d in &self.devices {
+                d.write_xml(w);
+            }
+        });
     }
 }
 
@@ -47,7 +52,7 @@ pub struct DomainXmlBuilder {
     name: Option<String>,
     cpus: Option<u32>,
     memory: Option<u32>,
-    devices: Vec<Device>,
+    devices: Vec<DeviceXML>,
 }
 
 impl DomainXmlBuilder {
@@ -76,8 +81,13 @@ impl DomainXmlBuilder {
         self
     }
 
-    pub fn device(mut self, device: Device) -> Self {
+    pub fn device(mut self, device: DeviceXML) -> Self {
         self.devices.push(device);
+        self
+    }
+
+    pub fn devices(mut self, devices: Vec<DeviceXML>) -> Self {
+        self.devices = devices;
         self
     }
 }
