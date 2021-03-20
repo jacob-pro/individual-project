@@ -33,18 +33,19 @@ pub fn up(common: Common) -> anyhow::Result<()> {
 
                 let d = Domain::define_xml(&common.hypervisor, xml.as_str())
                     .with_context(|| format!("Failed to define_xml for {}", machine.name))?;
-                d.create().with_context(|| format!("Failed to start vm {}", machine.name))?;
+                d.create()
+                    .with_context(|| format!("Failed to start vm {}", machine.name))?;
             }
             Some(d) => {
                 if !d.is_active()? {
                     log::info!("{} already exists, starting", machine.name);
-                    d.create().with_context(|| format!("Failed to start vm {}", machine.name))?;
+                    d.create()
+                        .with_context(|| format!("Failed to start vm {}", machine.name))?;
                 } else {
                     log::info!("{} already exists, already running", machine.name);
                 }
             }
         }
-
     }
 
     Ok(())
@@ -57,7 +58,7 @@ pub fn down(common: Common) -> anyhow::Result<()> {
             None => {}
             Some(d) => {
                 log::info!("Removing machine {}", machine.name);
-                d.undefine()?;
+                d.destroy()?;
             }
         }
     }
