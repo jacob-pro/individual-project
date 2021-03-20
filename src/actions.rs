@@ -8,32 +8,43 @@ pub fn up(common: Common) -> anyhow::Result<()> {
     for machine in &common.config.machines {
         let name = format!("{}-{}", common.project, machine.name);
 
-        let image_path = machine.get_image_path(&common)?.canonicalize()?;
-        let cdrom = Disk::new(
-            "raw".to_owned(),
-            image_path.to_str().unwrap().to_owned(),
-            DiskDevice::CdRom,
-            true,
-            "hdc".to_string(),
-        );
+        match domain_lookup_by_name(&common, &name)? {
+            None => {
+                log::info!("Creating machine {}", machine.name);
 
-        let xml = DomainXml::builder()
-            .name(&name)
-            .memory(machine.memory)
-            .cpus(machine.cpus)
-            .device(DeviceXML::Disk(cdrom))
-            .build()
-            .unwrap()
-            .to_xml();
+                let image_path = machine.get_image_path(&common)?.canonicalize()?;
+                let cdrom = Disk::new(
+                    "raw".to_owned(),
+                    image_path.to_str().unwrap().to_owned(),
+                    DiskDevice::CdRom,
+                    true,
+                    "hdc".to_string(),
+                );
 
-        log::trace!("{}", xml);
-        if domain_lookup_by_name(&common, &name)?.is_some() {
-            log::info!("{} already exists, skipping", machine.name);
-        } else {
-            log::info!("Creating machine {}", machine.name);
-            Domain::define_xml(&common.hypervisor, xml.as_str())
-                .with_context(|| format!("Failed to define_xml for router {}", machine.name))?;
+                let xml = DomainXml::builder()
+                    .name(&name)
+                    .memory(machine.memory)
+                    .cpus(machine.cpus)
+                    .device(DeviceXML::Disk(cdrom))
+                    .build()
+                    .unwrap()
+                    .to_xml();
+                log::trace!("{}", xml);
+
+                let d = Domain::define_xml(&common.hypervisor, xml.as_str())
+                    .with_context(|| format!("Failed to define_xml for {}", machine.name))?;
+                d.create().with_context(|| format!("Failed to start vm {}", machine.name))?;
+            }
+            Some(d) => {
+                if !d.is_active()? {
+                    log::info!("{} already exists, starting", machine.name);
+                    d.create().with_context(|| format!("Failed to start vm {}", machine.name))?;
+                } else {
+                    log::info!("{} already exists, already running", machine.name);
+                }
+            }
         }
+
     }
 
     Ok(())
