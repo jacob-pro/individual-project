@@ -16,9 +16,10 @@ pub fn up(common: Common) -> anyhow::Result<()> {
                 let cdrom = Disk::new(
                     "qcow2".to_owned(),
                     image_path.to_str().unwrap().to_owned(),
-                    DiskDevice::CdRom,
+                    DiskDevice::Disk,
                     true,
                     "hdc".to_string(),
+                    "virtio".to_string(),
                 );
                 let vnc = Graphics::new("vnc".to_owned(), "-1".to_owned(), "yes".to_owned());
 

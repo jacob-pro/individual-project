@@ -16,6 +16,7 @@ pub struct Disk {
     device: DiskDevice,
     readonly: bool,
     target_dev: String,
+    target_bus: String,
 }
 
 #[derive(Clone, Debug, new)]
@@ -51,10 +52,12 @@ impl<W: std::io::Write> WriteXML<W> for DeviceXML {
                         if d.readonly {
                             write_text_element(w, "readonly", vec![], "");
                         }
-                        write_text_element(w, "target", vec![("dev", &d.target_dev)], "");
-                        let order = if d.device == DiskDevice::CdRom { 2 } else { 1 }.to_string();
-                        write_text_element(w, "boot", vec![("order", &order)], "");
-
+                        write_text_element(
+                            w,
+                            "target",
+                            vec![("dev", &d.target_dev), ("bus", &d.target_bus)],
+                            "",
+                        );
                     },
                 );
             }
