@@ -14,5 +14,6 @@ describing the configuration you wish to create / destroy.
 ```
 sudo apt install qemu-kvm libvirt-daemon-system libvirt-clients libvirt-dev
 sudo apt install openvswitch-switch
+sudo apt install libssl-dev
 ```
 

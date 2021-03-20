@@ -14,6 +14,9 @@ pub fn up(common: Common) -> anyhow::Result<()> {
             .build()
             .unwrap()
             .to_xml();
+
+        let image_path = machine.get_image_path(&common)?;
+
         log::trace!("{}", xml);
         if domain_lookup_by_name(&common, &name)?.is_some() {
             log::info!("{} already exists, skipping", machine.name);

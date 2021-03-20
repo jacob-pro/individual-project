@@ -7,11 +7,14 @@ use simple_logger::SimpleLogger;
 use virt::connect::Connect;
 
 use crate::config::Config;
+use std::path::PathBuf;
+use directories::{UserDirs};
 
 mod config;
 mod actions;
 mod virt_util;
 mod ovs;
+mod images;
 
 #[derive(Clap)]
 #[clap(version = "1.0", author = "Jacob Halsey")]
@@ -22,6 +25,8 @@ struct Opts {
     project_name: Option<String>,
     #[clap(short, long)]
     verbosity: Option<String>,
+    #[clap(long)]
+    no_ask: bool,
     #[clap(subcommand)]
     sub_command: SubCommand,
 }
@@ -36,6 +41,26 @@ pub struct Common {
     hypervisor: Connect,
     config: Config,
     project: String,
+    no_ask: bool,
+}
+
+impl Common {
+
+    pub fn storage_location() -> anyhow::Result<PathBuf> {
+        let mut p = UserDirs::new().unwrap().home_dir().to_owned();
+        p.push(".kvm-compose");
+        std::fs::create_dir_all(&p)?;
+        Ok(p)
+    }
+
+    pub fn confirm_continue(&self, message: &str) {
+        if !self.no_ask {
+            if !casual::confirm(message) {
+                std::process::exit(0);
+            }
+        }
+    }
+
 }
 
 impl Drop for Common {
@@ -63,7 +88,11 @@ fn run_app() -> Result<(), anyhow::Error>{
         None => LevelFilter::Info,
         Some(x) => log_level(x)?,
     };
-    SimpleLogger::new().with_level(level).init().unwrap();
+    SimpleLogger::new()
+        .with_level(LevelFilter::Error)
+        .with_module_level(std::module_path!(), level)
+        .init()
+        .unwrap();
 
     let config = Config::load_from_file(opts.input)?;
     log::trace!("Connecting to QEMU");
@@ -77,7 +106,7 @@ fn run_app() -> Result<(), anyhow::Error>{
         Some(x) => {x}
     };
 
-    let common = Common { hypervisor: conn, config, project: project_name };
+    let common = Common { hypervisor: conn, config, project: project_name, no_ask: opts.no_ask };
     match opts.sub_command {
         SubCommand::Up => {actions::up(common)?}
         SubCommand::Down => {actions::down(common)?}
