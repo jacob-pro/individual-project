@@ -7,14 +7,15 @@ use simple_logger::SimpleLogger;
 use virt::connect::Connect;
 
 use crate::config::Config;
+use directories::UserDirs;
 use std::path::PathBuf;
-use directories::{UserDirs};
 
-mod config;
 mod actions;
-mod virt_util;
-mod ovs;
+mod config;
+mod download;
 mod images;
+mod ovs;
+mod virt_util;
 
 #[derive(Clap)]
 #[clap(version = "1.0", author = "Jacob Halsey")]
@@ -45,7 +46,6 @@ pub struct Common {
 }
 
 impl Common {
-
     pub fn storage_location() -> anyhow::Result<PathBuf> {
         let mut p = UserDirs::new().unwrap().home_dir().to_owned();
         p.push(".kvm-compose");
@@ -60,7 +60,6 @@ impl Common {
             }
         }
     }
-
 }
 
 impl Drop for Common {
@@ -82,7 +81,7 @@ fn log_level(s: &str) -> anyhow::Result<LevelFilter> {
     }
 }
 
-fn run_app() -> Result<(), anyhow::Error>{
+fn run_app() -> Result<(), anyhow::Error> {
     let opts: Opts = Opts::parse();
     let level = match &opts.verbosity {
         None => LevelFilter::Info,
@@ -96,20 +95,25 @@ fn run_app() -> Result<(), anyhow::Error>{
 
     let config = Config::load_from_file(opts.input)?;
     log::trace!("Connecting to QEMU");
-    let conn =  Connect::open("qemu:///session")?;
+    let conn = Connect::open("qemu:///session")?;
 
     let project_name = match opts.project_name {
         None => {
             let path = std::env::current_dir()?;
             path.iter().last().unwrap().to_str().unwrap().to_owned()
         }
-        Some(x) => {x}
+        Some(x) => x,
     };
 
-    let common = Common { hypervisor: conn, config, project: project_name, no_ask: opts.no_ask };
+    let common = Common {
+        hypervisor: conn,
+        config,
+        project: project_name,
+        no_ask: opts.no_ask,
+    };
     match opts.sub_command {
-        SubCommand::Up => {actions::up(common)?}
-        SubCommand::Down => {actions::down(common)?}
+        SubCommand::Up => actions::up(common)?,
+        SubCommand::Down => actions::down(common)?,
     }
     Ok(())
 }

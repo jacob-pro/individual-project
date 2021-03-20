@@ -1,8 +1,8 @@
-use xml::writer::{EventWriter, XmlEvent};
-use anyhow::Context;
-use crate::virt_util::xml::{write_text_element, write_wrapped_element};
-use xml::EmitterConfig;
 use crate::virt_util::os::Os;
+use crate::virt_util::xml::{write_text_element, write_wrapped_element};
+use anyhow::Context;
+use xml::writer::{EventWriter, XmlEvent};
+use xml::EmitterConfig;
 
 // https://libvirt.org/formatdomain.html
 pub struct DomainXml {
@@ -13,7 +13,6 @@ pub struct DomainXml {
 }
 
 impl DomainXml {
-
     pub fn builder() -> DomainXmlBuilder {
         DomainXmlBuilder::default()
     }
@@ -23,11 +22,12 @@ impl DomainXml {
         let mem = self.memory.to_string();
         write_text_element(w, XmlEvent::start_element("name"), self.name.as_str());
         write_text_element(w, XmlEvent::start_element("vcpu"), cpus.as_str());
-        write_text_element(w, XmlEvent::start_element("memory")
-            .attr("unit", "MiB"), mem.as_str());
-        write_wrapped_element(w, XmlEvent::start_element("os"),
-                              |x| {self.os.xml_events(x)});
-
+        write_text_element(
+            w,
+            XmlEvent::start_element("memory").attr("unit", "MiB"),
+            mem.as_str(),
+        );
+        write_wrapped_element(w, XmlEvent::start_element("os"), |x| self.os.xml_events(x));
     }
 
     pub fn to_xml(&self) -> String {
@@ -35,13 +35,14 @@ impl DomainXml {
             .line_separator("\n")
             .perform_indent(true);
         let mut writer = EventWriter::new_with_config(Vec::new(), config);
-        write_wrapped_element(&mut writer, XmlEvent::start_element("domain")
-                        .attr("type", "kvm"), |x| {self.xml_events(x)});
+        write_wrapped_element(
+            &mut writer,
+            XmlEvent::start_element("domain").attr("type", "kvm"),
+            |x| self.xml_events(x),
+        );
         String::from_utf8(writer.into_inner()).unwrap()
     }
-
 }
-
 
 #[derive(Default, Clone, Debug)]
 pub struct DomainXmlBuilder {
@@ -51,13 +52,12 @@ pub struct DomainXmlBuilder {
 }
 
 impl DomainXmlBuilder {
-
     pub fn build(self) -> anyhow::Result<DomainXml> {
         Ok(DomainXml {
             name: self.name.with_context(|| "Missing name")?,
             cpus: self.cpus.unwrap_or(1),
             os: Os {},
-            memory: self.memory.unwrap_or(512)
+            memory: self.memory.unwrap_or(512),
         })
     }
 
@@ -76,4 +76,3 @@ impl DomainXmlBuilder {
         self
     }
 }
-
