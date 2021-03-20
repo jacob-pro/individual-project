@@ -14,7 +14,7 @@ pub fn up(common: Common) -> anyhow::Result<()> {
 
                 let image_path = machine.get_image_path(&common)?.canonicalize()?;
                 let cdrom = Disk::new(
-                    "raw".to_owned(),
+                    "qcow2".to_owned(),
                     image_path.to_str().unwrap().to_owned(),
                     DiskDevice::CdRom,
                     true,
@@ -59,10 +59,11 @@ pub fn down(common: Common) -> anyhow::Result<()> {
         match domain_lookup_by_name(&common, &name)? {
             None => {}
             Some(d) => {
-                log::info!("Removing machine {}", machine.name);
                 if d.is_active()? {
+                    log::trace!("Stopping machine {}", machine.name);
                     d.destroy()?;
                 }
+                log::info!("Removing machine {}", machine.name);
                 d.undefine()?;
             }
         }

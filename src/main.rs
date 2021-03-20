@@ -95,9 +95,6 @@ fn run_app() -> Result<(), anyhow::Error> {
         .unwrap();
 
     let config = Config::load_from_file(opts.input)?;
-    log::trace!("Connecting to QEMU");
-    let conn = Connect::open("qemu:///session")?;
-
     let project_name = match opts.project_name {
         None => {
             let path = std::env::current_dir()?;
@@ -105,6 +102,10 @@ fn run_app() -> Result<(), anyhow::Error> {
         }
         Some(x) => x,
     };
+    log::trace!("Project name: {}", project_name);
+
+    log::trace!("Connecting to QEMU");
+    let conn = Connect::open("qemu:///session")?;
 
     let common = Common {
         hypervisor: conn,

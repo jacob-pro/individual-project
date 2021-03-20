@@ -2,7 +2,7 @@ use crate::virt_util::xml::*;
 use serde::Serialize;
 use xml::EventWriter;
 
-#[derive(Serialize, Debug, Clone)]
+#[derive(Serialize, Debug, Clone, PartialEq)]
 #[serde(rename_all = "lowercase")]
 pub enum DiskDevice {
     Disk,
@@ -52,6 +52,9 @@ impl<W: std::io::Write> WriteXML<W> for DeviceXML {
                             write_text_element(w, "readonly", vec![], "");
                         }
                         write_text_element(w, "target", vec![("dev", &d.target_dev)], "");
+                        let order = if d.device == DiskDevice::CdRom { 2 } else { 1 }.to_string();
+                        write_text_element(w, "boot", vec![("order", &order)], "");
+
                     },
                 );
             }
@@ -59,7 +62,11 @@ impl<W: std::io::Write> WriteXML<W> for DeviceXML {
                 write_text_element(
                     w,
                     "graphics",
-                    vec![("type", &g.gtype), ("port", &g.port), ("autoport", &g.autoport)],
+                    vec![
+                        ("type", &g.gtype),
+                        ("port", &g.port),
+                        ("autoport", &g.autoport),
+                    ],
                     "",
                 );
             }

@@ -1,8 +1,9 @@
 use indicatif::ProgressBar;
 use std::io::Write;
 use std::path::Path;
+use std::fs::File;
 
-pub fn download_file(url: &str, destination: &Path) -> anyhow::Result<()> {
+pub fn download_file(url: &str, destination: &Path) -> anyhow::Result<File> {
     log::info!("Downloading {}", url);
     let mut dest = tempfile::NamedTempFile::new().unwrap();
     let mut res = reqwest::blocking::get(url)?;
@@ -11,8 +12,8 @@ pub fn download_file(url: &str, destination: &Path) -> anyhow::Result<()> {
     let mut writer = CountingWriter::new(dest.as_file_mut(), |w| bar.set_position(w));
     res.copy_to(&mut writer)?;
     bar.finish();
-    dest.persist(destination)?;
-    Ok(())
+    let f = dest.persist(destination)?;
+    Ok(f)
 }
 
 pub struct CountingWriter<'t, W, C> {
