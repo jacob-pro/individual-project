@@ -1,5 +1,6 @@
+use crate::virt_util::devices::Device;
 use crate::virt_util::os::Os;
-use crate::virt_util::xml::{write_text_element, write_wrapped_element};
+use crate::virt_util::xml::{write_text_element, write_wrapped_element, WriteXML};
 use anyhow::Context;
 use xml::writer::{EventWriter, XmlEvent};
 use xml::EmitterConfig;
@@ -10,6 +11,7 @@ pub struct DomainXml {
     cpus: u32,
     os: Os,
     memory: u32,
+    devices: Vec<Device>,
 }
 
 impl DomainXml {
@@ -17,30 +19,26 @@ impl DomainXml {
         DomainXmlBuilder::default()
     }
 
-    fn xml_events<W: std::io::Write>(&self, w: &mut EventWriter<W>) {
-        let cpus = self.cpus.to_string();
-        let mem = self.memory.to_string();
-        write_text_element(w, XmlEvent::start_element("name"), self.name.as_str());
-        write_text_element(w, XmlEvent::start_element("vcpu"), cpus.as_str());
-        write_text_element(
-            w,
-            XmlEvent::start_element("memory").attr("unit", "MiB"),
-            mem.as_str(),
-        );
-        write_wrapped_element(w, XmlEvent::start_element("os"), |x| self.os.xml_events(x));
-    }
-
     pub fn to_xml(&self) -> String {
         let config = EmitterConfig::new()
             .line_separator("\n")
             .perform_indent(true);
         let mut writer = EventWriter::new_with_config(Vec::new(), config);
-        write_wrapped_element(
-            &mut writer,
-            XmlEvent::start_element("domain").attr("type", "kvm"),
-            |x| self.xml_events(x),
-        );
+        write_wrapped_element(&mut writer, "domain", vec![("type", "kvm")], |x| {
+            self.write_xml(x)
+        });
         String::from_utf8(writer.into_inner()).unwrap()
+    }
+}
+
+impl<W: std::io::Write> WriteXML<W> for DomainXml {
+    fn write_xml(&self, w: &mut EventWriter<W>) {
+        let cpus = self.cpus.to_string();
+        let mem = self.memory.to_string();
+        write_text_element(w, "name", vec![], self.name.as_str());
+        write_text_element(w, "vcpu", vec![], cpus.as_str());
+        write_text_element(w, "memory", vec![("unit", "MiB")], mem.as_str());
+        write_wrapped_element(w, "os", vec![], |x| self.os.write_xml(x));
     }
 }
 
@@ -49,6 +47,7 @@ pub struct DomainXmlBuilder {
     name: Option<String>,
     cpus: Option<u32>,
     memory: Option<u32>,
+    devices: Vec<Device>,
 }
 
 impl DomainXmlBuilder {
@@ -58,6 +57,7 @@ impl DomainXmlBuilder {
             cpus: self.cpus.unwrap_or(1),
             os: Os {},
             memory: self.memory.unwrap_or(512),
+            devices: self.devices,
         })
     }
 
@@ -73,6 +73,11 @@ impl DomainXmlBuilder {
 
     pub fn memory(mut self, memory: Option<u32>) -> Self {
         self.memory = memory;
+        self
+    }
+
+    pub fn device(mut self, device: Device) -> Self {
+        self.devices.push(device);
         self
     }
 }

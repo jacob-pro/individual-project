@@ -1,11 +1,11 @@
-use crate::virt_util::xml::write_text_element;
+use crate::virt_util::xml::{write_text_element, WriteXML};
 use xml::writer::XmlEvent;
 use xml::EventWriter;
 
 pub struct Os {}
 
-impl Os {
-    pub(crate) fn xml_events<W: std::io::Write>(&self, w: &mut EventWriter<W>) {
-        write_text_element(w, XmlEvent::start_element("type"), "hvm");
+impl<W: std::io::Write> WriteXML<W> for Os {
+    fn write_xml(&self, w: &mut EventWriter<W>) {
+        write_text_element(w, "type", vec![], "hvm");
     }
 }
