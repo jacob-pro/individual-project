@@ -1,4 +1,4 @@
-use crate::virt_util::devices::{DeviceXML, Disk, DiskDevice};
+use crate::virt_util::devices::{DeviceXML, Disk, DiskDevice, Graphics};
 use crate::virt_util::domain::DomainXml;
 use crate::Common;
 use anyhow::Context;
@@ -20,12 +20,14 @@ pub fn up(common: Common) -> anyhow::Result<()> {
                     true,
                     "hdc".to_string(),
                 );
+                let vnc = Graphics::new("vnc".to_owned(), "-1".to_owned(), "yes".to_owned());
 
                 let xml = DomainXml::builder()
                     .name(&name)
                     .memory(machine.memory)
                     .cpus(machine.cpus)
                     .device(DeviceXML::Disk(cdrom))
+                    .device(DeviceXML::Graphics(vnc))
                     .build()
                     .unwrap()
                     .to_xml();
@@ -58,7 +60,10 @@ pub fn down(common: Common) -> anyhow::Result<()> {
             None => {}
             Some(d) => {
                 log::info!("Removing machine {}", machine.name);
-                d.destroy()?;
+                if d.is_active()? {
+                    d.destroy()?;
+                }
+                d.undefine()?;
             }
         }
     }

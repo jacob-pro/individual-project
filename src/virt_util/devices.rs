@@ -18,9 +18,17 @@ pub struct Disk {
     target_dev: String,
 }
 
+#[derive(Clone, Debug, new)]
+pub struct Graphics {
+    gtype: String,
+    port: String,
+    autoport: String,
+}
+
 #[derive(Clone, Debug)]
 pub enum DeviceXML {
     Disk(Disk),
+    Graphics(Graphics),
 }
 
 impl<W: std::io::Write> WriteXML<W> for DeviceXML {
@@ -45,6 +53,14 @@ impl<W: std::io::Write> WriteXML<W> for DeviceXML {
                         }
                         write_text_element(w, "target", vec![("dev", &d.target_dev)], "");
                     },
+                );
+            }
+            DeviceXML::Graphics(g) => {
+                write_text_element(
+                    w,
+                    "graphics",
+                    vec![("type", &g.gtype), ("port", &g.port), ("autoport", &g.autoport)],
+                    "",
                 );
             }
         }
