@@ -3,17 +3,14 @@ machines:
     disks:
       - cloud_image:
           name: ubuntu_18_04
-      - new_disk:
-          size_gb: 20
+#      - new_disk:
+#          size_gb: 20
+    cloud_init:
+      password: password
+      ssh_pwauth: true
     interfaces:
       - ipv4_address: 10.2.50.254
         ipv4_mask: 255.255.255.0
-  - name: server2
-    disks:
-      - cloud_image:
-          name: ubuntu_18_04
-    interfaces:
-      - ipv4_address: 10.2.40.254
-        ipv4_mask: 255.255.255.0
+
 
 

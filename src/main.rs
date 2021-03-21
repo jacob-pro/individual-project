@@ -14,10 +14,8 @@ use virt::connect::Connect;
 mod actions;
 mod config;
 mod download;
-mod images;
 mod ovs;
 mod virt_util;
-mod converters;
 
 #[derive(Clap)]
 #[clap(version = "1.0", author = "Jacob Halsey")]

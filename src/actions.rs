@@ -5,10 +5,10 @@ use virt::domain::Domain;
 pub fn up(common: Common) -> anyhow::Result<()> {
     for machine in &common.config.machines {
 
-        match domain_lookup_by_name(&common, &machine.virt_name(&common))? {
+        match domain_lookup_by_name(&common, &machine.get_virt_name(&common))? {
             None => {
                 log::info!("Creating machine {}", machine.name);
-                let xml = machine.to_virt_domain(&common)?.to_xml();
+                let xml = machine.convert_to_domain_xml(&common)?.to_xml();
                 log::trace!("{}", xml);
                 let d = Domain::define_xml(&common.hypervisor, xml.as_str())
                     .with_context(|| format!("Failed to define_xml for {}", machine.name))?;
@@ -32,7 +32,7 @@ pub fn up(common: Common) -> anyhow::Result<()> {
 
 pub fn down(common: Common) -> anyhow::Result<()> {
     for machine in &common.config.machines {
-        match domain_lookup_by_name(&common, &machine.virt_name(&common))? {
+        match domain_lookup_by_name(&common, &machine.get_virt_name(&common))? {
             None => {}
             Some(d) => {
                 if d.is_active()? {
