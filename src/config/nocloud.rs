@@ -3,11 +3,7 @@ use anyhow::Context;
 use std::path::Path;
 use std::process::Command;
 
-pub fn genisoimage(
-    output: &Path,
-    meta_data: &Path,
-    user_data: &Path,
-) -> anyhow::Result<()> {
+pub fn genisoimage(output: &Path, meta_data: &Path, user_data: &Path) -> anyhow::Result<()> {
     let temp = Common::storage_location()?;
 
     let mut cmd = Command::new("genisoimage");

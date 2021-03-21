@@ -1,3 +1,4 @@
-instance-id: iid-local01;
-local-hostname: cloudimg;
-
+{
+   "instance-id": "iid-local01",
+   "local-hostname":"custom-cloudimg"
+}

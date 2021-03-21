@@ -32,9 +32,6 @@ pub enum ConfigDisk {
         #[serde(default)]
         readonly: bool,
     },
-    NewDisk {
-        size_gb: u32,
-    },
 }
 
 #[derive(Deserialize, Debug, Validate)]
@@ -49,7 +46,7 @@ pub struct ConfigMachine {
     pub interfaces: Vec<ConfigInterface>,
     pub memory_mb: Option<u32>,
     pub cpus: Option<u32>,
-    pub disks: Vec<ConfigDisk>,
+    pub disk: ConfigDisk,
     pub cloud_init: Option<CloudInit>,
 }
 

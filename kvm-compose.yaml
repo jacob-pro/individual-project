@@ -1,10 +1,9 @@
 machines:
   - name: server1
-    disks:
-      - cloud_image:
-          name: cirros_0_5_1
-#      - new_disk:
-#          size_gb: 20
+    disk:
+      cloud_image:
+        name: cirros_0_5_1
+#        name: ubuntu_18_04
     cloud_init:
       user_data: ./user_data_1
       meta_data: ./meta_data_1
