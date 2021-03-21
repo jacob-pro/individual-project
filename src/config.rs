@@ -1,5 +1,4 @@
 use crate::images::OnlineCloudImage;
-use crate::Common;
 use anyhow::Context;
 use serde::Deserialize;
 use std::net::Ipv4Addr;
@@ -7,40 +6,31 @@ use std::path::{Path, PathBuf};
 use validator::Validate;
 
 #[derive(Deserialize, Debug)]
-pub struct Interface {
+pub struct ConfigInterface {
     pub ipv4_address: Ipv4Addr,
     pub ipv4_mask: Ipv4Addr,
 }
 
 #[derive(Deserialize, Debug)]
 #[serde(untagged)]
-pub enum Image {
-    Named { name: OnlineCloudImage },
+pub enum ConfigDisk {
+    CloudImage { cloud_image: OnlineCloudImage },
     Path { path: PathBuf },
 }
 
 #[derive(Deserialize, Debug, Validate)]
-pub struct Machine {
+pub struct ConfigMachine {
     pub name: String,
-    pub interfaces: Vec<Interface>,
+    pub interfaces: Vec<ConfigInterface>,
     pub memory: Option<u32>,
     pub cpus: Option<u32>,
-    image: Image,
-}
-
-impl Machine {
-    pub fn get_image_path(&self, common: &Common) -> anyhow::Result<PathBuf> {
-        return Ok(match &self.image {
-            Image::Named { name } => name.resolve_path(common)?,
-            Image::Path { path } => path.clone(),
-        });
-    }
+    pub disks: Vec<ConfigDisk>,
 }
 
 #[derive(Deserialize, Debug, Validate)]
 pub struct Config {
     #[validate]
-    pub machines: Vec<Machine>,
+    pub machines: Vec<ConfigMachine>,
 }
 
 impl Config {

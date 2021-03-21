@@ -86,8 +86,4 @@ impl DomainXmlBuilder {
         self
     }
 
-    pub fn devices(mut self, devices: Vec<DeviceXML>) -> Self {
-        self.devices = devices;
-        self
-    }
 }

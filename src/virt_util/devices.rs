@@ -4,23 +4,34 @@ use xml::EventWriter;
 
 #[derive(Serialize, Debug, Clone, PartialEq)]
 #[serde(rename_all = "lowercase")]
+pub enum DiskDriverType {
+    QCow2,
+}
+
+#[derive(Serialize, Debug, Clone, PartialEq)]
+#[serde(rename_all = "lowercase")]
 pub enum DiskDevice {
     Disk,
-    CdRom,
+}
+
+#[derive(Serialize, Debug, Clone, PartialEq)]
+#[serde(rename_all = "lowercase")]
+pub enum TargetBus {
+    VirtIO,
 }
 
 #[derive(Clone, Debug, new)]
-pub struct Disk {
-    driver_type: String,
+pub struct DiskXml {
+    driver_type: DiskDriverType,
     source: String,
     device: DiskDevice,
     readonly: bool,
     target_dev: String,
-    target_bus: String,
+    target_bus: TargetBus,
 }
 
 #[derive(Clone, Debug, new)]
-pub struct Graphics {
+pub struct GraphicsXml {
     gtype: String,
     port: String,
     autoport: String,
@@ -28,8 +39,8 @@ pub struct Graphics {
 
 #[derive(Clone, Debug)]
 pub enum DeviceXML {
-    Disk(Disk),
-    Graphics(Graphics),
+    Disk(DiskXml),
+    Graphics(GraphicsXml),
 }
 
 impl<W: std::io::Write> WriteXML<W> for DeviceXML {
@@ -37,15 +48,17 @@ impl<W: std::io::Write> WriteXML<W> for DeviceXML {
         match self {
             DeviceXML::Disk(d) => {
                 let device = serde_plain::to_string(&d.device).unwrap();
+                let target_bus = serde_plain::to_string(&d.target_bus).unwrap();
                 write_wrapped_element(
                     w,
                     "disk",
                     vec![("type", "file"), ("device", &device)],
                     |w| {
+                        let driver_type = serde_plain::to_string(&d.driver_type).unwrap();
                         write_text_element(
                             w,
                             "driver",
-                            vec![("name", "qemu"), ("type", &d.driver_type)],
+                            vec![("name", "qemu"), ("type", &driver_type)],
                             "",
                         );
                         write_text_element(w, "source", vec![("file", &d.source)], "");
@@ -55,7 +68,7 @@ impl<W: std::io::Write> WriteXML<W> for DeviceXML {
                         write_text_element(
                             w,
                             "target",
-                            vec![("dev", &d.target_dev), ("bus", &d.target_bus)],
+                            vec![("dev", &d.target_dev), ("bus", &target_bus)],
                             "",
                         );
                     },
