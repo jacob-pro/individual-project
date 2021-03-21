@@ -1,30 +1,12 @@
-use crate::virt_util::xml::*;
-use serde::Serialize;
+use crate::virt_util::*;
 use xml::EventWriter;
-
-#[derive(Serialize, Debug, Clone, PartialEq)]
-#[serde(rename_all = "lowercase")]
-pub enum DiskDriverType {
-    QCow2,
-}
-
-#[derive(Serialize, Debug, Clone, PartialEq)]
-#[serde(rename_all = "lowercase")]
-pub enum DiskDevice {
-    Disk,
-}
-
-#[derive(Serialize, Debug, Clone, PartialEq)]
-#[serde(rename_all = "lowercase")]
-pub enum TargetBus {
-    VirtIO,
-}
+use crate::virt_util::xml_tools::*;
 
 #[derive(Clone, Debug, new)]
 pub struct DiskXml {
     driver_type: DiskDriverType,
     source: String,
-    device: DiskDevice,
+    device_type: DiskDeviceType,
     readonly: bool,
     target_dev: String,
     target_bus: TargetBus,
@@ -47,7 +29,7 @@ impl<W: std::io::Write> WriteXML<W> for DeviceXML {
     fn write_xml(&self, w: &mut EventWriter<W>) {
         match self {
             DeviceXML::Disk(d) => {
-                let device = serde_plain::to_string(&d.device).unwrap();
+                let device = serde_plain::to_string(&d.device_type).unwrap();
                 let target_bus = serde_plain::to_string(&d.target_bus).unwrap();
                 write_wrapped_element(
                     w,

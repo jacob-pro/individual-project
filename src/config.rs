@@ -4,6 +4,7 @@ use serde::Deserialize;
 use std::net::Ipv4Addr;
 use std::path::{Path, PathBuf};
 use validator::Validate;
+use crate::virt_util::{DiskDriverType, DiskDeviceType};
 
 #[derive(Deserialize, Debug)]
 pub struct ConfigInterface {
@@ -12,17 +13,26 @@ pub struct ConfigInterface {
 }
 
 #[derive(Deserialize, Debug)]
-#[serde(untagged)]
+#[serde(rename_all = "snake_case")]
 pub enum ConfigDisk {
-    CloudImage { cloud_image: OnlineCloudImage },
-    Path { path: PathBuf },
+    CloudImage { name: OnlineCloudImage },
+    ExistingDisk {
+        path: PathBuf,
+        #[serde(default)]
+        driver_type: DiskDriverType,
+        #[serde(default)]
+        device_type: DiskDeviceType,
+        #[serde(default)]
+        readonly: bool
+    },
+    NewDisk { size_gb: u32 }
 }
 
 #[derive(Deserialize, Debug, Validate)]
 pub struct ConfigMachine {
     pub name: String,
     pub interfaces: Vec<ConfigInterface>,
-    pub memory: Option<u32>,
+    pub memory_mb: Option<u32>,
     pub cpus: Option<u32>,
     pub disks: Vec<ConfigDisk>,
 }

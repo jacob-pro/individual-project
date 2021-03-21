@@ -1,6 +1,6 @@
 use crate::virt_util::devices::DeviceXML;
 use crate::virt_util::os::Os;
-use crate::virt_util::xml::{write_text_element, write_wrapped_element, WriteXML};
+use crate::virt_util::xml_tools::{write_text_element, write_wrapped_element, WriteXML};
 use anyhow::Context;
 use xml::writer::EventWriter;
 use xml::EmitterConfig;

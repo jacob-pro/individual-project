@@ -1,4 +1,4 @@
-use crate::virt_util::xml::*;
+use crate::virt_util::xml_tools::*;
 use xml::EventWriter;
 
 pub struct Os {}
