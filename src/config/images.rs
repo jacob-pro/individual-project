@@ -2,8 +2,9 @@ use crate::download::download_file;
 use crate::Common;
 use serde::{Deserialize, Serialize};
 use std::path::PathBuf;
+use enum_iterator::IntoEnumIterator;
 
-#[derive(Debug, Deserialize, Serialize)]
+#[derive(Debug, Deserialize, Serialize, IntoEnumIterator)]
 #[serde(rename_all = "lowercase")]
 #[allow(non_camel_case_types)]
 pub enum OnlineCloudImage {
@@ -31,5 +32,12 @@ impl OnlineCloudImage {
             download_file(self.get_url(), &name)?;
         }
         Ok(name)
+    }
+
+    pub fn print_image_list() {
+        println!("Available cloud images:");
+        for i in Self::into_enum_iter() {
+            println!("{}", serde_plain::to_string(&i).unwrap());
+        }
     }
 }

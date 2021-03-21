@@ -1,6 +1,6 @@
+use crate::virt_util::xml_tools::*;
 use crate::virt_util::*;
 use xml::EventWriter;
-use crate::virt_util::xml_tools::*;
 
 #[derive(Clone, Debug, new)]
 pub struct DiskXml {

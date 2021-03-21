@@ -1,14 +1,14 @@
 use crate::Common;
 use anyhow::Context;
 use virt::domain::Domain;
+use crate::config::convert::MachineToDomainConverter;
 
 pub fn up(common: Common) -> anyhow::Result<()> {
     for machine in &common.config.machines {
-
         match domain_lookup_by_name(&common, &machine.get_virt_name(&common))? {
             None => {
                 log::info!("Creating machine {}", machine.name);
-                let xml = machine.convert_to_domain_xml(&common)?.to_xml();
+                let xml = MachineToDomainConverter::new(&common, &machine).convert()?.to_xml();
                 log::trace!("{}", xml);
                 let d = Domain::define_xml(&common.hypervisor, xml.as_str())
                     .with_context(|| format!("Failed to define_xml for {}", machine.name))?;

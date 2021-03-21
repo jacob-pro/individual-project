@@ -10,6 +10,7 @@ use simple_logger::SimpleLogger;
 use std::path::PathBuf;
 use std::string::String;
 use virt::connect::Connect;
+use crate::config::images::OnlineCloudImage;
 
 mod actions;
 mod config;
@@ -36,6 +37,7 @@ struct Opts {
 enum SubCommand {
     Up,
     Down,
+    Images
 }
 
 pub struct Common {
@@ -93,6 +95,15 @@ fn run_app() -> Result<(), anyhow::Error> {
         .init()
         .unwrap();
 
+
+    match opts.sub_command {
+        SubCommand::Images => {
+            OnlineCloudImage::print_image_list();
+            return Ok(())
+        }
+        _ => {}
+    }
+
     let config = Config::load_from_file(opts.input)?;
     let project_name = match opts.project_name {
         None => {
@@ -115,6 +126,7 @@ fn run_app() -> Result<(), anyhow::Error> {
     match opts.sub_command {
         SubCommand::Up => actions::up(common)?,
         SubCommand::Down => actions::down(common)?,
+        _ => {}
     }
     Ok(())
 }

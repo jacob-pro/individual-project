@@ -3,7 +3,7 @@ pub mod domain;
 pub mod os;
 pub mod xml_tools;
 
-use serde::{Serialize, Deserialize};
+use serde::{Deserialize, Serialize};
 
 #[derive(Serialize, Deserialize, Debug, Clone, PartialEq)]
 #[serde(rename_all = "lowercase")]
@@ -22,6 +22,7 @@ impl Default for DiskDriverType {
 #[serde(rename_all = "lowercase")]
 pub enum DiskDeviceType {
     Disk,
+    CdRom,
 }
 
 impl Default for DiskDeviceType {

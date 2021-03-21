@@ -85,5 +85,4 @@ impl DomainXmlBuilder {
         self.devices.push(device);
         self
     }
-
 }

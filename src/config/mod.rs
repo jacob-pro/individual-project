@@ -1,13 +1,15 @@
-mod convert;
-mod images;
+pub mod convert;
+pub mod images;
+mod nocloud;
 
+use crate::config::images::OnlineCloudImage;
+use crate::virt_util::{DiskDeviceType, DiskDriverType};
+use crate::Common;
 use anyhow::Context;
 use serde::Deserialize;
 use std::net::Ipv4Addr;
 use std::path::{Path, PathBuf};
 use validator::Validate;
-use crate::virt_util::{DiskDriverType, DiskDeviceType};
-use crate::config::images::OnlineCloudImage;
 
 #[derive(Deserialize, Debug)]
 pub struct ConfigInterface {
@@ -18,7 +20,9 @@ pub struct ConfigInterface {
 #[derive(Deserialize, Debug)]
 #[serde(rename_all = "snake_case")]
 pub enum ConfigDisk {
-    CloudImage { name: OnlineCloudImage },
+    CloudImage {
+        name: OnlineCloudImage,
+    },
     ExistingDisk {
         path: PathBuf,
         #[serde(default)]
@@ -26,17 +30,17 @@ pub enum ConfigDisk {
         #[serde(default)]
         device_type: DiskDeviceType,
         #[serde(default)]
-        readonly: bool
+        readonly: bool,
     },
-    NewDisk { size_gb: u32 }
+    NewDisk {
+        size_gb: u32,
+    },
 }
 
 #[derive(Deserialize, Debug, Validate)]
 pub struct CloudInit {
-    pub meta_data_path: Option<PathBuf>,
-    pub user_data_path: Option<PathBuf>,
-    pub password: Option<String>,
-    pub ssh_pwauth: Option<bool>,
+    pub meta_data: Option<PathBuf>,
+    pub user_data: Option<PathBuf>,
 }
 
 #[derive(Deserialize, Debug, Validate)]
@@ -56,12 +60,16 @@ pub struct Config {
 }
 
 impl Config {
-
     pub fn load_from_file<P: AsRef<Path>>(path: P) -> anyhow::Result<Self> {
         let text = std::fs::read_to_string(path).with_context(|| "Reading Config file")?;
         let value: Self = serde_yaml::from_str(&text).with_context(|| "Parsing Config YAML")?;
         value.validate()?;
         Ok(value)
     }
+}
 
+impl ConfigMachine {
+    pub fn get_virt_name(&self, common: &Common) -> String {
+        format!("{}-{}", common.project, self.name)
+    }
 }
