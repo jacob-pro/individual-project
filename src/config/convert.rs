@@ -22,9 +22,9 @@ impl<'t> MachineToDomainConverter<'t> {
                     DiskDriverType::QCow2,
                     image_path.to_str().unwrap().to_owned(),
                     DiskDeviceType::Disk,
-                    true,
-                    "hdc".to_string(),
-                    TargetBus::VirtIO,
+                    false,
+                    "hda".to_string(),
+                    TargetBus::Ide,
                 )
             }
             ConfigDisk::ExistingDisk {
@@ -54,8 +54,8 @@ impl<'t> MachineToDomainConverter<'t> {
         let dest = PathBuf::from(dest);
         genisoimage(
             dest.as_path(),
-            cloud_init.meta_data.as_ref().map(|x| x.as_path()),
-            cloud_init.user_data.as_ref().map(|x| x.as_path()),
+            cloud_init.meta_data.as_path(),
+            cloud_init.user_data.as_path(),
         )?;
         Ok(DiskXml::new(
             DiskDriverType::Raw,
@@ -82,7 +82,9 @@ impl<'t> MachineToDomainConverter<'t> {
             None => {}
             Some(cloud_init) => {
                 let disk = self.cloud_init(cloud_init)?;
-                builder = builder.device(DeviceXML::Disk(disk));
+                builder = builder
+                    .device(DeviceXML::Disk(disk))
+                    .serial(Some("ds=nocloud;".to_string()));
             }
         }
         Ok(builder.build().unwrap())

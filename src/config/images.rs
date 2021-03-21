@@ -1,8 +1,8 @@
 use crate::download::download_file;
 use crate::Common;
+use enum_iterator::IntoEnumIterator;
 use serde::{Deserialize, Serialize};
 use std::path::PathBuf;
-use enum_iterator::IntoEnumIterator;
 
 #[derive(Debug, Deserialize, Serialize, IntoEnumIterator)]
 #[serde(rename_all = "lowercase")]

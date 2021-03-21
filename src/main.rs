@@ -1,6 +1,7 @@
 #[macro_use]
 extern crate derive_new;
 
+use crate::config::images::OnlineCloudImage;
 use crate::config::Config;
 use anyhow::anyhow;
 use clap::Clap;
@@ -10,7 +11,6 @@ use simple_logger::SimpleLogger;
 use std::path::PathBuf;
 use std::string::String;
 use virt::connect::Connect;
-use crate::config::images::OnlineCloudImage;
 
 mod actions;
 mod config;
@@ -37,7 +37,7 @@ struct Opts {
 enum SubCommand {
     Up,
     Down,
-    Images
+    Images,
 }
 
 pub struct Common {
@@ -95,11 +95,10 @@ fn run_app() -> Result<(), anyhow::Error> {
         .init()
         .unwrap();
 
-
     match opts.sub_command {
         SubCommand::Images => {
             OnlineCloudImage::print_image_list();
-            return Ok(())
+            return Ok(());
         }
         _ => {}
     }

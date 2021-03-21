@@ -1,5 +1,4 @@
 use crate::virt_util::devices::DeviceXML;
-use crate::virt_util::os::Os;
 use crate::virt_util::xml_tools::{write_text_element, write_wrapped_element, WriteXML};
 use anyhow::Context;
 use xml::writer::EventWriter;
@@ -9,9 +8,9 @@ use xml::EmitterConfig;
 pub struct DomainXml {
     name: String,
     cpus: u32,
-    os: Os,
     memory: u32,
     devices: Vec<DeviceXML>,
+    serial: Option<String>,
 }
 
 impl DomainXml {
@@ -38,12 +37,24 @@ impl<W: std::io::Write> WriteXML<W> for DomainXml {
         write_text_element(w, "name", vec![], self.name.as_str());
         write_text_element(w, "vcpu", vec![], cpus.as_str());
         write_text_element(w, "memory", vec![("unit", "MiB")], mem.as_str());
-        write_wrapped_element(w, "os", vec![], |w| self.os.write_xml(w));
+        write_wrapped_element(w, "os", vec![], |w| {
+            write_text_element(w, "type", vec![("arch", "x86_64")], "hvm");
+        });
         write_wrapped_element(w, "devices", vec![], |w| {
             for d in &self.devices {
                 d.write_xml(w);
             }
         });
+        match &self.serial {
+            None => {}
+            Some(serial) => {
+                write_wrapped_element(w, "sysinfo", vec![("type", "smbios")], |w| {
+                    write_wrapped_element(w, "system", vec![], |w| {
+                        write_text_element(w, "entry", vec![("name", "serial")], serial);
+                    });
+                });
+            }
+        }
     }
 }
 
@@ -53,6 +64,7 @@ pub struct DomainXmlBuilder {
     cpus: Option<u32>,
     memory: Option<u32>,
     devices: Vec<DeviceXML>,
+    serial: Option<String>,
 }
 
 impl DomainXmlBuilder {
@@ -60,9 +72,9 @@ impl DomainXmlBuilder {
         Ok(DomainXml {
             name: self.name.with_context(|| "Missing name")?,
             cpus: self.cpus.unwrap_or(1),
-            os: Os {},
             memory: self.memory.unwrap_or(512),
             devices: self.devices,
+            serial: self.serial,
         })
     }
 
@@ -83,6 +95,11 @@ impl DomainXmlBuilder {
 
     pub fn device(mut self, device: DeviceXML) -> Self {
         self.devices.push(device);
+        self
+    }
+
+    pub fn serial(mut self, serial: Option<String>) -> Self {
+        self.serial = serial;
         self
     }
 }

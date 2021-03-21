@@ -1,6 +1,5 @@
 pub mod devices;
 pub mod domain;
-pub mod os;
 pub mod xml_tools;
 
 use serde::{Deserialize, Serialize};
