@@ -1,3 +1,4 @@
 #cloud-config
-password: password
+password: atomic
 ssh_pwauth: True
+chpasswd: { expire: False }

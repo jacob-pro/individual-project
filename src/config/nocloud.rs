@@ -33,7 +33,9 @@ pub fn genisoimage(output: &Path, meta_data: &MetaData, user_data: &Path) -> any
     cmd.arg(dest.to_str().unwrap());
 
     cmd.output()?;
-    assert!(output.is_file());
+    let mut perms = std::fs::metadata(&output)?.permissions();
+    perms.set_readonly(true);
+    std::fs::set_permissions(&output, perms)?;
     Ok(())
 }
 
