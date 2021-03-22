@@ -1,6 +1,6 @@
 use crate::config::nocloud::{genisoimage, MetaData};
-use crate::config::{CloudInit, ConfigDisk, ConfigMachine};
-use crate::virt_util::devices::GraphicsXml;
+use crate::config::{CloudInit, ConfigDisk, ConfigMachine, ConfigInterface};
+use crate::virt_util::devices::{GraphicsXml, InterfaceXml};
 use crate::virt_util::devices::{DeviceXML, DiskXml};
 use crate::virt_util::domain::DomainXml;
 use crate::virt_util::{DiskDeviceType, DiskDriverType, TargetBus};
@@ -76,6 +76,10 @@ impl<'t> MachineToDomainConverter<'t> {
         ))
     }
 
+    fn create_virt_interface(&self, interface: &ConfigInterface) -> InterfaceXml {
+        InterfaceXml::new(self.common.prepend_project(&interface.source))
+    }
+
     pub fn convert(&self) -> anyhow::Result<DomainXml> {
         let vnc = GraphicsXml::new("vnc".to_owned(), "-1".to_owned(), "yes".to_owned());
         let disk = self.create_virt_disk(&self.machine.disk)?;
@@ -86,6 +90,10 @@ impl<'t> MachineToDomainConverter<'t> {
             .cpus(self.machine.cpus)
             .device(DeviceXML::Graphics(vnc))
             .device(DeviceXML::Disk(disk));
+
+        for i in &self.machine.interfaces {
+            builder = builder.device(DeviceXML::Interface(self.create_virt_interface(i)));
+        }
 
         match &self.machine.cloud_init {
             None => {}

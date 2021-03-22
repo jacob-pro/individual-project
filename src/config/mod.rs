@@ -13,8 +13,9 @@ use validator::Validate;
 
 #[derive(Deserialize, Debug)]
 pub struct ConfigInterface {
-    pub ipv4_address: Ipv4Addr,
-    pub ipv4_mask: Ipv4Addr,
+    pub ipv4_address: Option<Ipv4Addr>,
+    pub ipv4_prefix: Option<u8>,
+    pub source: String
 }
 
 #[derive(Deserialize, Debug)]

@@ -19,10 +19,16 @@ pub struct GraphicsXml {
     autoport: String,
 }
 
+#[derive(Clone, Debug, new)]
+pub struct InterfaceXml {
+    source: String,
+}
+
 #[derive(Clone, Debug)]
 pub enum DeviceXML {
     Disk(DiskXml),
     Graphics(GraphicsXml),
+    Interface(InterfaceXml),
 }
 
 impl<W: std::io::Write> WriteXML<W> for DeviceXML {
@@ -67,6 +73,12 @@ impl<W: std::io::Write> WriteXML<W> for DeviceXML {
                     ],
                     "",
                 );
+            }
+            DeviceXML::Interface(i) => {
+                write_wrapped_element(w, "interface", vec![("type", "bridge")], |w| {
+                    write_text_element(w, "source", vec![("bridge", &i.source)], "");
+                    write_text_element(w, "virtualport ", vec![("type", "openvswitch")], "");
+                });
             }
         }
     }

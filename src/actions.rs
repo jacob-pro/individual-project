@@ -4,6 +4,7 @@ use crate::Common;
 use anyhow::Context;
 use std::path::PathBuf;
 use virt::domain::Domain;
+use virt::error::Error;
 
 pub fn up(common: Common) -> anyhow::Result<()> {
     for bridge in &common.config.bridges {
@@ -26,8 +27,15 @@ pub fn up(common: Common) -> anyhow::Result<()> {
                 log::trace!("{}", xml);
                 let d = Domain::define_xml(&common.hypervisor, xml.as_str())
                     .with_context(|| format!("Failed to define_xml for {}", machine.name))?;
-                d.create()
-                    .with_context(|| format!("Failed to start vm {}", machine.name))?;
+
+                match d.create() {
+                    Ok(_) => {}
+                    Err(e) => {
+                        d.undefine().ok();
+                        return Err(e).with_context(|| format!("Failed to start vm {}", machine.name))
+                    }
+                }
+
             }
             Some(d) => {
                 if !d.is_active()? {
@@ -50,7 +58,7 @@ pub fn down(common: Common) -> anyhow::Result<()> {
             None => {}
             Some(d) => {
                 if d.is_active()? {
-                    log::trace!("Stopping machine {}", machine.name);
+                    log::info!("Stopping machine {}", machine.name);
                     d.destroy()?;
                 }
                 log::info!("Removing machine {}", machine.name);

@@ -14,6 +14,10 @@ pub struct MetaData {
 }
 
 pub fn genisoimage(output: &Path, meta_data: &MetaData, user_data: &Path) -> anyhow::Result<()> {
+    if output.exists() {
+        log::trace!("replacing genisoimage");
+        std::fs::remove_file(output)?;
+    }
     let temp = Common::storage_location()?;
 
     let mut cmd = Command::new("genisoimage");
