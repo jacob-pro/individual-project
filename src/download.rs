@@ -1,8 +1,8 @@
 use indicatif::ProgressBar;
 use std::fs::File;
 use std::io::Write;
-use std::path::Path;
 use std::os::unix::fs::PermissionsExt;
+use std::path::Path;
 
 pub fn download_file(url: &str, destination: &Path, mode: u32) -> anyhow::Result<File> {
     log::info!("Downloading {}", url);

@@ -62,6 +62,10 @@ impl Common {
             }
         }
     }
+
+    pub fn prepend_project<T: AsRef<str>>(&self, t: T) -> String {
+        format!("{}-{}", self.project, t.as_ref())
+    }
 }
 
 impl Drop for Common {

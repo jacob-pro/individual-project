@@ -2,3 +2,4 @@
 target/
 *.iso
 *.img
+kvm-compose

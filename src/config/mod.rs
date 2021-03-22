@@ -50,9 +50,16 @@ pub struct ConfigMachine {
 }
 
 #[derive(Deserialize, Debug, Validate)]
+pub struct ConfigBridge {
+    pub name: String,
+}
+
+#[derive(Deserialize, Debug, Validate)]
 pub struct Config {
     #[validate]
     pub machines: Vec<ConfigMachine>,
+    #[validate]
+    pub bridges: Vec<ConfigBridge>,
 }
 
 impl Config {

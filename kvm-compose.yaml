@@ -9,6 +9,8 @@ machines:
     interfaces:
       - ipv4_address: 10.2.50.254
         ipv4_mask: 255.255.255.0
+bridges:
+  - name: br0
 
 
 

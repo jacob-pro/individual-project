@@ -56,18 +56,15 @@ impl<'t> MachineToDomainConverter<'t> {
     }
 
     fn cloud_init(&self, cloud_init: &CloudInit) -> anyhow::Result<DiskXml> {
-        let dest = format!(
-            "{}-cloud-init.iso",
-            self.machine.name
-        );
+        let dest = format!("{}-cloud-init.iso", self.machine.name);
         let dest = PathBuf::from(dest);
         genisoimage(
             dest.as_path(),
             &MetaData {
                 instance_id: self.machine.name.clone(),
-                local_hostname: self.machine.name.clone()
+                local_hostname: self.machine.name.clone(),
             },
-            &cloud_init.user_data
+            &cloud_init.user_data,
         )?;
         Ok(DiskXml::new(
             DiskDriverType::Raw,

@@ -1,10 +1,21 @@
 use crate::config::convert::MachineToDomainConverter;
+use crate::ovs::Bridge;
 use crate::Common;
 use anyhow::Context;
-use virt::domain::Domain;
 use std::path::PathBuf;
+use virt::domain::Domain;
 
 pub fn up(common: Common) -> anyhow::Result<()> {
+    for bridge in &common.config.bridges {
+        let name = common.prepend_project(&bridge.name);
+        if !Bridge::exists(&name)? {
+            log::info!("Creating bridge {}", name);
+            Bridge::add(&name)?;
+        } else {
+            log::info!("Bridge {} already exists", name);
+        }
+    }
+
     for machine in &common.config.machines {
         match domain_lookup_by_name(&common, &machine.get_virt_name(&common))? {
             None => {
@@ -57,6 +68,14 @@ pub fn down(common: Common) -> anyhow::Result<()> {
         if cloud_disk.exists() && cloud_disk.is_file() {
             log::info!("Removing machine {} cloud-disk.img", machine.name);
             std::fs::remove_file(cloud_disk)?;
+        }
+    }
+
+    for bridge in &common.config.bridges {
+        let name = common.prepend_project(&bridge.name);
+        if Bridge::exists(&name)? {
+            log::info!("Removing bridge {}", name);
+            Bridge::delete(&name)?;
         }
     }
 
