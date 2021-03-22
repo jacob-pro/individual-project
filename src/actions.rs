@@ -4,7 +4,6 @@ use crate::Common;
 use anyhow::Context;
 use std::path::PathBuf;
 use virt::domain::Domain;
-use virt::error::Error;
 
 pub fn up(common: Common) -> anyhow::Result<()> {
     for bridge in &common.config.bridges {

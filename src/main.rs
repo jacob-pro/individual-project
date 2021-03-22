@@ -117,8 +117,8 @@ fn run_app() -> Result<(), anyhow::Error> {
     };
     log::trace!("Project name: {}", project_name);
 
-    log::trace!("Connecting to QEMU");
-    let conn = Connect::open("qemu:///session")?;
+    log::trace!("Connecting to qemu:///system");
+    let conn = Connect::open("qemu:///system")?;
 
     let common = Common {
         hypervisor: conn,

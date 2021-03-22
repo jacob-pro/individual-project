@@ -7,14 +7,11 @@ use crate::virt_util::{DiskDeviceType, DiskDriverType};
 use crate::Common;
 use anyhow::Context;
 use serde::Deserialize;
-use std::net::Ipv4Addr;
 use std::path::{Path, PathBuf};
 use validator::Validate;
 
 #[derive(Deserialize, Debug)]
 pub struct ConfigInterface {
-    pub ipv4_address: Option<Ipv4Addr>,
-    pub ipv4_prefix: Option<u8>,
     pub source: String
 }
 
@@ -43,6 +40,7 @@ pub struct CloudInit {
 #[derive(Deserialize, Debug, Validate)]
 pub struct ConfigMachine {
     pub name: String,
+    #[serde(default)]
     pub interfaces: Vec<ConfigInterface>,
     pub memory_mb: Option<u32>,
     pub cpus: Option<u32>,

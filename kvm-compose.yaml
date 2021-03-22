@@ -3,13 +3,17 @@ machines:
     disk:
       cloud_image:
         name: cirros_0_5_1
-#        name: ubuntu_18_04
+    cloud_init:
+      user_data: ./user_data_1
+
+  - name: server2
+    disk:
+      cloud_image:
+        name: ubuntu_18_04
     cloud_init:
       user_data: ./user_data_1
     interfaces:
-      - ipv4_address: 10.2.50.254
-        ipv4_mask: 255.255.255.0
-        source: br0
+      - source: br0
 bridges:
   - name: br0
 
