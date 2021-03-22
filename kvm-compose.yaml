@@ -6,7 +6,6 @@ machines:
 #        name: ubuntu_18_04
     cloud_init:
       user_data: ./user_data_1
-      meta_data: ./meta_data_1
     interfaces:
       - ipv4_address: 10.2.50.254
         ipv4_mask: 255.255.255.0

@@ -29,7 +29,7 @@ impl OnlineCloudImage {
         name.push(format!("{}.img", serde_plain::to_string(self).unwrap()));
         if !name.is_file() {
             common.confirm_continue(format!("Download image {:?} to {:?}?", self, name).as_str());
-            download_file(self.get_url(), &name)?;
+            download_file(self.get_url(), &name, 0o444)?;
         }
         Ok(name)
     }

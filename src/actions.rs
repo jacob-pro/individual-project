@@ -2,6 +2,7 @@ use crate::config::convert::MachineToDomainConverter;
 use crate::Common;
 use anyhow::Context;
 use virt::domain::Domain;
+use std::path::PathBuf;
 
 pub fn up(common: Common) -> anyhow::Result<()> {
     for machine in &common.config.machines {
@@ -44,6 +45,18 @@ pub fn down(common: Common) -> anyhow::Result<()> {
                 log::info!("Removing machine {}", machine.name);
                 d.undefine()?;
             }
+        }
+
+        let cloud_init = PathBuf::from(format!("{}-cloud-init.iso", machine.name));
+        if cloud_init.exists() && cloud_init.is_file() {
+            log::info!("Removing machine {} cloud-init.iso", machine.name);
+            std::fs::remove_file(cloud_init)?;
+        }
+
+        let cloud_disk = PathBuf::from(format!("{}-cloud-disk.img", machine.name));
+        if cloud_disk.exists() && cloud_disk.is_file() {
+            log::info!("Removing machine {} cloud-disk.img", machine.name);
+            std::fs::remove_file(cloud_disk)?;
         }
     }
 

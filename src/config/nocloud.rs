@@ -2,8 +2,17 @@ use crate::Common;
 use anyhow::Context;
 use std::path::Path;
 use std::process::Command;
+use serde::Serialize;
+use std::io::Write;
 
-pub fn genisoimage(output: &Path, meta_data: &Path, user_data: &Path) -> anyhow::Result<()> {
+#[derive(Serialize, Clone, Debug)]
+#[serde(rename_all = "kebab-case")]
+pub struct MetaData {
+    pub instance_id: String,
+    pub local_hostname: String
+}
+
+pub fn genisoimage(output: &Path, meta_data: &MetaData, user_data: &Path) -> anyhow::Result<()> {
     let temp = Common::storage_location()?;
 
     let mut cmd = Command::new("genisoimage");
@@ -15,7 +24,8 @@ pub fn genisoimage(output: &Path, meta_data: &Path, user_data: &Path) -> anyhow:
         .arg("-rock");
 
     let dest = temp.join("meta-data");
-    std::fs::copy(meta_data, &dest).with_context(|| "Copying cloud-init meta-data")?;
+    let mut dest_file = std::fs::File::create(&dest)?;
+    dest_file.write_all(serde_json::to_string(&meta_data).unwrap().as_bytes()).unwrap();
     cmd.arg(dest.to_str().unwrap());
 
     let dest = temp.join("user-data");
@@ -26,3 +36,4 @@ pub fn genisoimage(output: &Path, meta_data: &Path, user_data: &Path) -> anyhow:
     assert!(output.is_file());
     Ok(())
 }
+

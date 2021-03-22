@@ -1,4 +1,4 @@
-use crate::config::nocloud::genisoimage;
+use crate::config::nocloud::{genisoimage, MetaData};
 use crate::config::{CloudInit, ConfigDisk, ConfigMachine};
 use crate::virt_util::devices::GraphicsXml;
 use crate::virt_util::devices::{DeviceXML, DiskXml};
@@ -19,9 +19,16 @@ impl<'t> MachineToDomainConverter<'t> {
         Ok(match disk {
             ConfigDisk::CloudImage { name } => {
                 let image_path = name.resolve_path(&self.common)?.canonicalize()?;
+                let dest = PathBuf::from(format!("{}-cloud-disk.img", self.machine.name));
+                if !dest.exists() {
+                    std::fs::copy(image_path, &dest)?;
+                    let mut perms = std::fs::metadata(&dest)?.permissions();
+                    perms.set_readonly(false);
+                    std::fs::set_permissions(&dest, perms)?;
+                }
                 DiskXml::new(
                     DiskDriverType::QCow2,
-                    image_path.to_str().unwrap().to_owned(),
+                    dest.canonicalize().unwrap().to_str().unwrap().to_owned(),
                     DiskDeviceType::Disk,
                     false,
                     "hda".to_string(),
@@ -51,13 +58,16 @@ impl<'t> MachineToDomainConverter<'t> {
     fn cloud_init(&self, cloud_init: &CloudInit) -> anyhow::Result<DiskXml> {
         let dest = format!(
             "{}-cloud-init.iso",
-            self.machine.get_virt_name(&self.common)
+            self.machine.name
         );
         let dest = PathBuf::from(dest);
         genisoimage(
             dest.as_path(),
-            cloud_init.meta_data.as_path(),
-            cloud_init.user_data.as_path(),
+            &MetaData {
+                instance_id: self.machine.name.clone(),
+                local_hostname: self.machine.name.clone()
+            },
+            &cloud_init.user_data
         )?;
         Ok(DiskXml::new(
             DiskDriverType::Raw,

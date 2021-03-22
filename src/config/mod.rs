@@ -36,7 +36,6 @@ pub enum ConfigDisk {
 
 #[derive(Deserialize, Debug, Validate)]
 pub struct CloudInit {
-    pub meta_data: PathBuf,
     pub user_data: PathBuf,
 }
 
