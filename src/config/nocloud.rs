@@ -6,6 +6,7 @@ use crate::Common;
 use anyhow::bail;
 use anyhow::Context;
 use serde::Serialize;
+use std::borrow::Cow;
 use std::io::{Cursor, Read, Seek, SeekFrom};
 use std::os::unix::fs::PermissionsExt;
 use std::path::Path;
@@ -109,8 +110,9 @@ fn genisoimage<T: ReadAndSeek>(
     let mut file = std::fs::File::create(&dest).with_context(|| "Creating cloud-init user-data")?;
     std::io::copy(user_data, &mut file)?;
     cmd.arg(dest.to_str().unwrap());
+    // User data might be a script, so it should have write bit set before going into ISO
     let mut user_data_perms = std::fs::metadata(&dest)?.permissions();
-    user_data_perms.set_mode(0o777); // Needs to have write bit set - before going into ISO!
+    user_data_perms.set_mode(0o700);
     std::fs::set_permissions(&dest, user_data_perms)?;
 
     let cmd_output = cmd.output()?;
@@ -126,16 +128,29 @@ fn genisoimage<T: ReadAndSeek>(
 }
 
 impl GuestOperatingSystem {
-    pub fn generate_userdata(&self, _config: &Config, _machine: &ConfigMachine) -> String {
+    pub fn generate_userdata(&self, config: &Config, _machine: &ConfigMachine) -> String {
         match &self {
             // Cirros expects a script
             // https://github.com/cirros-dev/cirros/blob/master/doc/cirros-init.txt
-            GuestOperatingSystem::Cirros => r#"
-                passwd -d cirros
-                echo "hello_world" >> /etc/hello
+            GuestOperatingSystem::Cirros => format!(
+                r#"
+                #!
+                mkdir -p /home/cirros/.ssh
+                echo {} > /home/cirros/.ssh/authorized_keys
+                chmod 644 /home/cirros/.ssh/authorized_keys
+                "#,
+                shell_escape::unix::escape(Cow::from(&config.ssh_public_key))
+            ),
+            // https://help.ubuntu.com/community/CloudInit
+            GuestOperatingSystem::Ubuntu => format!(
+                r#"
+                #cloud-config
+                chpasswd:
+                  list: |
+                    ubuntu:password
+                  expire: False
                 "#
-            .to_string(),
-            GuestOperatingSystem::Ubuntu => "".to_string(),
+            ),
         }
     }
 }
