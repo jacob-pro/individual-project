@@ -1,4 +1,4 @@
-use crate::config::convert::MachineToDomainConverter;
+use crate::config::convert::ConfigConverter;
 use crate::ovs::Bridge;
 use crate::Common;
 use anyhow::Context;
@@ -6,6 +6,8 @@ use std::path::PathBuf;
 use virt::domain::Domain;
 
 pub fn up(common: Common) -> anyhow::Result<()> {
+    let converter = ConfigConverter::new(&common, &common.config);
+
     for bridge in &common.config.bridges {
         let name = common.prepend_project(&bridge.name);
         if !Bridge::exists(&name)? {
@@ -20,9 +22,7 @@ pub fn up(common: Common) -> anyhow::Result<()> {
         match domain_lookup_by_name(&common, &machine.get_virt_name(&common))? {
             None => {
                 log::info!("Creating machine {}", machine.name);
-                let xml = MachineToDomainConverter::new(&common, &machine)
-                    .convert()?
-                    .to_xml();
+                let xml = converter.convert_machine(&machine)?.to_xml();
                 log::trace!("{}", xml);
                 let d = Domain::define_xml(&common.hypervisor, xml.as_str())
                     .with_context(|| format!("Failed to define_xml for {}", machine.name))?;
@@ -31,10 +31,10 @@ pub fn up(common: Common) -> anyhow::Result<()> {
                     Ok(_) => {}
                     Err(e) => {
                         d.undefine().ok();
-                        return Err(e).with_context(|| format!("Failed to start vm {}", machine.name))
+                        return Err(e)
+                            .with_context(|| format!("Failed to start vm {}", machine.name));
                     }
                 }
-
             }
             Some(d) => {
                 if !d.is_active()? {

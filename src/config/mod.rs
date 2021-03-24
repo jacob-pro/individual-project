@@ -12,7 +12,7 @@ use validator::Validate;
 
 #[derive(Deserialize, Debug)]
 pub struct ConfigInterface {
-    pub source: String
+    pub source: String,
 }
 
 #[derive(Deserialize, Debug)]
@@ -34,7 +34,15 @@ pub enum ConfigDisk {
 
 #[derive(Deserialize, Debug, Validate)]
 pub struct CloudInit {
-    pub user_data: PathBuf,
+    pub user_data_file: Option<PathBuf>, // Override the user_data file
+    pub meta_data_file: Option<PathBuf>, // Override the meta_data file
+}
+
+#[derive(Deserialize, Clone, Debug)]
+#[serde(rename_all = "lowercase")]
+pub enum GuestOperatingSystem {
+    Cirros,
+    Ubuntu,
 }
 
 #[derive(Deserialize, Debug, Validate)]
@@ -46,6 +54,7 @@ pub struct ConfigMachine {
     pub cpus: Option<u32>,
     pub disk: ConfigDisk,
     pub cloud_init: Option<CloudInit>,
+    pub os: Option<GuestOperatingSystem>,
 }
 
 #[derive(Deserialize, Debug, Validate)]
@@ -59,6 +68,7 @@ pub struct Config {
     pub machines: Vec<ConfigMachine>,
     #[validate]
     pub bridges: Vec<ConfigBridge>,
+    pub ssh_public_key: String,
 }
 
 impl Config {
@@ -73,5 +83,13 @@ impl Config {
 impl ConfigMachine {
     pub fn get_virt_name(&self, common: &Common) -> String {
         format!("{}-{}", common.project, self.name)
+    }
+
+    fn get_os(&self) -> Option<GuestOperatingSystem> {
+        if let ConfigDisk::CloudImage { name } = &self.disk {
+            Some(name.to_os())
+        } else {
+            self.os.clone()
+        }
     }
 }

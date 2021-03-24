@@ -37,7 +37,7 @@ struct Opts {
 enum SubCommand {
     Up,
     Down,
-    Images,
+    CloudImages,
 }
 
 pub struct Common {
@@ -100,7 +100,7 @@ fn run_app() -> Result<(), anyhow::Error> {
         .unwrap();
 
     match opts.sub_command {
-        SubCommand::Images => {
+        SubCommand::CloudImages => {
             OnlineCloudImage::print_image_list();
             return Ok(());
         }

@@ -1,7 +1,6 @@
-use crate::config::nocloud::{genisoimage, MetaData};
-use crate::config::{CloudInit, ConfigDisk, ConfigMachine, ConfigInterface};
-use crate::virt_util::devices::{GraphicsXml, InterfaceXml};
+use crate::config::{Config, ConfigDisk, ConfigInterface, ConfigMachine};
 use crate::virt_util::devices::{DeviceXML, DiskXml};
+use crate::virt_util::devices::{GraphicsXml, InterfaceXml};
 use crate::virt_util::domain::DomainXml;
 use crate::virt_util::{DiskDeviceType, DiskDriverType, TargetBus};
 use crate::Common;
@@ -9,17 +8,17 @@ use anyhow::Context;
 use std::path::PathBuf;
 
 #[derive(new)]
-pub struct MachineToDomainConverter<'t> {
-    common: &'t Common,
-    machine: &'t ConfigMachine,
+pub struct ConfigConverter<'t> {
+    pub common: &'t Common,
+    pub config: &'t Config,
 }
 
-impl<'t> MachineToDomainConverter<'t> {
-    fn create_virt_disk(&self, disk: &ConfigDisk) -> anyhow::Result<DiskXml> {
+impl<'t> ConfigConverter<'t> {
+    fn convert_disk(&self, machine: &ConfigMachine, disk: &ConfigDisk) -> anyhow::Result<DiskXml> {
         Ok(match disk {
             ConfigDisk::CloudImage { name } => {
                 let image_path = name.resolve_path(&self.common)?.canonicalize()?;
-                let dest = PathBuf::from(format!("{}-cloud-disk.img", self.machine.name));
+                let dest = PathBuf::from(format!("{}-cloud-disk.img", machine.name));
                 if !dest.exists() {
                     std::fs::copy(image_path, &dest)?;
                     let mut perms = std::fs::metadata(&dest)?.permissions();
@@ -55,56 +54,28 @@ impl<'t> MachineToDomainConverter<'t> {
         })
     }
 
-    fn cloud_init(&self, cloud_init: &CloudInit) -> anyhow::Result<DiskXml> {
-        let dest = format!("{}-cloud-init.iso", self.machine.name);
-        let dest = PathBuf::from(dest);
-        let name = self.common.prepend_project(&self.machine.name);
-        genisoimage(
-            dest.as_path(),
-            &MetaData {
-                instance_id: name.clone(),
-                local_hostname: name.clone(),
-            },
-            &cloud_init.user_data,
-        )?;
-        Ok(DiskXml::new(
-            DiskDriverType::Raw,
-            dest.canonicalize()?.to_str().unwrap().to_owned(),
-            DiskDeviceType::CdRom,
-            true,
-            "hdb".to_string(),
-            TargetBus::Ide,
-        ))
-    }
-
-    fn create_virt_interface(&self, interface: &ConfigInterface) -> InterfaceXml {
+    fn convert_interface(&self, interface: &ConfigInterface) -> InterfaceXml {
         InterfaceXml::new(self.common.prepend_project(&interface.source))
     }
 
-    pub fn convert(&self) -> anyhow::Result<DomainXml> {
+    pub fn convert_machine(&self, machine: &ConfigMachine) -> anyhow::Result<DomainXml> {
         let vnc = GraphicsXml::new("vnc".to_owned(), "-1".to_owned(), "yes".to_owned());
-        let disk = self.create_virt_disk(&self.machine.disk)?;
+        let disk = self.convert_disk(&machine, &machine.disk)?;
+        let cloud_init_disk = self.convert_cloud_init(&machine)?;
 
         let mut builder = DomainXml::builder()
-            .name(&self.machine.get_virt_name(&self.common))
-            .memory(self.machine.memory_mb)
-            .cpus(self.machine.cpus)
+            .name(&machine.get_virt_name(&self.common))
+            .memory(machine.memory_mb)
+            .cpus(machine.cpus)
             .device(DeviceXML::Graphics(vnc))
-            .device(DeviceXML::Disk(disk));
+            .device(DeviceXML::Disk(disk))
+            .device(DeviceXML::Disk(cloud_init_disk))
+            .serial(Some("ds=nocloud;".to_string()));
 
-        for i in &self.machine.interfaces {
-            builder = builder.device(DeviceXML::Interface(self.create_virt_interface(i)));
+        for i in &machine.interfaces {
+            builder = builder.device(DeviceXML::Interface(self.convert_interface(i)));
         }
 
-        match &self.machine.cloud_init {
-            None => {}
-            Some(cloud_init) => {
-                let disk = self.cloud_init(cloud_init)?;
-                builder = builder
-                    .device(DeviceXML::Disk(disk))
-                    .serial(Some("ds=nocloud;".to_string()));
-            }
-        }
         Ok(builder.build().unwrap())
     }
 }

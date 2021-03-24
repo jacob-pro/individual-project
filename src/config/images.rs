@@ -1,3 +1,4 @@
+use crate::config::GuestOperatingSystem;
 use crate::download::download_file;
 use crate::Common;
 use enum_iterator::IntoEnumIterator;
@@ -38,6 +39,13 @@ impl OnlineCloudImage {
         println!("Available cloud images:");
         for i in Self::into_enum_iter() {
             println!("{}", serde_plain::to_string(&i).unwrap());
+        }
+    }
+
+    pub fn to_os(&self) -> GuestOperatingSystem {
+        match &self {
+            OnlineCloudImage::Ubuntu_18_04 => GuestOperatingSystem::Ubuntu,
+            OnlineCloudImage::Cirros_0_5_1 => GuestOperatingSystem::Cirros,
         }
     }
 }
