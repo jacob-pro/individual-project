@@ -12,7 +12,7 @@ use validator::Validate;
 
 #[derive(Deserialize, Debug)]
 pub struct ConfigInterface {
-    pub source: String,
+    pub bridge: String,
 }
 
 #[derive(Deserialize, Debug)]
@@ -33,19 +33,6 @@ pub enum ConfigDisk {
 }
 
 #[derive(Deserialize, Debug, Validate)]
-pub struct CloudInit {
-    pub user_data_file: Option<PathBuf>, // Override the user_data file
-    pub meta_data_file: Option<PathBuf>, // Override the meta_data file
-}
-
-#[derive(Deserialize, Clone, Debug)]
-#[serde(rename_all = "lowercase")]
-pub enum GuestOperatingSystem {
-    Cirros,
-    Ubuntu,
-}
-
-#[derive(Deserialize, Debug, Validate)]
 pub struct ConfigMachine {
     pub name: String,
     #[serde(default)]
@@ -53,13 +40,14 @@ pub struct ConfigMachine {
     pub memory_mb: Option<u32>,
     pub cpus: Option<u32>,
     pub disk: ConfigDisk,
-    pub cloud_init: Option<CloudInit>,
-    pub os: Option<GuestOperatingSystem>,
+    pub init_script: Option<PathBuf>,
 }
 
 #[derive(Deserialize, Debug, Validate)]
 pub struct ConfigBridge {
     pub name: String,
+    #[serde(default)]
+    pub external_interfaces: Vec<String>,
 }
 
 #[derive(Deserialize, Debug, Validate)]
@@ -83,13 +71,5 @@ impl Config {
 impl ConfigMachine {
     pub fn get_virt_name(&self, common: &Common) -> String {
         format!("{}-{}", common.project, self.name)
-    }
-
-    fn get_os(&self) -> Option<GuestOperatingSystem> {
-        if let ConfigDisk::CloudImage { name } = &self.disk {
-            Some(name.to_os())
-        } else {
-            self.os.clone()
-        }
     }
 }

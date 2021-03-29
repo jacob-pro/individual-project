@@ -1,9 +1,9 @@
-use crate::config::GuestOperatingSystem;
 use crate::download::download_file;
 use crate::Common;
 use enum_iterator::IntoEnumIterator;
 use serde::{Deserialize, Serialize};
 use std::path::PathBuf;
+use crate::config::nocloud::CloudInitType;
 
 #[derive(Debug, Deserialize, Serialize, IntoEnumIterator)]
 #[serde(rename_all = "lowercase")]
@@ -42,10 +42,10 @@ impl OnlineCloudImage {
         }
     }
 
-    pub fn to_os(&self) -> GuestOperatingSystem {
+    pub fn get_cloud_init_type(&self) -> CloudInitType {
         match &self {
-            OnlineCloudImage::Ubuntu_18_04 => GuestOperatingSystem::Ubuntu,
-            OnlineCloudImage::Cirros_0_5_1 => GuestOperatingSystem::Cirros,
+            OnlineCloudImage::Ubuntu_18_04 => CloudInitType::CloudInit,
+            OnlineCloudImage::Cirros_0_5_1 => CloudInitType::CirrosInit,
         }
     }
 }

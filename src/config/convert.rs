@@ -55,7 +55,7 @@ impl<'t> ConfigConverter<'t> {
     }
 
     fn convert_interface(&self, interface: &ConfigInterface) -> InterfaceXml {
-        InterfaceXml::new(self.common.prepend_project(&interface.source))
+        InterfaceXml::new(self.common.prepend_project(&interface.bridge))
     }
 
     pub fn convert_machine(&self, machine: &ConfigMachine) -> anyhow::Result<DomainXml> {

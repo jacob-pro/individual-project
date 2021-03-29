@@ -47,4 +47,24 @@ impl Bridge {
         }
         Ok(())
     }
+
+    pub fn add_port<T: AsRef<str>>(name: T, interface: T, tag: Option<u16>) -> anyhow::Result<()> {
+        let mut cmd = Command::new("sudo");
+        cmd.arg("ovs-vsctl")
+            .arg("add-port")
+            .arg(name.as_ref())
+            .arg(interface.as_ref());
+        match tag {
+            None => {}
+            Some(tag) => {
+                cmd.arg(format!("tag={}", tag));
+            }
+        };
+        let output = cmd.output()?;
+        if !output.status.success() {
+            let std_err = std::str::from_utf8(&output.stderr)?;
+            bail!("{}", std_err);
+        }
+        Ok(())
+    }
 }

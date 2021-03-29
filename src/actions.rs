@@ -13,6 +13,9 @@ pub fn up(common: Common) -> anyhow::Result<()> {
         if !Bridge::exists(&name)? {
             log::info!("Creating bridge {}", name);
             Bridge::add(&name)?;
+            for interface in &bridge.external_interfaces {
+                Bridge::add_port(&name, interface, None)?;
+            }
         } else {
             log::info!("Bridge {} already exists", name);
         }
