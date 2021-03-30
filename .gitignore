@@ -4,3 +4,4 @@ target/
 *.img
 kvm-compose
 kvm-compose.yaml
+example.sh

@@ -13,6 +13,7 @@ use std::string::String;
 use virt::connect::Connect;
 
 mod actions;
+mod assets;
 mod config;
 mod download;
 mod ovs;

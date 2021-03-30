@@ -1,19 +1,21 @@
+use crate::assets::Assets;
 use crate::config::convert::ConfigConverter;
-use crate::config::{Config, ConfigDisk, ConfigMachine};
+use crate::config::{ConfigDisk, ConfigMachine};
 use crate::virt_util::devices::DiskXml;
 use crate::virt_util::{DiskDeviceType, DiskDriverType, TargetBus};
 use crate::Common;
 use anyhow::bail;
 use anyhow::Context;
 use serde::Serialize;
-use std::borrow::Cow;
-use std::io::{Cursor, Read, Seek, SeekFrom, Write};
+use std::io::Write;
 use std::os::unix::fs::PermissionsExt;
 use std::path::Path;
 use std::path::PathBuf;
 use std::process::Command;
 
 // NoCloud supports three keys: [local-hostname, instance-id, seedfrom]
+// Other keys will show up under `cloud-init query ds.meta_data.key`
+// Or on Cirros `cirros-query get key`
 #[derive(Serialize, Clone, Debug)]
 struct NoCloudMetadata {
     #[serde(rename = "instance-id")]
@@ -21,19 +23,32 @@ struct NoCloudMetadata {
     #[serde(rename = "local-hostname")]
     local_hostname: String,
     public_ssh_key: String,
+    run_script: String,
 }
 
 impl<'t> ConfigConverter<'t> {
     pub fn convert_cloud_init(&self, machine: &ConfigMachine) -> anyhow::Result<DiskXml> {
-        let dest = PathBuf::from(format!("{}-cloud-init.iso", machine.name));
         let instance_name = self.common.prepend_project(&machine.name);
+        let script = match &machine.run_script {
+            None => "".to_owned(),
+            Some(path) => std::fs::read_to_string(path).with_context(|| "Reading run_script")?,
+        };
         let meta_data = NoCloudMetadata {
             instance_id: instance_name.clone(),
             local_hostname: instance_name.clone(),
             public_ssh_key: self.config.ssh_public_key.clone(),
+            run_script: script,
         };
-        let mut user_data = self.cloud_init_userdata(&machine)?;
-        genisoimage(dest.as_path(), &meta_data, &mut user_data)?;
+
+        let init_type = if let ConfigDisk::CloudImage { name } = &machine.disk {
+            name.get_cloud_init_type()
+        } else {
+            CloudInitType::CloudInit
+        };
+        let user_data = init_type.generate_userdata();
+
+        let dest = PathBuf::from(format!("{}-cloud-init.iso", machine.name));
+        genisoimage(dest.as_path(), &meta_data, &user_data)?;
         Ok(DiskXml::new(
             DiskDriverType::Raw,
             dest.canonicalize()?.to_str().unwrap().to_owned(),
@@ -43,32 +58,12 @@ impl<'t> ConfigConverter<'t> {
             TargetBus::Ide,
         ))
     }
-
-    fn cloud_init_userdata(&self, machine: &ConfigMachine) -> anyhow::Result<Box<dyn ReadAndSeek>> {
-        Ok(match &machine.init_script {
-            None => {
-                let init_type = if let ConfigDisk::CloudImage { name } = &machine.disk {
-                    name.get_cloud_init_type()
-                } else {
-                    CloudInitType::CloudInit
-                };
-                let userdata = init_type.generate_userdata(&self.config, &machine);
-                Box::new(Cursor::new(userdata.into_bytes()))
-            }
-            Some(f) => Box::new(
-                std::fs::File::open(f).with_context(|| "Opening cloud-init meta_data file")?,
-            ),
-        })
-    }
 }
 
-trait ReadAndSeek: Read + Seek {}
-impl<T: Read + Seek> ReadAndSeek for T {}
-
-fn genisoimage<T: ReadAndSeek>(
+fn genisoimage(
     output: &Path,
     meta_data: &NoCloudMetadata,
-    user_data: &mut T,
+    user_data: &Vec<u8>,
 ) -> anyhow::Result<()> {
     if output.exists() {
         log::trace!("replacing genisoimage");
@@ -90,9 +85,8 @@ fn genisoimage<T: ReadAndSeek>(
     cmd.arg(dest.to_str().unwrap());
 
     let dest = kvm_appdata.join("user-data");
-    user_data.seek(SeekFrom::Start(0))?;
     let mut file = std::fs::File::create(&dest).with_context(|| "Creating cloud-init user-data")?;
-    std::io::copy(user_data, &mut file)?;
+    file.write_all(user_data)?;
     cmd.arg(dest.to_str().unwrap());
     // User data might be a script, so it should have write bit set before going into ISO
     let mut user_data_perms = std::fs::metadata(&dest)?.permissions();
@@ -118,29 +112,10 @@ pub enum CloudInitType {
 }
 
 impl CloudInitType {
-    pub fn generate_userdata(&self, config: &Config, _machine: &ConfigMachine) -> String {
+    fn generate_userdata(&self) -> Vec<u8> {
         match &self {
-            // Cirros-init only seems to support / expect a script
-            // https://github.com/cirros-dev/cirros/blob/master/doc/cirros-init.txt
-            CloudInitType::CirrosInit => format!(
-                r#"
-                #!
-                mkdir -p /home/cirros/.ssh
-                echo {} > /home/cirros/.ssh/authorized_keys
-                chmod 644 /home/cirros/.ssh/authorized_keys
-                "#,
-                shell_escape::unix::escape(Cow::from(&config.ssh_public_key))
-            ),
-            // https://help.ubuntu.com/community/CloudInit
-            CloudInitType::CloudInit => format!(
-                r#"
-                #cloud-config
-                chpasswd:
-                  list: |
-                    ubuntu:password
-                  expire: False
-                "#
-            ),
+            CloudInitType::CirrosInit => Assets::get("cirros_init.sh").unwrap().into_owned(),
+            CloudInitType::CloudInit => Assets::get("cloud_init.yaml").unwrap().into_owned(),
         }
     }
 }

@@ -1,0 +1,18 @@
+## template: jinja
+#cloud-config
+chpasswd:
+  list: |
+    nocloud:password
+  expire: False
+users:
+  - name: nocloud
+    gecos: nocloud
+    groups: users, admin
+    sudo: ALL=(ALL) NOPASSWD:ALL
+    ssh-authorized-keys:
+      - {{ ds.meta_data.public_ssh_key }}
+runcmd:
+  - cloud-init query ds.meta_data.run_script > /etc/run_script.sh
+  - chmod +x /etc/run_script.sh
+  - sh /etc/run_script.sh
+

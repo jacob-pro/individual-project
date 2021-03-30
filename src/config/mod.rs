@@ -40,7 +40,7 @@ pub struct ConfigMachine {
     pub memory_mb: Option<u32>,
     pub cpus: Option<u32>,
     pub disk: ConfigDisk,
-    pub init_script: Option<PathBuf>,
+    pub run_script: Option<PathBuf>,
 }
 
 #[derive(Deserialize, Debug, Validate)]
