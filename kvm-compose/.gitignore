@@ -1,5 +1,3 @@
-.idea/
-target/
 *.iso
 *.img
 kvm-compose
