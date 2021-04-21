@@ -1,10 +1,10 @@
 use anyhow::bail;
 use std::process::Command;
 
-pub struct Bridge;
+pub struct OvsVsctl;
 
-impl Bridge {
-    pub fn add<T: AsRef<str>>(name: T) -> anyhow::Result<()> {
+impl OvsVsctl {
+    pub fn add_br<T: AsRef<str>>(name: T) -> anyhow::Result<()> {
         let output = Command::new("sudo")
             .arg("ovs-vsctl")
             .arg("add-br")
@@ -17,7 +17,7 @@ impl Bridge {
         Ok(())
     }
 
-    pub fn exists<T: AsRef<str>>(name: T) -> anyhow::Result<bool> {
+    pub fn br_exists<T: AsRef<str>>(name: T) -> anyhow::Result<bool> {
         let output = Command::new("sudo")
             .arg("ovs-vsctl")
             .arg("br-exists")
@@ -35,7 +35,7 @@ impl Bridge {
         Ok(true)
     }
 
-    pub fn delete<T: AsRef<str>>(name: T) -> anyhow::Result<()> {
+    pub fn del_br<T: AsRef<str>>(name: T) -> anyhow::Result<()> {
         let output = Command::new("sudo")
             .arg("ovs-vsctl")
             .arg("del-br")

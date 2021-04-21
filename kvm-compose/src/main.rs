@@ -16,7 +16,7 @@ mod actions;
 mod assets;
 mod config;
 mod download;
-mod ovs;
+mod network;
 mod virt_util;
 
 #[derive(Clap)]

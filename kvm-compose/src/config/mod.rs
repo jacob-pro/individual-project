@@ -47,7 +47,9 @@ pub struct ConfigMachine {
 pub struct ConfigBridge {
     pub name: String,
     #[serde(default)]
-    pub external_interfaces: Vec<String>,
+    pub connect_external_interfaces: Vec<String>,
+    #[serde(default)]
+    pub enable_dhcp_client: bool,
 }
 
 #[derive(Deserialize, Debug, Validate)]

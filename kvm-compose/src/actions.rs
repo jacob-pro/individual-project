@@ -1,5 +1,6 @@
 use crate::config::convert::ConfigConverter;
-use crate::ovs::Bridge;
+use crate::network::ip::{Dhclient, Ip};
+use crate::network::ovs::OvsVsctl;
 use crate::Common;
 use anyhow::Context;
 use std::path::PathBuf;
@@ -9,15 +10,19 @@ pub fn up(common: Common) -> anyhow::Result<()> {
     let converter = ConfigConverter::new(&common, &common.config);
 
     for bridge in &common.config.bridges {
-        let name = common.prepend_project(&bridge.name);
-        if !Bridge::exists(&name)? {
-            log::info!("Creating bridge {}", name);
-            Bridge::add(&name)?;
-            for interface in &bridge.external_interfaces {
-                Bridge::add_port(&name, interface, None)?;
+        let bridge_name = common.prepend_project(&bridge.name);
+        if !OvsVsctl::br_exists(&bridge_name)? {
+            log::info!("Creating bridge {}", bridge_name);
+            OvsVsctl::add_br(&bridge_name)?;
+            for interface in &bridge.connect_external_interfaces {
+                OvsVsctl::add_port(&bridge_name, interface, None)?;
+                Ip::addr_flush_dev(interface)?;
+            }
+            if bridge.enable_dhcp_client {
+                Dhclient::run(bridge_name)?;
             }
         } else {
-            log::info!("Bridge {} already exists", name);
+            log::info!("Bridge {} already exists", bridge_name);
         }
     }
 
@@ -82,10 +87,13 @@ pub fn down(common: Common) -> anyhow::Result<()> {
     }
 
     for bridge in &common.config.bridges {
-        let name = common.prepend_project(&bridge.name);
-        if Bridge::exists(&name)? {
-            log::info!("Removing bridge {}", name);
-            Bridge::delete(&name)?;
+        let bridge_name = common.prepend_project(&bridge.name);
+        if OvsVsctl::br_exists(&bridge_name)? {
+            log::info!("Removing bridge {}", bridge_name);
+            OvsVsctl::del_br(&bridge_name)?;
+            for interface in &bridge.connect_external_interfaces {
+                Dhclient::run(interface)?; // Restore address to interface
+            }
         }
     }
 
