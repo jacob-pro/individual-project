@@ -1,0 +1,26 @@
+name: Rust
+
+on: [push, pull_request]
+
+env:
+  CARGO_TERM_COLOR: always
+
+jobs:
+  build:
+
+    runs-on: ubuntu-latest
+
+    steps:
+    - uses: actions/checkout@v2
+    
+    - name: Install dev packages
+      run: sudo apt-get install -y libvirt-dev libssl-dev
+      
+    - name: Build
+      run: cargo build
+      
+    - name: Run tests
+      run: cargo test
+      
+    - name: Check style
+      run: cargo fmt -- --check
