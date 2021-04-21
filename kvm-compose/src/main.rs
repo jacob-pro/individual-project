@@ -22,13 +22,13 @@ mod virt_util;
 #[derive(Clap)]
 #[clap(version = "1.0", author = "Jacob Halsey")]
 struct Opts {
-    #[clap(long, default_value = "kvm-compose.yaml")]
+    #[clap(long, default_value = "kvm-compose.yaml", about = "Configuration file")]
     input: String,
     #[clap(long, about = "Defaults to the current folder name")]
     project_name: Option<String>,
     #[clap(short, long)]
     verbosity: Option<String>,
-    #[clap(long)]
+    #[clap(long, about = "Suppress (accept) continue prompts")]
     no_ask: bool,
     #[clap(subcommand)]
     sub_command: SubCommand,
@@ -36,8 +36,11 @@ struct Opts {
 
 #[derive(Clap)]
 enum SubCommand {
+    #[clap(about = "Create virtual devices in the current configuration")]
     Up,
+    #[clap(about = "Destroy virtual devices in the current configuration")]
     Down,
+    #[clap(about = "List supported cloud images")]
     CloudImages,
 }
 
