@@ -9,9 +9,12 @@ describing the configuration you wish to create / destroy.
 
 ## Dependencies
 
+Compile-time
 ```
-sudo apt install qemu-kvm libvirt-daemon-system libvirt-clients libvirt-dev
-sudo apt install openvswitch-switch
-sudo apt install libssl-dev
+sudo apt install libvirt-dev libssl-dev
 ```
 
+Runtime:
+```
+sudo apt install qemu-kvm libvirt-daemon-system libvirt-clients openvswitch-switch
+```
