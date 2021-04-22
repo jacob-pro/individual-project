@@ -3,7 +3,7 @@ extern crate derive_new;
 
 use crate::config::images::OnlineCloudImage;
 use crate::config::Config;
-use anyhow::anyhow;
+use anyhow::{anyhow};
 use clap::Clap;
 use directories::UserDirs;
 use log::LevelFilter;
@@ -87,21 +87,31 @@ fn log_level(s: &str) -> anyhow::Result<LevelFilter> {
         "warn" => Ok(LevelFilter::Warn),
         "info" => Ok(LevelFilter::Info),
         "trace" => Ok(LevelFilter::Trace),
-        _ => Err(anyhow!("Unknown Log LevelFilter")),
+        _ => Err(anyhow!("Unknown Log LevelFilter {}", s)),
     }
 }
 
 fn run_app() -> Result<(), anyhow::Error> {
     let opts: Opts = Opts::parse();
+    let mut e = None;
     let level = match &opts.verbosity {
         None => LevelFilter::Info,
-        Some(x) => log_level(x)?,
+        Some(x) => {
+            match log_level(x) {
+                Ok(l) => l,
+                Err(err) => {
+                    e = Some(err);
+                    LevelFilter::Info
+                }
+            }
+        },
     };
     SimpleLogger::new()
         .with_level(LevelFilter::Error)
         .with_module_level(std::module_path!(), level)
         .init()
         .unwrap();
+    e.map(|e| log::warn!("{}", e));
 
     match opts.sub_command {
         SubCommand::CloudImages => {
