@@ -5,6 +5,7 @@ machines:
         name: ubuntu_18_04
     interfaces:
       - bridge: br0
+    run_script: ./backend.sh
 
 bridges:
   - name: br0
