@@ -7,4 +7,4 @@ chown cirros /home/cirros/.ssh/authorized_keys
 mkdir -p /etc/nocloud
 cirros-query get run_script > /etc/nocloud/run_script.sh
 chmod +x /etc/nocloud/run_script.sh
-sh /etc/nocloud/run_script.sh &> /etc/nocloud/run_script_log.txt
+sh /etc/nocloud/run_script.sh > /etc/nocloud/run_script_log.txt

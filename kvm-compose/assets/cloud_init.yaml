@@ -15,6 +15,6 @@ runcmd:
   - mkdir -p /etc/nocloud/
   - cloud-init query ds.meta_data.run_script > /etc/nocloud/run_script.sh
   - chmod +x /etc/nocloud/run_script.sh
-  - /etc/nocloud/run_script.sh &> /etc/nocloud/run_script_log.txt
+  - /etc/nocloud/run_script.sh > /etc/nocloud/run_script_log.txt
 
 
