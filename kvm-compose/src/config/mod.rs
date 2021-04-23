@@ -51,6 +51,7 @@ pub struct ConfigBridge {
     pub connect_external_interfaces: Vec<String>,
     #[serde(default)]
     pub enable_dhcp_client: bool,
+    pub controller: Option<String>,
 }
 
 #[derive(Deserialize, Debug, Validate)]

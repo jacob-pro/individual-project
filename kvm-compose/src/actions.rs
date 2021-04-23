@@ -15,11 +15,20 @@ pub fn up(common: Common) -> anyhow::Result<()> {
             log::info!("Creating bridge {}", bridge_name);
             OvsVsctl::add_br(&bridge_name)?;
             for interface in &bridge.connect_external_interfaces {
+                log::trace!("Attaching {} to {}", interface, bridge_name);
                 OvsVsctl::add_port(&bridge_name, interface, None)?;
                 Ip::addr_flush_dev(interface)?;
             }
             if bridge.enable_dhcp_client {
-                Dhclient::run(bridge_name)?;
+                log::trace!("Launching DHCP client for {}", bridge_name);
+                Dhclient::run(&bridge_name)?;
+            }
+            match &bridge.controller {
+                None => {}
+                Some(controller) => {
+                    log::trace!("Setting bridge {} controller", bridge_name);
+                    OvsVsctl::set_controller(&bridge_name, controller)?;
+                }
             }
         } else {
             log::info!("Bridge {} already exists", bridge_name);
@@ -92,6 +101,7 @@ pub fn down(common: Common) -> anyhow::Result<()> {
             log::info!("Removing bridge {}", bridge_name);
             OvsVsctl::del_br(&bridge_name)?;
             for interface in &bridge.connect_external_interfaces {
+                log::trace!("Re-launching DHCP client for {}", interface);
                 Dhclient::run(interface)?; // Restore address to interface
             }
         }
@@ -100,7 +110,7 @@ pub fn down(common: Common) -> anyhow::Result<()> {
     Ok(())
 }
 
-pub fn domain_lookup_by_name(c: &Common, name: &str) -> anyhow::Result<Option<Domain>> {
+fn domain_lookup_by_name(c: &Common, name: &str) -> anyhow::Result<Option<Domain>> {
     match Domain::lookup_by_name(&c.hypervisor, name) {
         Ok(x) => Ok(Some(x)),
         // VIR_ERR_NO_DOMAIN

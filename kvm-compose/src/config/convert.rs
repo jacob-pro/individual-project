@@ -24,11 +24,16 @@ impl<'t> ConfigConverter<'t> {
                 let image_path = name.resolve_path(&self.common)?.canonicalize()?;
                 let dest = PathBuf::from(format!("{}-cloud-disk.img", machine.name));
                 if !dest.exists() {
+                    log::trace!("Cloning cloud image to {}", image_path.to_str().unwrap());
                     std::fs::copy(image_path, &dest)?;
                     match expand_gigabytes {
                         None => {}
                         Some(expand_gigabytes) => {
-                            log::info!("Expanding {} disk by +{}G", machine.name, expand_gigabytes);
+                            log::trace!(
+                                "Expanding {} disk by +{}G",
+                                machine.name,
+                                expand_gigabytes
+                            );
                             QemuImg::resize(
                                 dest.to_str().unwrap(),
                                 format!("+{}G", expand_gigabytes),

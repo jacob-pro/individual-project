@@ -67,4 +67,21 @@ impl OvsVsctl {
         }
         Ok(())
     }
+
+    pub fn set_controller<T: AsRef<str>, Y: AsRef<str>>(
+        bridge: T,
+        controller: Y,
+    ) -> anyhow::Result<()> {
+        let output = Command::new("sudo")
+            .arg("ovs-vsctl")
+            .arg("set-controller")
+            .arg(bridge.as_ref())
+            .arg(controller.as_ref())
+            .output()?;
+        if !output.status.success() {
+            let std_err = std::str::from_utf8(&output.stderr)?;
+            bail!("{}", std_err);
+        }
+        Ok(())
+    }
 }
