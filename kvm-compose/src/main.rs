@@ -3,7 +3,7 @@ extern crate derive_new;
 
 use crate::config::images::OnlineCloudImage;
 use crate::config::Config;
-use anyhow::{anyhow};
+use anyhow::anyhow;
 use clap::Clap;
 use directories::UserDirs;
 use log::LevelFilter;
@@ -96,13 +96,11 @@ fn run_app() -> Result<(), anyhow::Error> {
     let mut e = None;
     let level = match &opts.verbosity {
         None => LevelFilter::Info,
-        Some(x) => {
-            match log_level(x) {
-                Ok(l) => l,
-                Err(err) => {
-                    e = Some(err);
-                    LevelFilter::Info
-                }
+        Some(x) => match log_level(x) {
+            Ok(l) => l,
+            Err(err) => {
+                e = Some(err);
+                LevelFilter::Info
             }
         },
     };
