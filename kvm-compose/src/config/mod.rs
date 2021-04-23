@@ -52,6 +52,7 @@ pub struct ConfigBridge {
     #[serde(default)]
     pub enable_dhcp_client: bool,
     pub controller: Option<String>,
+    pub protocol: Option<String>,
 }
 
 #[derive(Deserialize, Debug, Validate)]

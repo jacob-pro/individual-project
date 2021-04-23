@@ -23,10 +23,21 @@ pub fn up(common: Common) -> anyhow::Result<()> {
                 log::trace!("Launching DHCP client for {}", bridge_name);
                 Dhclient::run(&bridge_name)?;
             }
+            match &bridge.protocol {
+                None => {}
+                Some(protocol) => {
+                    log::trace!("Setting bridge {} protocol to {}", bridge_name, protocol);
+                    OvsVsctl::set_bridge_protocol(&bridge_name, protocol)?;
+                }
+            }
             match &bridge.controller {
                 None => {}
                 Some(controller) => {
-                    log::trace!("Setting bridge {} controller", bridge_name);
+                    log::trace!(
+                        "Setting bridge {} controller to {}",
+                        bridge_name,
+                        controller
+                    );
                     OvsVsctl::set_controller(&bridge_name, controller)?;
                 }
             }
