@@ -1,6 +1,7 @@
 pub mod devices;
 pub mod domain;
 pub mod xml_tools;
+pub mod qemu_img;
 
 use serde::{Deserialize, Serialize};
 

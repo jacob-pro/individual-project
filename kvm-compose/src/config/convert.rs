@@ -6,6 +6,7 @@ use crate::virt_util::{DiskDeviceType, DiskDriverType, TargetBus};
 use crate::Common;
 use anyhow::Context;
 use std::path::PathBuf;
+use crate::virt_util::qemu_img::QemuImg;
 
 #[derive(new)]
 pub struct ConfigConverter<'t> {
@@ -16,11 +17,18 @@ pub struct ConfigConverter<'t> {
 impl<'t> ConfigConverter<'t> {
     fn convert_disk(&self, machine: &ConfigMachine, disk: &ConfigDisk) -> anyhow::Result<DiskXml> {
         Ok(match disk {
-            ConfigDisk::CloudImage { name } => {
+            ConfigDisk::CloudImage { name, expand_gigabytes } => {
                 let image_path = name.resolve_path(&self.common)?.canonicalize()?;
                 let dest = PathBuf::from(format!("{}-cloud-disk.img", machine.name));
                 if !dest.exists() {
                     std::fs::copy(image_path, &dest)?;
+                    match expand_gigabytes {
+                        None => {}
+                        Some(expand_gigabytes) => {
+                            log::info!("Expanding {} disk by +{}G", machine.name, expand_gigabytes);
+                            QemuImg::resize(dest.to_str().unwrap(), format!("+{}G", expand_gigabytes))?;
+                        }
+                    }
                     let mut perms = std::fs::metadata(&dest)?.permissions();
                     perms.set_readonly(false);
                     std::fs::set_permissions(&dest, perms)?;

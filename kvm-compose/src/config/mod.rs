@@ -20,6 +20,7 @@ pub struct ConfigInterface {
 pub enum ConfigDisk {
     CloudImage {
         name: OnlineCloudImage,
+        expand_gigabytes: Option<u16>,
     },
     ExistingDisk {
         path: PathBuf,

@@ -1,7 +1,7 @@
 use anyhow::bail;
 use std::process::Command;
 
-pub(crate) struct Ip {}
+pub struct Ip {}
 
 impl Ip {
     pub fn addr_flush_dev<T: AsRef<str>>(device: T) -> anyhow::Result<()> {

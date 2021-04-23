@@ -40,7 +40,7 @@ impl<'t> ConfigConverter<'t> {
             run_script: script,
         };
 
-        let init_type = if let ConfigDisk::CloudImage { name } = &machine.disk {
+        let init_type = if let ConfigDisk::CloudImage { name, .. } = &machine.disk {
             name.get_cloud_init_type()
         } else {
             CloudInitType::CloudInit
