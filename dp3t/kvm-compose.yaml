@@ -6,6 +6,13 @@ machines:
     interfaces:
       - bridge: br0
     run_script: ./backend.sh
+  - name: client
+    disk:
+      cloud_image:
+        name: ubuntu_18_04
+    interfaces:
+      - bridge: br0
+    run_script: ./client.sh
 
 bridges:
   - name: br0
