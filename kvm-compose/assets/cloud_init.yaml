@@ -12,9 +12,14 @@ users:
     ssh-authorized-keys:
       - {{ ds.meta_data.public_ssh_key }}
 runcmd:
-  - mkdir -p /etc/nocloud/
+  - mkdir -p /etc/nocloud/context
   - cloud-init query ds.meta_data.run_script > /etc/nocloud/run_script.sh
   - chmod +x /etc/nocloud/run_script.sh
-  - /etc/nocloud/run_script.sh > /etc/nocloud/run_script_log.txt
+  - mkdir /nocloudtmp
+  - mount /dev/sr0 /nocloudtmp
+  - tar -xf /nocloudtmp/context.tar -C /etc/nocloud/context
+  - umount /nocloudtmp
+  - rm -rf /nocloudtmp
+  - /etc/nocloud/run_script.sh > /etc/nocloud/run_script_out.txt 2>/etc/nocloud/run_script_err.txt
 
 

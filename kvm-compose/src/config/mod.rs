@@ -7,8 +7,10 @@ use crate::virt_util::{DiskDeviceType, DiskDriverType};
 use crate::Common;
 use anyhow::Context;
 use serde::Deserialize;
+use std::borrow::Cow;
+use std::collections::HashMap;
 use std::path::{Path, PathBuf};
-use validator::Validate;
+use validator::{Validate, ValidationError};
 
 #[derive(Deserialize, Debug)]
 pub struct ConfigInterface {
@@ -42,6 +44,19 @@ pub struct ConfigMachine {
     pub cpus: Option<u32>,
     pub disk: ConfigDisk,
     pub run_script: Option<PathBuf>,
+    #[validate(custom = "validate_context")]
+    pub context: Option<PathBuf>,
+}
+
+fn validate_context(context: &PathBuf) -> Result<(), ValidationError> {
+    if !context.exists() {
+        return Err(ValidationError {
+            code: Cow::from(format!("{:?} does not exist", context)),
+            message: None,
+            params: HashMap::new(),
+        });
+    }
+    Ok(())
 }
 
 #[derive(Deserialize, Debug, Validate)]

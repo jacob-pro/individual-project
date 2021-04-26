@@ -3,7 +3,6 @@ use crate::config::convert::ConfigConverter;
 use crate::config::{ConfigDisk, ConfigMachine};
 use crate::virt_util::devices::DiskXml;
 use crate::virt_util::{DiskDeviceType, DiskDriverType, TargetBus};
-use crate::Common;
 use anyhow::bail;
 use anyhow::Context;
 use serde::Serialize;
@@ -12,6 +11,7 @@ use std::os::unix::fs::PermissionsExt;
 use std::path::Path;
 use std::path::PathBuf;
 use std::process::Command;
+use tempfile::tempdir;
 
 // NoCloud supports three keys: [local-hostname, instance-id, seedfrom]
 // Other keys will show up under `cloud-init query ds.meta_data.key`
@@ -48,7 +48,34 @@ impl<'t> ConfigConverter<'t> {
         let user_data = init_type.generate_userdata();
 
         let dest = PathBuf::from(format!("{}-cloud-init.iso", machine.name));
-        genisoimage(dest.as_path(), &meta_data, &user_data)?;
+
+        let temp_dir = tempdir()?;
+        let meta_data_dest = temp_dir.path().join("meta-data");
+        let mut file = std::fs::File::create(&meta_data_dest)
+            .with_context(|| "Creating cloud-init meta-data")?;
+        file.write_all(serde_json::to_string(&meta_data).unwrap().as_bytes())?;
+
+        let user_data_dest = temp_dir.path().join("user-data");
+        let mut file = std::fs::File::create(&user_data_dest)
+            .with_context(|| "Creating cloud-init user-data")?;
+        file.write_all(&user_data)?;
+        // User data might be a script, so it should have write bit set before going into ISO
+        let mut user_data_perms = std::fs::metadata(&user_data_dest)?.permissions();
+        user_data_perms.set_mode(0o700);
+        std::fs::set_permissions(&user_data_dest, user_data_perms)?;
+
+        let mut inputs = vec![meta_data_dest, user_data_dest];
+
+        match &machine.context {
+            None => {}
+            Some(context) => {
+                let context_dest = temp_dir.path().join("context.tar");
+                tar_cf(&context_dest, &context)?;
+                inputs.push(context_dest);
+            }
+        }
+
+        genisoimage(dest.as_path(), inputs)?;
         Ok(DiskXml::new(
             DiskDriverType::Raw,
             dest.canonicalize()?.to_str().unwrap().to_owned(),
@@ -60,17 +87,11 @@ impl<'t> ConfigConverter<'t> {
     }
 }
 
-fn genisoimage(
-    output: &Path,
-    meta_data: &NoCloudMetadata,
-    user_data: &Vec<u8>,
-) -> anyhow::Result<()> {
+fn genisoimage(output: &Path, inputs: Vec<PathBuf>) -> anyhow::Result<()> {
     if output.exists() {
         log::trace!("replacing genisoimage");
         std::fs::remove_file(output)?;
     }
-    let kvm_appdata = Common::storage_location()?;
-
     let mut cmd = Command::new("genisoimage");
     cmd.arg("-output")
         .arg(output.to_str().unwrap())
@@ -79,19 +100,9 @@ fn genisoimage(
         .arg("-joliet")
         .arg("-rock");
 
-    let dest = kvm_appdata.join("meta-data");
-    let mut file = std::fs::File::create(&dest).with_context(|| "Creating cloud-init meta-data")?;
-    file.write_all(serde_json::to_string(&meta_data).unwrap().as_bytes())?;
-    cmd.arg(dest.to_str().unwrap());
-
-    let dest = kvm_appdata.join("user-data");
-    let mut file = std::fs::File::create(&dest).with_context(|| "Creating cloud-init user-data")?;
-    file.write_all(user_data)?;
-    cmd.arg(dest.to_str().unwrap());
-    // User data might be a script, so it should have write bit set before going into ISO
-    let mut user_data_perms = std::fs::metadata(&dest)?.permissions();
-    user_data_perms.set_mode(0o700);
-    std::fs::set_permissions(&dest, user_data_perms)?;
+    for i in inputs {
+        cmd.arg(i.to_str().unwrap());
+    }
 
     let cmd_output = cmd.output()?;
     if !cmd_output.status.success() {
@@ -102,6 +113,24 @@ fn genisoimage(
     let mut iso_perms = std::fs::metadata(&output)?.permissions();
     iso_perms.set_readonly(true);
     std::fs::set_permissions(&output, iso_perms)?;
+    Ok(())
+}
+
+pub fn tar_cf(output: &Path, input: &Path) -> anyhow::Result<()> {
+    let mut command = Command::new("tar");
+    command.arg("cf").arg(output.to_str().unwrap());
+    if input.is_dir() {
+        command.arg(".").current_dir(input)
+    } else {
+        command
+            .arg(input.file_name().unwrap())
+            .current_dir(input.parent().unwrap())
+    };
+    let output = command.output()?;
+    if !output.status.success() {
+        let std_err = std::str::from_utf8(&output.stderr)?;
+        bail!("{}", std_err);
+    }
     Ok(())
 }
 
