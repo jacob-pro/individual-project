@@ -1,0 +1,82 @@
+Index: calibration-app/app/src/main/java/org/dpppt/android/calibration/MainApplication.java
+IDEA additional info:
+Subsystem: com.intellij.openapi.diff.impl.patch.CharsetEP
+<+>UTF-8
+===================================================================
+--- calibration-app/app/src/main/java/org/dpppt/android/calibration/MainApplication.java	(revision 649576b6a87bf1c03a9ddb947653376788284afa)
++++ calibration-app/app/src/main/java/org/dpppt/android/calibration/MainApplication.java	(date 1619455369154)
+@@ -20,15 +20,16 @@
+ import org.dpppt.android.calibration.util.NotificationUtil;
+ import org.dpppt.android.calibration.util.PreferencesUtil;
+ import org.dpppt.android.sdk.DP3T;
++import org.dpppt.android.sdk.backend.models.ApplicationInfo;
+ import org.dpppt.android.sdk.internal.logger.LogLevel;
+ import org.dpppt.android.sdk.internal.logger.Logger;
+ import org.dpppt.android.sdk.internal.util.ProcessUtil;
+ import org.dpppt.android.sdk.util.SignatureUtil;
+ 
+-import okhttp3.CertificatePinner;
+-
+ public class MainApplication extends Application {
+ 
++	private static final String URL = "http://dp3t-backend.lan:8080/";
++
+ 	@Override
+ 	public void onCreate() {
+ 		super.onCreate();
+@@ -44,15 +45,12 @@
+ 
+ 	public static void initDP3T(Context context) {
+ 		PublicKey publicKey = SignatureUtil.getPublicKeyFromBase64OrThrow(
+-				"LS0tLS1CRUdJTiBQVUJMSUMgS0VZLS0tLS0KTUZrd0V3WUhLb1pJemowQ0FRWUlLb1pJemowREFRY0R" +
+-						"RZ0FFWTc3MFZEWjJlZjZCYjh0UXZYWVJpcUFaemtHLwpwNWs0U3pTV3FRY00zNzlqTVN6c3JOaU5nc0" +
+-						"hWZlRPeGFqMUFzQ3RrNmJVUDV1cDc3RU5nckVzVkh3PT0KLS0tLS1FTkQgUFVCTElDIEtFWS0tLS0t");
+-		DP3T.init(context, "org.dpppt.demo", true, publicKey);
+-
+-		CertificatePinner certificatePinner = new CertificatePinner.Builder()
+-				.add("demo.dpppt.org", "sha256/YLh1dUR9y6Kja30RrAn7JKnbQG/uEtLMkBgFF2Fuihg=")
+-				.build();
+-		DP3T.setCertificatePinner(certificatePinner);
++				"LS0tLS1CRUdJTiBQVUJMSUMgS0VZLS0tLS0KTUZrd0V3WUhLb1pJemowQ0FRWUlLb1p" +
++						"JemowREFRY0RRZ0FFZW9mVUxtamYxTTFjV1dqOUJGb2NINk5oQ3ZZZwprNW5kbUlaQWdpVHV1Z" +
++						"2QrMUpSYm1aY1pZQ3BlcVFtQzNGUG1iTk9zTVExL1FlTFZ0SnNWNW9MRGdRPT0KLS0tLS1FTkQ" +
++						"gUFVCTElDIEtFWS0tLS0tCg==");
++		ApplicationInfo info = new ApplicationInfo("org.dpppt.demo", URL, URL);
++		DP3T.init(context, info, publicKey);
+ 	}
+ 
+ 	@Override
+@@ -74,4 +72,4 @@
+ 		}
+ 	};
+ 
+-}
+\ No newline at end of file
++}
+Index: calibration-app/app/src/main/AndroidManifest.xml
+IDEA additional info:
+Subsystem: com.intellij.openapi.diff.impl.patch.CharsetEP
+<+>UTF-8
+===================================================================
+--- calibration-app/app/src/main/AndroidManifest.xml	(revision 649576b6a87bf1c03a9ddb947653376788284afa)
++++ calibration-app/app/src/main/AndroidManifest.xml	(date 1619318776206)
+@@ -18,9 +18,10 @@
+ 		android:icon="@mipmap/ic_launcher"
+ 		android:label="@string/app_name"
+ 		android:roundIcon="@mipmap/ic_launcher_round"
+-		android:networkSecurityConfig="@xml/network_security_config"
+ 		android:supportsRtl="true"
+-		android:theme="@style/AppTheme">
++		android:theme="@style/AppTheme"
++		android:usesCleartextTraffic="true"
++		>
+ 		<activity android:name="org.dpppt.android.calibration.MainActivity">
+ 			<intent-filter>
+ 				<action android:name="android.intent.action.MAIN" />
+@@ -29,4 +30,4 @@
+ 		</activity>
+ 	</application>
+ 
+-</manifest>
+\ No newline at end of file
++</manifest>
