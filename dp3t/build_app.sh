@@ -15,6 +15,6 @@ cd dp3t-sdk-android/calibration-app
 $CMD git checkout prestandard
 $CMD git apply --ignore-space-change --ignore-whitespace ../../local_server.patch
 $CMD docker run --rm -v "$ORIGINAL_PWD":/project mingc/android-build-box bash -c 'cd /project/dp3t-sdk-android/calibration-app; ./gradlew assembleDebug'
-cp "app/build/outputs/apk/debug/app-debug.apk" "../../app_context/"
+cp "app/build/outputs/apk/debug/app-debug.apk" "../../"
 cd ../../
 sudo rm -rf dp3t-sdk-android
