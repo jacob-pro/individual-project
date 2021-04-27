@@ -13,6 +13,6 @@ Anbox:
  - Android apps use Google DNS
 
 Android SDK / Emulator:
- - Requires KVM nested virtualization (must be enabled on host) - lower performance
+ - Requires KVM nested virtualization (must be enabled on host) - slower performance
  - Apps use the same name resolution as the VM
  - More features: sensor simulation, GPS etc.
