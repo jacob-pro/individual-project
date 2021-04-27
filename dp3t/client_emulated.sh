@@ -1,6 +1,6 @@
 set -e
 apt update
-apt install -y xorg adb unzip default-jdk
+apt install -y xorg adb unzip openjdk-8-jdk
 apt install -y --no-install-recommends openbox
 
 # https://linuxhint.com/setup-android-emulator-without-installing-android-studio-in-linux/
