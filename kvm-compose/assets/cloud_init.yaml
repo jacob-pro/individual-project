@@ -7,6 +7,7 @@ chpasswd:
 users:
   - name: nocloud
     gecos: nocloud
+    shell: /bin/bash
     groups: users, admin
     sudo: ALL=(ALL) NOPASSWD:ALL
     ssh-authorized-keys:

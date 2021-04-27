@@ -22,6 +22,7 @@ echo "DONE! - Rebooting"
 reboot
 
 # Usage - https://docs.anbox.io/userguide/install_apps.html
+# startx
 # adb devices
 # sudo /anbox-bridge.sh start
 # anbox.appmgr

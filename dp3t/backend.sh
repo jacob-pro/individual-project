@@ -4,13 +4,10 @@ sudo apt update
 sudo apt install -y git make maven
 mkdir -p /opt/dp3t
 cd /opt/dp3t
-# Temporary fix which doesn't rely on JCenter / Bintray
-# git clone https://github.com/DP-3T/dp3t-sdk-backend.git
-git clone https://github.com/jacob-pro/dp3t-sdk-backend.git
+git clone https://github.com/DP-3T/dp3t-sdk-backend.git
 cd dp3t-sdk-backend/dpppt-backend-sdk
 # Use pre-standard server
-# git checkout v1.1.2
-git checkout v1.1.2-fix
+git checkout v1.1.2
 mvn install -DskipTests
 
 properties="
@@ -51,4 +48,7 @@ network:
           addresses: [10.3.10.254]
 "
 echo "$netplan" > /etc/netplan/99_config.yaml
+echo "network: {config: disabled}" > /etc/cloud/cloud.cfg.d/99-disable-network-config.cfg
 netplan apply
+
+echo "DONE!"

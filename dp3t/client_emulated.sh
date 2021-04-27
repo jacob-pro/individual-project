@@ -1,6 +1,6 @@
 set -e
 apt update
-apt install -y xorg adb unzip
+apt install -y xorg adb unzip default-jdk
 apt install -y --no-install-recommends openbox
 
 # https://linuxhint.com/setup-android-emulator-without-installing-android-studio-in-linux/
@@ -25,5 +25,5 @@ reboot
 # sudo ./emulator -avd "avd_30"
 # adb devices
 # adb install -t /etc/nocloud/context/app-debug.apk
-# adb -e logcat org.dppt.demo
+
 
