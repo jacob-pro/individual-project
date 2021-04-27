@@ -43,7 +43,7 @@ network:
   version: 2
   renderer: networkd
   ethernets:
-    eth0:
+    enp0s3:
       addresses:
         - 10.3.10.99/24
       gateway4: 10.3.10.254
