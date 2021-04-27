@@ -15,15 +15,19 @@ echo y | ./sdkmanager platform-tools emulator
 echo y | ./sdkmanager "platforms;android-30" "system-images;android-30;google_apis;x86" "build-tools;30.0.2"
 echo no | ./avdmanager create avd -n "avd_30" -k "system-images;android-30;google_apis;x86"
 
+launch="
+sudo su
+cd /android/emulator
+export QTWEBENGINE_DISABLE_SANDBOX=1
+sudo ./emulator -avd "avd_30"
+"
+echo "$launch" > /android/launch.sh
+chmod +x /android/launch.sh
+
 echo "DONE! - Rebooting"
 reboot
 
 # Usage:
 # startx
-# cd /android/emulator
-# export QTWEBENGINE_DISABLE_SANDBOX=1
-# sudo ./emulator -avd "avd_30"
-# adb devices
+# /android/launch.sh
 # adb install -t /etc/nocloud/context/app-debug.apk
-
-

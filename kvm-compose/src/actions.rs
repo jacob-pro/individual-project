@@ -1,14 +1,13 @@
 use crate::config::convert::ConfigConverter;
+use crate::config::ConfigMachine;
 use crate::network::ip::{Dhclient, Ip};
 use crate::network::ovs::OvsVsctl;
-use crate::Common;
+use crate::{Common, MachineCmd, MachineSubCommand};
 use anyhow::Context;
 use std::path::PathBuf;
 use virt::domain::Domain;
 
 pub fn up(common: Common) -> anyhow::Result<()> {
-    let converter = ConfigConverter::new(&common, &common.config);
-
     for bridge in &common.config.bridges {
         let bridge_name = common.prepend_project(&bridge.name);
         if !OvsVsctl::br_exists(&bridge_name)? {
@@ -47,63 +46,46 @@ pub fn up(common: Common) -> anyhow::Result<()> {
     }
 
     for machine in &common.config.machines {
-        match domain_lookup_by_name(&common, &machine.get_virt_name(&common))? {
-            None => {
-                log::info!("Creating machine {}", machine.name);
-                let xml = converter.convert_machine(&machine)?.to_xml();
-                log::trace!("{}", xml);
-                let d = Domain::define_xml(&common.hypervisor, xml.as_str())
-                    .with_context(|| format!("Failed to define_xml for {}", machine.name))?;
-
-                match d.create() {
-                    Ok(_) => {}
-                    Err(e) => {
-                        d.undefine().ok();
-                        return Err(e)
-                            .with_context(|| format!("Failed to start vm {}", machine.name));
-                    }
-                }
-            }
-            Some(d) => {
-                if !d.is_active()? {
-                    log::info!("{} already exists, starting", machine.name);
-                    d.create()
-                        .with_context(|| format!("Failed to start vm {}", machine.name))?;
-                } else {
-                    log::info!("{} already exists, already running", machine.name);
-                }
-            }
-        }
+        up_machine(&common, &machine)?;
     }
 
     Ok(())
 }
 
-pub fn down(common: Common) -> anyhow::Result<()> {
-    for machine in &common.config.machines {
-        match domain_lookup_by_name(&common, &machine.get_virt_name(&common))? {
-            None => {}
-            Some(d) => {
-                if d.is_active()? {
-                    log::info!("Stopping machine {}", machine.name);
-                    d.destroy()?;
+fn up_machine(common: &Common, machine: &ConfigMachine) -> anyhow::Result<()> {
+    let converter = ConfigConverter::new(&common, &common.config);
+    match domain_lookup_by_name(&common, &machine.get_virt_name(&common))? {
+        None => {
+            log::info!("Creating machine {}", machine.name);
+            let xml = converter.convert_machine(&machine)?.to_xml();
+            log::trace!("{}", xml);
+            let d = Domain::define_xml(&common.hypervisor, xml.as_str())
+                .with_context(|| format!("Failed to define_xml for {}", machine.name))?;
+
+            match d.create() {
+                Ok(_) => {}
+                Err(e) => {
+                    d.undefine().ok();
+                    return Err(e).with_context(|| format!("Failed to start vm {}", machine.name));
                 }
-                log::info!("Removing machine {}", machine.name);
-                d.undefine()?;
             }
         }
-
-        let cloud_init = PathBuf::from(format!("{}-cloud-init.iso", machine.name));
-        if cloud_init.exists() && cloud_init.is_file() {
-            log::info!("Removing machine {} cloud-init.iso", machine.name);
-            std::fs::remove_file(cloud_init)?;
+        Some(d) => {
+            if !d.is_active()? {
+                log::info!("{} already exists, starting", machine.name);
+                d.create()
+                    .with_context(|| format!("Failed to start vm {}", machine.name))?;
+            } else {
+                log::info!("{} already exists, already running", machine.name);
+            }
         }
+    }
+    Ok(())
+}
 
-        let cloud_disk = PathBuf::from(format!("{}-cloud-disk.img", machine.name));
-        if cloud_disk.exists() && cloud_disk.is_file() {
-            log::info!("Removing machine {} cloud-disk.img", machine.name);
-            std::fs::remove_file(cloud_disk)?;
-        }
+pub fn down(common: Common) -> anyhow::Result<()> {
+    for machine in &common.config.machines {
+        down_machine(&common, &machine)?;
     }
 
     for bridge in &common.config.bridges {
@@ -118,6 +100,47 @@ pub fn down(common: Common) -> anyhow::Result<()> {
         }
     }
 
+    Ok(())
+}
+
+fn down_machine(common: &Common, machine: &ConfigMachine) -> anyhow::Result<()> {
+    match domain_lookup_by_name(&common, &machine.get_virt_name(&common))? {
+        None => {}
+        Some(d) => {
+            if d.is_active()? {
+                log::info!("Stopping machine {}", machine.name);
+                d.destroy()?;
+            }
+            log::info!("Removing machine {}", machine.name);
+            d.undefine()?;
+        }
+    }
+
+    let cloud_init = PathBuf::from(format!("{}-cloud-init.iso", machine.name));
+    if cloud_init.exists() && cloud_init.is_file() {
+        log::info!("Removing machine {} cloud-init.iso", machine.name);
+        std::fs::remove_file(cloud_init)?;
+    }
+
+    let cloud_disk = PathBuf::from(format!("{}-cloud-disk.img", machine.name));
+    if cloud_disk.exists() && cloud_disk.is_file() {
+        log::info!("Removing machine {} cloud-disk.img", machine.name);
+        std::fs::remove_file(cloud_disk)?;
+    }
+    Ok(())
+}
+
+pub fn machine(common: Common, cmd: MachineCmd) -> anyhow::Result<()> {
+    let matched_machine = common
+        .config
+        .machines
+        .iter()
+        .find(|m| m.name == cmd.machine)
+        .with_context(|| "Couldn't find machine")?;
+    match cmd.sub_command {
+        MachineSubCommand::Up => up_machine(&common, &matched_machine)?,
+        MachineSubCommand::Down => down_machine(&common, &matched_machine)?,
+    }
     Ok(())
 }
 

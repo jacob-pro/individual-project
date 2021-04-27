@@ -36,12 +36,31 @@ struct Opts {
 
 #[derive(Clap)]
 enum SubCommand {
-    #[clap(about = "Create virtual devices in the current configuration")]
+    #[clap(about = "Create all virtual devices in the current configuration")]
     Up,
-    #[clap(about = "Destroy virtual devices in the current configuration")]
+    #[clap(about = "Destroy all virtual devices in the current configuration")]
     Down,
     #[clap(about = "List supported cloud images")]
     CloudImages,
+    #[clap(about = "Configure individual machine")]
+    Machine(MachineCmd),
+}
+
+/// A subcommand for controlling testing
+#[derive(Clap)]
+pub struct MachineCmd {
+    #[clap(long)]
+    machine: String,
+    #[clap(subcommand)]
+    sub_command: MachineSubCommand,
+}
+
+#[derive(Clap)]
+pub enum MachineSubCommand {
+    #[clap(about = "Create this machine")]
+    Up,
+    #[clap(about = "Destroy this machine")]
+    Down,
 }
 
 pub struct Common {
@@ -141,6 +160,7 @@ fn run_app() -> Result<(), anyhow::Error> {
     match opts.sub_command {
         SubCommand::Up => actions::up(common)?,
         SubCommand::Down => actions::down(common)?,
+        SubCommand::Machine(machine) => actions::machine(common, machine)?,
         _ => {}
     }
     Ok(())
