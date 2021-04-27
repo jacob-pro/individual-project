@@ -16,7 +16,6 @@ echo y | ./sdkmanager "platforms;android-30" "system-images;android-30;google_ap
 echo no | ./avdmanager create avd -n "avd_30" -k "system-images;android-30;google_apis;x86"
 
 launch="
-sudo su
 cd /android/emulator
 export QTWEBENGINE_DISABLE_SANDBOX=1
 sudo ./emulator -avd "avd_30"
@@ -29,5 +28,6 @@ reboot
 
 # Usage:
 # startx
+# sudo su
 # /android/launch.sh
 # adb install -t /etc/nocloud/context/app-debug.apk
