@@ -22,6 +22,7 @@ echo "DONE! - Rebooting"
 reboot
 
 # Usage - https://docs.anbox.io/userguide/install_apps.html
-# sudo /anbox-bridge.sh
+# adb devices
+# sudo /anbox-bridge.sh start
 # anbox.appmgr
 # adb install /etc/nocloud/context/app-debug.apk
