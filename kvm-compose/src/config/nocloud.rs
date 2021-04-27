@@ -116,7 +116,7 @@ fn genisoimage(output: &Path, inputs: Vec<PathBuf>) -> anyhow::Result<()> {
     Ok(())
 }
 
-pub fn tar_cf(output: &Path, input: &Path) -> anyhow::Result<()> {
+fn tar_cf(output: &Path, input: &Path) -> anyhow::Result<()> {
     let mut command = Command::new("tar");
     command.arg("cf").arg(output.to_str().unwrap());
     if input.is_dir() {

@@ -18,3 +18,8 @@ Runtime:
 ```
 sudo apt install qemu-kvm libvirt-daemon-system libvirt-clients openvswitch-switch
 ```
+
+To support nested virtualization (for Android emulator)
+
+https://docs.fedoraproject.org/en-US/quick-docs/using-nested-virtualization-in-kvm/#proc_enabling-nested-virtualization-in-kvm
+

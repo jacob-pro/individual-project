@@ -35,6 +35,7 @@ impl<W: std::io::Write> WriteXML<W> for DomainXml {
         let cpus = self.cpus.to_string();
         let mem = self.memory.to_string();
         write_text_element(w, "name", vec![], self.name.as_str());
+        write_text_element(w, "cpu", vec![("mode", "host-model")], "");
         write_text_element(w, "vcpu", vec![], cpus.as_str());
         write_text_element(w, "memory", vec![("unit", "MiB")], mem.as_str());
         write_wrapped_element(w, "os", vec![], |w| {
