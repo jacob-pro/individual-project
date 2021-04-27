@@ -37,3 +37,18 @@ systemctl daemon-reload
 systemctl enable dp3t.service
 systemctl start dp3t.service
 
+# Anbox requires a static IP
+netplan="
+network:
+  version: 2
+  renderer: networkd
+  ethernets:
+    eth0:
+      addresses:
+        - 10.3.10.99/24
+      gateway4: 10.3.10.254
+      nameservers:
+          addresses: [10.3.10.254]
+"
+echo "$netplan" > /etc/netplan/99_config.yaml
+netplan apply
