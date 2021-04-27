@@ -19,7 +19,7 @@ Subsystem: com.intellij.openapi.diff.impl.patch.CharsetEP
 -
  public class MainApplication extends Application {
  
-+	private static final String URL = "http://dp3t-backend.lan:8080/";
++	private static final String URL = "http://10.3.10.99:8080/";
 +
  	@Override
  	public void onCreate() {
