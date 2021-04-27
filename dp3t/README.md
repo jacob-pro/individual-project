@@ -16,3 +16,9 @@ Android SDK / Emulator:
  - Requires KVM nested virtualization (must be enabled on host) - slower performance
  - Apps use the same name resolution as the VM
  - More features: sensor simulation, GPS etc.
+
+To capture traffic:
+
+```
+sudo ovs-tcpdump --span -i dp3t-br0 -w output.pcap
+```
