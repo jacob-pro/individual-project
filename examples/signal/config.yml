@@ -1,0 +1,179 @@
+# https://github.com/madeindra/signal-setup-guide/blob/master/signal-server-5.xx/config.yml
+
+abuseDatabase:
+  driverClass: org.postgresql.Driver
+  user:        postgres
+  password:    postgres
+  url:         jdbc:postgresql://127.0.0.1:5432/signal
+
+accountDatabaseCrawler:
+  chunkSize: 1000
+  chunkIntervalMs : 8000
+
+accountsDatabase:
+  driverClass: org.postgresql.Driver
+  user:        postgres
+  password:    postgres
+  url:         jdbc:postgresql://127.0.0.1:5432/signal
+
+apn:
+  sandbox: true
+  bundleId: test
+  keyId: test
+  teamId: test
+  signingKey: test
+
+appConfig:
+  application: test
+  environment: test
+  configuration: test
+
+awsAttachments:
+  accessKey: test
+  accessSecret: test
+  bucket: test
+  region: us-east-1
+
+backupService:
+  userAuthenticationTokenSharedSecret: test
+
+cacheCluster:
+  urls:
+    - redis://127.0.0.1:6379/
+
+cdn:
+  accessKey: test
+  accessSecret: test
+  bucket: signal
+  region: us-east-1
+
+clientPresenceCluster:
+  urls:
+    - redis://127.0.0.1:6379/
+
+directory:
+  client:
+    userAuthenticationTokenSharedSecret: 6b9cf1432f4dc50f991bdab29ff44377 # head -c 16 /dev/urandom | hexdump -ve '1/1 "%.2x"'
+    userAuthenticationTokenUserIdSecret: 003d0b0115e293abd3186cc28eebbc61 # head -c 16 /dev/urandom | hexdump -ve '1/1 "%.2x"'
+  sqs:
+    accessKey: test
+    accessSecret: test
+    queueUrls:
+      - https://sqs.region.amazonaws.com/id/name.fifo
+  server:
+    -
+      replicationName: test
+      replicationUrl: http://127.0.0.1:9090
+      replicationPassword: password
+      replicationCaCertificate: |
+        -----BEGIN CERTIFICATE-----
+        .....
+        -----END CERTIFICATE-----
+
+gcm:
+  senderId: 12345
+  apiKey: test
+
+gcpAttachments:
+  domain: dummy.com
+  email: dummy@dummy.com
+  maxSizeInBytes: 1000000
+  pathPrefix: /
+  rsaSigningKey: "-----BEGIN RSA PRIVATE KEY-----\n ..... \n-----END RSA PRIVATE KEY-----\n"
+
+keysDynamoDb:
+  region: us-east-1
+  tableName: test
+
+messageCache:
+  cluster:
+    urls:
+      - redis://127.0.0.1:6379/
+
+messageDynamoDb:
+  region: us-east-1
+  tableName: test
+
+metricsCluster:
+  urls:
+    - redis://127.0.0.1:6379/
+
+micrometer:
+  uri: proxy://localhost:2878
+
+paymentsService:
+  userAuthenticationTokenSharedSecret: test
+  fixerApiKey: test
+  paymentCurrencies:
+    - USD
+
+pubsub:
+  url: redis://127.0.0.1:6379/cache
+  replicaUrls:
+    - redis://127.0.0.1:6379/cacheReplica
+
+push:
+  queueSize: 200
+
+pushSchedulerCluster:
+  urls:
+    - redis://127.0.0.1:6379/
+
+recaptcha:
+  secret: test
+
+remoteConfig:
+  authorizedTokens:
+    - dummy
+  globalConfig:
+    dummy: dummy
+
+server:
+  applicationConnectors:
+    - type: http
+      port: 8080
+  adminConnectors:
+    - type: http
+      port: 8081
+
+storageService:
+  userAuthenticationTokenSharedSecret: test
+  uri: redis://127.0.0.1:6379/
+
+turn:
+  secret: secret# TURN server secret
+  uris:
+    - stun:example.com:3478
+    - stun:example.com:5349
+    - turn:example.com:3478?transport=udp
+    - turn:example.com:5349?transport=udp
+
+twilio:
+  accountId: test
+  accountToken: test
+  nanpaMessagingServiceSid: test
+  messagingServiceSid: test
+  localDomain: example.com
+  iosVerificationText: "verification code is - %s"
+  androidNgVerificationText: "verification code is - %s"
+  android202001VerificationText: "verification code is - %s"
+  genericVerificationText: "verification code is - %s"
+  numbers:
+    - test
+  senderId:
+    defaultSenderId: test
+
+unidentifiedDelivery:
+  certificate: BVC9jOozLZpK43nsekdIdSgAJgPYpKJHJTBIdLJbGuB3 # java -jar TextSecureServer.jar certificate -ca
+  privateKey: yPapEts7DC4n1JcQlT/pBZrYh+/uDWzrsxlxr6tQ3Fs= # java -jar TextSecureServer.jar certificate --key priv_key_from_step_above --id key_ID
+  expiresDays: 365
+
+voiceVerification:
+  url: https://example.com
+  locales:
+    - en
+
+zkConfig:
+  serverSecret: test # java -jar TextSecure.jar zkparams
+  serverPublic: test # java -jar TextSecure.jar zkparams
+  enabled: true
