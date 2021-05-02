@@ -36,5 +36,7 @@ bridges:
   - name: br0
     connect_external_interfaces: [eth0]
     enable_dhcp_client: true
+    controller: tcp:127.0.0.1:6653
+    protocol: OpenFlow13
 
-ssh_public_key: ...
+ssh_public_key: ___

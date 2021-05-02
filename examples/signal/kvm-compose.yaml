@@ -1,12 +1,12 @@
 machines:
 
-  - name: backend
+  - name: service
     disk:
       cloud_image:
         name: ubuntu_18_04
     interfaces:
       - bridge: br0
-    run_script: ./backend.sh
+    run_script: ./service.sh
 
 bridges:
   - name: br0
@@ -15,4 +15,4 @@ bridges:
     controller: tcp:127.0.0.1:6653
     protocol: OpenFlow13
 
-ssh_public_key: ...
+ssh_public_key: ___
