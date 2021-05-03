@@ -1442,7 +1442,7 @@ checksum = "5fecdca9a5291cc2b8dcf7dc02453fee791a280f3743cb0905f8822ae463b3fe"
 [[package]]
 name = "virt"
 version = "0.2.11"
-source = "git+https://github.com/jacob-pro/libvirt-rust?rev=bcb1d9a#bcb1d9a39d2d4cde2a458f33d5950ceb87ca2edb"
+source = "git+https://gitlab.com/jacob-pro/libvirt-rust?rev=31971430#31971430cd942fd9f22821bc540056d5ae26d5bf"
 dependencies = [
  "libc",
 ]
