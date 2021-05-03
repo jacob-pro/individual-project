@@ -73,121 +73,33 @@
 
 \chapter*{Executive Summary}
 
-{\bf A compulsory section, of at most $1$ page} 
-\vspace{1cm} 
+The goal of my project is to produce a simple and lightweight testbed platform 
+for evaluating privacy enhancing technologies. It should provide support for 
+testing varied architectures and network topologies, such as client-server and 
+peer-to-peer applications. It should also support simulating applications 
+for different types of platforms including mobile phone apps.
 
-\noindent
-This section should pr\'{e}cis the project context, aims and objectives,
-and main contributions (e.g., deliverables) and achievements; the same 
-section may be called an abstract elsewhere.  The goal is to ensure the 
-reader is clear about what the topic is, what you have done within this 
-topic, {\em and} what your view of the outcome is.
+\vspace{1cm}
 
-The former aspects should be guided by your specification: essentially 
-this section is a (very) short version of what is typically the first 
-chapter.  Note that for research-type projects, this {\bf must} include 
-a clear research hypothesis.  This will obviously differ significantly
-for each project, but an example might be as follows:
+Summary of work:
 
-\begin{quote}
-My research hypothesis is that a suitable genetic algorithm will yield
-more accurate results (when applied to the standard ACME data set) than 
-the algorithm proposed by Jones and Smith, while also executing in less
-time.
-\end{quote}
-
-\noindent
-The latter aspects should (ideally) be presented as a concise, factual 
-bullet point list.  Again the points will differ for each project, but 
-an might be as follows:
-
-\begin{quote}
-\noindent
 \begin{itemize}
-\item I spent $120$ hours collecting material on and learning about the 
-      Java garbage-collection sub-system. 
-\item I wrote a total of $5000$ lines of source code, comprising a Linux 
-      device driver for a robot (in C) and a GUI (in Java) that is 
-      used to control it.
-\item I designed a new algorithm for computing the non-linear mapping 
-      from A-space to B-space using a genetic algorithm, see page $17$.
-\item I implemented a version of the algorithm proposed by Jones and 
-      Smith in [6], see page $12$, corrected a mistake in it, and 
-      compared the results with several alternatives.
+\item I have developed a flexible command line tool for Linux using the Rust 
+      language and \emph{libvirt} library for building and destroying virtual
+      testing environments.
+\item I have made some contributions to the \emph{libvirt-rust} language
+      bindings open source library.
+\item I have implemented some example projects using the testbed tool..
 \end{itemize}
-\end{quote}
-
-% -----------------------------------------------------------------------------
-
-\chapter*{Summary of Changes}
-
-{\bf A conditional section, of at most $1$ page} 
-\vspace{1cm} 
-
-Iff. the dissertation represents a resubmission (e.g., as the result of
-a resit), this section is compulsory: the content should summarise all
-non-trivial changes made to the initial submission.  Otherwise you can
-omit it, since a summary of this type is clearly nonsensical.
-
-When included, the section will ideally be used to highlight additional
-work completed, and address criticism raised in any associated feedback.
-Clearly it is difficult to give generic advice about how to do so, but
-an example might be as follows:
-
-\begin{quote}
-\noindent
-\begin{itemize}
-\item Feedback from the initial submission criticised the design and 
-      implementation of my genetic algorithm, stating ``there seems 
-      to have been no attention to computational complexity during the
-      design, and obvious methods of optimisation are missing within
-      the resulting implementation''.  Chapter $3$ now includes a
-      comprehensive analysis of the algorithm, in terms of both time
-      and space.  While I have not altered the algorithm itself, I
-      have included a cache mechanism (also detailed in Chapter $3$)
-      that provides a significant improvement in average run-time.
-\item I added a feature in my implementation to allow automatic rather
-      than manual selection of various parameters; the experimental
-      results in Chapter $4$ have been updated to reflect this.
-\item Questions after the presentation highlighted a range of related
-      work that I had not considered: I have make a number of updates 
-      to Chapter $2$, resolving this issue.
-\end{itemize}
-\end{quote}
 
 % -----------------------------------------------------------------------------
 
 \chapter*{Supporting Technologies}
 
-{\bf A compulsory section, of at most $1$ page}
-\vspace{1cm} 
-
-\noindent
-This section should present a detailed summary, in bullet point form, 
-of any third-party resources (e.g., hardware and software components) 
-used during the project.  Use of such resources is always perfectly 
-acceptable: the goal of this section is simply to be clear about how
-and where they are used, so that a clear assessment of your work can
-result.  The content can focus on the project topic itself (rather,
-for example, than including ``I used \mbox{\LaTeX} to prepare my 
-dissertation''); an example is as follows:
-
-\begin{quote}
-\noindent
 \begin{itemize}
-\item I used the Java {\tt BigInteger} class to support my implementation 
-      of RSA.
-\item I used a parts of the OpenCV computer vision library to capture 
-      images from a camera, and for various standard operations (e.g., 
-      threshold, edge detection).
-\item I used an FPGA device supplied by the Department, and altered it 
-      to support an open-source UART core obtained from 
-      \url{http://opencores.org/}.
-\item The web-interface component of my system was implemented by 
-      extending the open-source WordPress software available from
-      \url{http://wordpress.org/}.
+\item I used the \emph{libvirt} library \cite{libvirt} for interacting with \emph{Linux KVM}.
 \end{itemize}
-\end{quote}
+
 
 % -----------------------------------------------------------------------------
 
