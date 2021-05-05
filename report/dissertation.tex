@@ -1,95 +1,43 @@
-% The document class supplies options to control rendering of some standard
-% features in the result.  The goal is for uniform style, so some attention 
-% to detail is *vital* with all fields.  Each field (i.e., text inside the
-% curly braces below, so the MEng text inside {MEng} for instance) should 
-% take into account the following:
-%
-% - author name       should be formatted as "FirstName LastName"
-%   (not "Initial LastName" for example),
-% - supervisor name   should be formatted as "Title FirstName LastName"
-%   (where Title is "Dr." or "Prof." for example),
-% - degree programme  should be "BSc", "MEng", "MSci", "MSc" or "PhD",
-% - dissertation title should be correctly capitalised (plus you can have
-%   an optional sub-title if appropriate, or leave this field blank),
-% - dissertation type should be formatted as one of the following:
-%   * for the MEng degree programme either "enterprise" or "research" to
-%     reflect the stream,
-%   * for the MSc  degree programme "$X/Y/Z$" for a project deemed to be
-%     X%, Y% and Z% of type I, II and III.
-% - year              should be formatted as a 4-digit year of submission
-%   (so 2014 rather than the academic year, say 2013/14 say).
-
-\documentclass[ % the name of the author
-                    author={Jacob Daniel Halsey},
-                % the name of the supervisor
-                supervisor={Professor Awais Rashid},
-                % the degree programme
-                    degree={BSc},
-                % the dissertation    title (which cannot be blank)
-                     title={Building a Testbed for Evaluating Privacy Enhancing Technologies  (PETs)},
-                % the dissertation subtitle (which can    be blank)
-                  subtitle={},
-                % the dissertation     type
-                      type={software development},
-                % the year of submission
-                      year={2021} ]{dissertation}
+\documentclass[
+    author={Jacob Daniel Halsey},
+    supervisor={Prof. Awais Rashid},
+    degree={BSc},
+    title={Building a Testbed for Evaluating Privacy Enhancing Technologies  (PETs)},
+    subtitle={},
+    type={software development},
+    year={2021}
+]{dissertation}
 
 \begin{document}
 
-% =============================================================================
-
-% This macro creates the standard UoB title page by using information drawn
-% from the document class (meaning it is vital you select the correct degree 
-% title and so on).
-
 \maketitle
-
-% After the title page (which is a special case in that it is not numbered)
-% comes the front matter or preliminaries; this macro signals the start of
-% such content, meaning the pages are numbered with Roman numerals.
 
 \frontmatter
 
-% This macro creates the standard UoB declaration; on the printed hard-copy,
-% this must be physically signed by the author in the space indicated.
-
 \makedecl
 
-% LaTeX automatically generates a table of contents, plus associated lists 
-% of figures, tables and algorithms.  The former is a compulsory part of the
-% dissertation, but if you do not require the latter they can be suppressed
-% by simply commenting out the associated macro.
-
 \tableofcontents
-% \listoffigures
-% \listoftables
-% \listofalgorithms
-% \lstlistoflistings
-
-% The following sections are part of the front matter, but are not generated
-% automatically by LaTeX; the use of \chapter* means they are not numbered.
 
 % -----------------------------------------------------------------------------
 
 \chapter*{Executive Summary}
 
-The goal of my project is to produce a simple and lightweight testbed platform 
-for evaluating privacy enhancing technologies. It should provide support for 
-testing varied architectures and network topologies, such as client-server and 
-peer-to-peer applications. It should also support simulating applications 
-for different types of platforms including mobile phone apps.
+The goal of this project is to produce a simple and lightweight testbed platform for evaluating privacy enhancing
+technologies.
+It should provide support for testing varied architectures and network topologies, such as client-server and
+peer-to-peer applications.
+It should also support simulating applications for different types of platforms including mobile phone apps.
 
 \vspace{1cm}
 
-Summary of work:
+Summary of my work:
 
 \begin{itemize}
-\item I have developed a flexible command line tool for Linux using the Rust 
-      language and \emph{libvirt} library for building and destroying virtual
-      testing environments.
-\item I have made some contributions to the \emph{libvirt-rust} language
+\item I have developed a flexible command line tool called \emph{kvm-compose} for Linux using the Rust
+      language and \emph{libvirt} library for building and destroying virtual testing environments.
+\item In the process I have made some contributions to the \emph{libvirt-rust} language
       bindings open source library.
-\item I have implemented some example projects using the testbed tool..
+\item I have then implemented some example projects using the testbed tool.
 \end{itemize}
 
 % -----------------------------------------------------------------------------
@@ -97,70 +45,38 @@ Summary of work:
 \chapter*{Supporting Technologies}
 
 \begin{itemize}
-\item I used the \emph{libvirt} library \cite{libvirt} for interacting with \emph{Linux KVM}.
+    \item \emph{Linux KVM} (Kernel-based Virtual Machine) - \url{https://www.linux-kvm.org/}
+    \item \emph{Open vSwitch} Virtual multilayer switch - \url{https://www.openvswitch.org/}
+    \item \emph{libvirt} Virtualization API - \url{https://libvirt.org/}
+    \item \emph{Rust} Language, Compiler, Toolchain, etc. - \url{https://www.rust-lang.org/}
+    \item \emph{libvirt-rust} Rust bindings to the libvirt - \url{https://gitlab.com/libvirt/libvirt-rust}
+    \item \emph{clap} Rust command Line Argument Parser - \url{https://github.com/clap-rs/clap}
+    \item \emph{serde} Rust Serialization framework - \url{https://github.com/serde-rs/serde}
+    \item \emph{serde-yaml} YAML backend for serde - \url{https://github.com/dtolnay/serde-yaml}
+    \item \emph{serde-plain} Plain text backend for serde - \url{https://github.com/mitsuhiko/serde-plain}
+    \item \emph{thiserror} Rust error derive macro - \url{https://github.com/dtolnay/thiserror}
+    \item \emph{anyhow} Rust error handling framework - \url{https://github.com/dtolnay/anyhow}
+    \item \emph{simple\_logger} Rust logging implementation - \url{https://github.com/borntyping/rust-simple_logger}
+    \item \emph{xml-rs} XML library for Rust - \url{https://github.com/netvl/xml-rs}
+    \item \emph{validator} Rust struct validation - \url{https://github.com/Keats/validator}
+    \item \emph{directories} User data directories library - \url{https://github.com/dirs-dev/directories-rs}
+    \item \emph{reqwest} Rust HTTP Client - \url{https://github.com/seanmonstar/reqwest}
+    \item \emph{indicatif} Rust command line progress indicator - \url{https://github.com/mitsuhiko/indicatif}
+    \item \emph{tempfile} Rust temporary file library - \url{https://github.com/Stebalien/tempfile}
+    \item \emph{casual} Rust user input parser - \url{https://github.com/rossmacarthur/casual}
+    \item \emph{derive-new} Rust new constructor macro - \url{https://github.com/nrc/derive-new}
+    \item \emph{enum-iterator} Rust macro for iterating enums - \url{https://github.com/stephaneyfx/enum-iterator}
+    \item \emph{rust-embed} Embed files in Rust binaries - \url{https://github.com/pyros2097/rust-embed}
 \end{itemize}
-
-
-% -----------------------------------------------------------------------------
-
-\chapter*{Notation and Acronyms}
-
-{\bf An optional section, of roughly $1$ or $2$ pages}
-\vspace{1cm} 
-
-\noindent
-Any well written document will introduce notation and acronyms before
-their use, {\em even if} they are standard in some way: this ensures 
-any reader can understand the resulting self-contained content.  
-
-Said introduction can exist within the dissertation itself, wherever 
-that is appropriate.  For an acronym, this is typically achieved at 
-the first point of use via ``Advanced Encryption Standard (AES)'' or 
-similar, noting the capitalisation of relevant letters.  However, it 
-can be useful to include an additional, dedicated list at the start 
-of the dissertation; the advantage of doing so is that you cannot 
-mistakenly use an acronym before defining it.  A limited example is 
-as follows:
-
-\begin{quote}
-\noindent
-\begin{tabular}{lcl}
-AES                 &:     & Advanced Encryption Standard                                         \\
-DES                 &:     & Data Encryption Standard                                             \\
-                    &\vdots&                                                                      \\
-${\mathcal H}( x )$ &:     & the Hamming weight of $x$                                            \\
-${\mathbb  F}_q$    &:     & a finite field with $q$ elements                                     \\
-$x_i$               &:     & the $i$-th bit of some binary sequence $x$, st. $x_i \in \{ 0, 1 \}$ \\
-\end{tabular}
-\end{quote}
 
 % -----------------------------------------------------------------------------
 
 \chapter*{Acknowledgements}
 
-{\bf An optional section, of at most $1$ page}
-\vspace{1cm} 
-
-\noindent
-It is common practice (although totally optional) to acknowledge any
-third-party advice, contribution or influence you have found useful
-during your work.  Examples include support from friends or family, 
-the input of your Supervisor and/or Advisor, external organisations 
-or persons who  have supplied resources of some kind (e.g., funding, 
-advice or time), and so on.
+I would like to thank my supervisor Professor Awais Rashid and co-supervisor Joe Gardiner for their
+project proposal and support and guidance in completing it.
 
 % =============================================================================
-
-% After the front matter comes a number of chapters; under each chapter,
-% sections, subsections and even subsubsections are permissible.  The
-% pages in this part are numbered with Arabic numerals.  Note that:
-%
-% - A reference point can be marked using \label{XXX}, and then later
-%   referred to via \ref{XXX}; for example Chapter\ref{chap:context}.
-% - The chapters are presented here in one file; this can become hard
-%   to manage.  An alternative is to save the content in seprate files
-%   the use \input{XXX} to import it, which acts like the #include
-%   directive in C.
 
 \mainmatter
 
