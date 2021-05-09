@@ -8,17 +8,15 @@
     year={2021}
 ]{dissertation}
 
+\usepackage[backend=biber,bibstyle=ieee,citestyle=numeric]{biblatex}
+\bibliography{dissertation}
+
 \begin{document}
 
 \maketitle
-
 \frontmatter
-
 \makedecl
-
 \tableofcontents
-
-% -----------------------------------------------------------------------------
 
 \chapter*{Executive Summary}
 
@@ -39,8 +37,6 @@ Summary of my work:
       bindings open source library.
 \item I have then implemented some example projects using the testbed tool.
 \end{itemize}
-
-% -----------------------------------------------------------------------------
 
 \chapter*{Supporting Technologies}
 
@@ -66,28 +62,28 @@ Summary of my work:
     \item \emph{casual} Rust user input parser - \url{https://github.com/rossmacarthur/casual}
     \item \emph{derive-new} Rust new constructor macro - \url{https://github.com/nrc/derive-new}
     \item \emph{enum-iterator} Rust macro for iterating enums - \url{https://github.com/stephaneyfx/enum-iterator}
-    \item \emph{rust-embed} Embed files in Rust binaries - \url{https://github.com/pyros2097/rust-embed}
+    \item \emph{rust-embed} Embeds files into Rust binaries - \url{https://github.com/pyros2097/rust-embed}
 \end{itemize}
-
-% -----------------------------------------------------------------------------
 
 \chapter*{Acknowledgements}
 
 I would like to thank my supervisor Professor Awais Rashid and co-supervisor Joe Gardiner for their
 project proposal and support and guidance in completing it.
 
-% =============================================================================
-
 \mainmatter
-
-% -----------------------------------------------------------------------------
 
 \chapter{Contextual Background}
 \label{chap:context}
 
-{\bf A compulsory chapter,     of roughly $5$ pages}
-\vspace{1cm} 
+The UK Research and Innovation (UKRI) is a non-departmental public body of the United Kingdom Government
+sponsored by the Department for Business, Energy and Industrial Strategy~\cite{ukri_who_we_are}.
+In October 2020 the UKRI announced the creation of the National Research Centre on Privacy, Harm Reduction
+and Adversarial Influence Online (REPHRAIN)~\cite{ukri_new_centre}.
+The centre is made up of researchers in computer science, international relations, law, psychology, management,
+design, digital humanities, public policy, political Science, criminology, and sociology from five British
+universities including the University of Bristol.
 
+\vspace{1cm}
 \noindent
 This chapter should describe the project context, and motivate each of
 the proposed aims and objectives.  Ideally, it is written at a fairly 
@@ -128,8 +124,6 @@ More specifically, the concrete aims are:
 \end{enumerate}
 \end{quote}
 
-% -----------------------------------------------------------------------------
-
 \chapter{Technical Background}
 \label{chap:technical}
 
@@ -153,8 +147,6 @@ understand what {\em you} have done (by reading subsequent sections), then
 accurately assess your work.  You might view an additional goal as giving 
 the reader confidence that you are able to absorb, understand and clearly 
 communicate highly technical material.
-
-% -----------------------------------------------------------------------------
 
 \chapter{Project Execution}
 \label{chap:execution}
@@ -256,8 +248,6 @@ the following content is auto-generated dummy text.
 This is an example paragraph; note the trailing full-stop in the title,
 which is intended to ensure it does not run into the text.
 
-% -----------------------------------------------------------------------------
-
 \chapter{Critical Evaluation}
 \label{chap:evaluation}
 
@@ -289,8 +279,6 @@ contradicts [1], which may be because I use a different assumption'').  As
 such, both positive {\em and} negative outcomes are valid {\em if} presented 
 in a suitable manner.
 
-% -----------------------------------------------------------------------------
-
 \chapter{Conclusion}
 \label{chap:conclusion}
 
@@ -321,52 +309,7 @@ enough attention.  Ideally, the chapter will consist of three parts:
       resolve this, I could clearly apply the technique of Smith [7]'').
 \end{enumerate}
 
-% =============================================================================
-
-% Finally, after the main matter, the back matter is specified.  This is
-% typically populated with just the bibliography.  LaTeX deals with these
-% in one of two ways, namely
-%
-% - inline, which roughly means the author specifies entries using the 
-%   \bibitem macro and typesets them manually, or
-% - using BiBTeX, which means entries are contained in a separate file
-%   (which is essentially a databased) then inported; this is the 
-%   approach used below, with the databased being dissertation.bib.
-%
-% Either way, the each entry has a key (or identifier) which can be used
-% in the main matter to cite it, e.g., \cite{X}, \cite[Chapter 2}{Y}.
-
 \backmatter
-
-\bibliography{dissertation}
-
-% -----------------------------------------------------------------------------
-
-% The dissertation concludes with a set of (optional) appendicies; these are 
-% the same as chapters in a sense, but once signaled as being appendicies via
-% the associated macro, LaTeX manages them appropriatly.
-
-\appendix
-
-\chapter{An Example Appendix}
-\label{appx:example}
-
-Content which is not central to, but may enhance the dissertation can be 
-included in one or more appendices; examples include, but are not limited
-to
-
-\begin{itemize}
-\item lengthy mathematical proofs, numerical or graphical results which 
-      are summarised in the main body,
-\item sample or example calculations, 
-      and
-\item results of user studies or questionnaires.
-\end{itemize}
-
-\noindent
-Note that in line with most research conferences, the marking panel is not
-obliged to read such appendices.
-
-% =============================================================================
+\printbibliography
 
 \end{document}

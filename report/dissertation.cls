@@ -95,7 +95,7 @@
 
 % configure style of bibliography
 
-\bibliographystyle{plain}
+% \bibliographystyle{plain}
 
 % configure style of pages
 
