@@ -11,6 +11,9 @@
 \usepackage[backend=biber,bibstyle=ieee,citestyle=numeric]{biblatex}
 \bibliography{dissertation}
 
+\usepackage{setspace} 
+\setstretch{1.25}
+
 \begin{document}
 
 \maketitle
@@ -28,7 +31,7 @@ It should also support simulating applications for different types of platforms 
 
 \vspace{1cm}
 
-Summary of my work:
+Summary of work:
 
 \begin{itemize}
 \item I have developed a flexible command line tool called \emph{kvm-compose} for Linux using the Rust
@@ -40,30 +43,32 @@ Summary of my work:
 
 \chapter*{Supporting Technologies}
 
-\begin{itemize}
-    \item \emph{Linux KVM} (Kernel-based Virtual Machine) - \url{https://www.linux-kvm.org/}
-    \item \emph{Open vSwitch} Virtual multilayer switch - \url{https://www.openvswitch.org/}
-    \item \emph{libvirt} Virtualization API - \url{https://libvirt.org/}
-    \item \emph{Rust} Language, Compiler, Toolchain, etc. - \url{https://www.rust-lang.org/}
-    \item \emph{libvirt-rust} Rust bindings to the libvirt - \url{https://gitlab.com/libvirt/libvirt-rust}
-    \item \emph{clap} Rust command Line Argument Parser - \url{https://github.com/clap-rs/clap}
-    \item \emph{serde} Rust Serialization framework - \url{https://github.com/serde-rs/serde}
-    \item \emph{serde-yaml} YAML backend for serde - \url{https://github.com/dtolnay/serde-yaml}
-    \item \emph{serde-plain} Plain text backend for serde - \url{https://github.com/mitsuhiko/serde-plain}
-    \item \emph{thiserror} Rust error derive macro - \url{https://github.com/dtolnay/thiserror}
-    \item \emph{anyhow} Rust error handling framework - \url{https://github.com/dtolnay/anyhow}
-    \item \emph{simple\_logger} Rust logging implementation - \url{https://github.com/borntyping/rust-simple_logger}
-    \item \emph{xml-rs} XML library for Rust - \url{https://github.com/netvl/xml-rs}
-    \item \emph{validator} Rust struct validation - \url{https://github.com/Keats/validator}
-    \item \emph{directories} User data directories library - \url{https://github.com/dirs-dev/directories-rs}
-    \item \emph{reqwest} Rust HTTP Client - \url{https://github.com/seanmonstar/reqwest}
-    \item \emph{indicatif} Rust command line progress indicator - \url{https://github.com/mitsuhiko/indicatif}
-    \item \emph{tempfile} Rust temporary file library - \url{https://github.com/Stebalien/tempfile}
-    \item \emph{casual} Rust user input parser - \url{https://github.com/rossmacarthur/casual}
-    \item \emph{derive-new} Rust new constructor macro - \url{https://github.com/nrc/derive-new}
-    \item \emph{enum-iterator} Rust macro for iterating enums - \url{https://github.com/stephaneyfx/enum-iterator}
-    \item \emph{rust-embed} Embeds files into Rust binaries - \url{https://github.com/pyros2097/rust-embed}
-\end{itemize}
+\begin{singlespace}
+	\begin{itemize}
+		\item \emph{Linux KVM} (Kernel-based Virtual Machine) - \url{https://www.linux-kvm.org/}
+		\item \emph{Open vSwitch} Virtual multilayer switch - \url{https://www.openvswitch.org/}
+		\item \emph{libvirt} Virtualization API - \url{https://libvirt.org/}
+		\item \emph{Rust} Language, Compiler, Toolchain, etc. - \url{https://www.rust-lang.org/}
+		\item \emph{libvirt-rust} Rust bindings to the libvirt - \url{https://gitlab.com/libvirt/libvirt-rust}
+		\item \emph{clap} Rust command Line Argument Parser - \url{https://github.com/clap-rs/clap}
+		\item \emph{serde} Rust Serialization framework - \url{https://github.com/serde-rs/serde}
+		\item \emph{serde-yaml} YAML backend for serde - \url{https://github.com/dtolnay/serde-yaml}
+		\item \emph{serde-plain} Plain text backend for serde - \url{https://github.com/mitsuhiko/serde-plain}
+		\item \emph{thiserror} Rust error derive macro - \url{https://github.com/dtolnay/thiserror}
+		\item \emph{anyhow} Rust error handling framework - \url{https://github.com/dtolnay/anyhow}
+		\item \emph{simple\_logger} Rust logging implementation - \url{https://github.com/borntyping/rust-simple_logger}
+		\item \emph{xml-rs} XML library for Rust - \url{https://github.com/netvl/xml-rs}
+		\item \emph{validator} Rust struct validation - \url{https://github.com/Keats/validator}
+		\item \emph{directories} User data directories library - \url{https://github.com/dirs-dev/directories-rs}
+		\item \emph{reqwest} Rust HTTP Client - \url{https://github.com/seanmonstar/reqwest}
+		\item \emph{indicatif} Rust command line progress indicator - \url{https://github.com/mitsuhiko/indicatif}
+		\item \emph{tempfile} Rust temporary file library - \url{https://github.com/Stebalien/tempfile}
+		\item \emph{casual} Rust user input parser - \url{https://github.com/rossmacarthur/casual}
+		\item \emph{derive-new} Rust new constructor macro - \url{https://github.com/nrc/derive-new}
+		\item \emph{enum-iterator} Rust macro for iterating enums - \url{https://github.com/stephaneyfx/enum-iterator}
+		\item \emph{rust-embed} Embeds files into Rust binaries - \url{https://github.com/pyros2097/rust-embed}
+	\end{itemize}
+\end{singlespace}
 
 \chapter*{Acknowledgements}
 
@@ -71,6 +76,7 @@ I would like to thank my supervisor Professor Awais Rashid and co-supervisor Joe
 project proposal and support and guidance in completing it.
 
 \mainmatter
+
 
 \chapter{Contextual Background}
 \label{chap:context}
@@ -81,7 +87,27 @@ In October 2020 the UKRI announced the creation of the National Research Centre 
 and Adversarial Influence Online (REPHRAIN)~\cite{ukri_new_centre}.
 The centre is made up of researchers in computer science, international relations, law, psychology, management,
 design, digital humanities, public policy, political Science, criminology, and sociology from five British
-universities including the University of Bristol.
+universities including the University of Bristol. \\
+
+REPHRAIN should be understood in the context of the UK government's \emph{Online Harms White Paper} public
+consultation beginning in April 2019~\cite{uk_gov_online_harms}, which sets out plans for new online safety 
+measures; REPHRAIN's missions and outcomes are aligned with the paper. \\
+
+REPHRAIN will focus on three core missions~\cite{rephrain_missions}:
+
+\begin{enumerate}
+	\item Delivering privacy at scale while mitigating its misuse to inflict harms.
+	\item Minimising harms while maximising benefits from a sharing-driven digital economy.
+	\item Balancing individual agency vs. the social good.
+\end{enumerate}
+
+The three missions will require looking at Privacy Enhancing Technologies (PETs); including their capabilities,
+applications of PETs in addressing existing online harms, mitigating the potential abuse of PETs, embedding the PETs into infrastructures, and developing new PETs.
+In order to facilitate this REPHRAIN intends to build a toolbox of resources including a PETs testbed. The testbed
+will be used researchers in developing, testing, and evaluating the PETs. The aim of this project is to develop
+a prototype of this testbed.
+
+\section{Privacy Enhancing Technologies (PETs)}
 
 \vspace{1cm}
 \noindent
