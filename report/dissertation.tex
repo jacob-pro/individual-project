@@ -14,6 +14,8 @@
 \usepackage{setspace} 
 \setstretch{1.25}
 
+\usepackage{subfig}
+
 \begin{document}
 
 \maketitle
@@ -51,7 +53,7 @@ Summary of work:
 		\item \emph{Rust} Language, Compiler, Toolchain, etc. - \url{https://www.rust-lang.org/}
 		\item \emph{libvirt-rust} Rust bindings to the libvirt - \url{https://gitlab.com/libvirt/libvirt-rust}
 		\item \emph{clap} Rust command Line Argument Parser - \url{https://github.com/clap-rs/clap}
-		\item \emph{serde} Rust Serialization framework - \url{https://github.com/serde-rs/serde}
+		\item \emph{serde} Rust Serialization framework - \url{https://github.com/serde-rs/}
 		\item \emph{serde-yaml} YAML backend for serde - \url{https://github.com/dtolnay/serde-yaml}
 		\item \emph{serde-plain} Plain text backend for serde - \url{https://github.com/mitsuhiko/serde-plain}
 		\item \emph{thiserror} Rust error derive macro - \url{https://github.com/dtolnay/thiserror}
@@ -91,7 +93,7 @@ universities including the University of Bristol. \\
 
 REPHRAIN should be understood in the context of the UK government's \emph{Online Harms White Paper} public
 consultation beginning in April 2019~\cite{uk_gov_online_harms}, which sets out plans for new online safety 
-measures; REPHRAIN's missions and outcomes are aligned with the paper. \\
+measures; REPHRAIN's missions and outcomes are aligned with this paper~\cite{rephrain_harms}. \\
 
 REPHRAIN will focus on three core missions~\cite{rephrain_missions}:
 
@@ -102,53 +104,104 @@ REPHRAIN will focus on three core missions~\cite{rephrain_missions}:
 \end{enumerate}
 
 The three missions will require looking at Privacy Enhancing Technologies (PETs); including their capabilities,
-applications of PETs in addressing existing online harms, mitigating the potential abuse of PETs, embedding the PETs into infrastructures, and developing new PETs.
+applications of PETs in addressing existing online harms, mitigating the potential abuse of PETs, embedding the PETs
+into infrastructures, and developing new PETs.
 In order to facilitate this REPHRAIN intends to build a toolbox of resources including a PETs testbed. The testbed
 will be used researchers in developing, testing, and evaluating the PETs. The aim of this project is to develop
 a prototype of this testbed.
 
-\section{Privacy Enhancing Technologies (PETs)}
+\section{What are Privacy Enhancing Technologies (PETs)?}
 
-\vspace{1cm}
-\noindent
-This chapter should describe the project context, and motivate each of
-the proposed aims and objectives.  Ideally, it is written at a fairly 
-high-level, and easily understood by a reader who is technically 
-competent but not an expert in the topic itself.
+Before we discuss Privacy Enhancing Technologies we must consider what we mean by "privacy". REPHRAIN is 
+primarily using the definitions set out by D. J. Solove in his
+2006 article \emph{A Taxonomy of Privacy}~\cites{solove_privacy}{rephrain_harms}. Solove notes that the
+definition of privacy has often been very broad or vague, and therefore sets out to develop
+a taxonomy of privacy violations. He has defined four groups of harmful activities (See figure \ref{privacy_taxonomy}). \\
 
-In short, the goal is to answer three questions for the reader.  First, 
-what is the project topic, or problem being investigated?  Second, why 
-is the topic important, or rather why should the reader care about it?  
-For example, why there is a need for this project (e.g., lack of similar 
-software or deficiency in existing software), who will benefit from the 
-project and in what way (e.g., end-users, or software developers) what 
-work does the project build on and why is the selected approach either
-important and/or interesting (e.g., fills a gap in literature, applies
-results from another field to a new problem).  Finally, what are the 
-central challenges involved and why are they significant? 
- 
-The chapter should conclude with a concise bullet point list that 
-summarises the aims and objectives.  For example:
+\begin{figure}
+\centering
+\parbox{7cm}{
+	\begin{enumerate}
+		\item Information collection
+		\begin{enumerate}
+			\item Surveillance
+			\item Interrogation 
+		\end{enumerate}
+		\item Information processing
+		\begin{enumerate}
+			\item Aggregation
+			\item Identification
+			\item Insecurity
+			\item Secondary Use
+			\item Exclusion
+		\end{enumerate}
+	\end{enumerate}
+}
+\qquad
+	\begin{minipage}{7cm}
+		\begin{enumerate}
+			\setcounter{enumi}{2}
+			\item Information  dissemination
+			\begin{enumerate}
+				\item Breach of Confidentiality
+				\item Disclosure
+				\item Exposure
+				\item Increased Accessibility
+				\item Blackmail
+				\item Appropriation
+				\item Distortion
+			\end{enumerate}
+			\item Invasion
+			\begin{enumerate}
+				\item Intrusion
+				\item Decisional Interference
+			\end{enumerate} 
+		\end{enumerate}
+	\end{minipage}
+	\caption{A Taxonomy of Privacy Violations~\cite{solove_privacy}.}
+	\label{privacy_taxonomy}
+\end{figure}
 
-\begin{quote}
-\noindent
-The high-level objective of this project is to reduce the performance 
-gap between hardware and software implementations of modular arithmetic.  
-More specifically, the concrete aims are:
+Broadly speaking a Privacy Enhancing Technology is any solution or approach in hardware or software that helps
+protect a user from such privacy violations~\cite{buckley_pets}. Some examples of PETs could include 
+Onion routing such as the Tor network (which enables anonymous communication), or
+end-to-end encrypted messaging systems such as the Signal protocol. 
+Kaaniche et al. \cite{kaaniche_2020_privacy} have defined a more comprehensive classification of PETs
+ (see Figure \ref{pet_taxonomy}).
 
-\begin{enumerate}
-\item Research and survey literature on public-key cryptography and
-      identify the state of the art in exponentiation algorithms.
-\item Improve the state of the art algorithm so that it can be used
-      in an effective and flexible way on constrained devices.
-\item Implement a framework for describing exponentiation algorithms
-      and populate it with suitable examples from the literature on 
-      an ARM7 platform.
-\item Use the framework to perform a study of algorithm performance
-      in terms of time and space, and show the proposed improvements
-      are worthwhile.
-\end{enumerate}
-\end{quote}
+\begin{figure}
+	\centering
+	\includegraphics{img/pet_taxonomy}
+	\caption{A Taxonomy of privacy enhancing technologies~\cite{kaaniche_2020_privacy}.}
+	\label{pet_taxonomy}
+\end{figure}
+
+\section{Benefits of PETs}
+
+\section{Existing Solutions}
+
+There has been some existing research by Tekeoglu and Tosun~\cite{tekeoglu_2016_testbed} who have developed 
+a privacy testbed for Internet-of-Things (IoT) devices. Their approach has some similar goals to this project 
+in that it looks at capturing layer 2 and 3 network traffic. They note that the testbed enables experiments such
+as port vulnerability scans, checking what cipher suites are used (or not), and generally monitoring 
+network traffic to see what data is being collected. However their testbed is different in that it is only designed
+for IoT devices; rather than general purpose PET applications.
+
+\section{High Level Objectives}
+
+Overall the high-level objective of this project is to develop a simple and lightweight
+testbed platform for evaluating PETs:
+
+\begin{itemize}
+	\item The testbed should support testing various architectures and network topologies, 
+	including client/server and peer-to-peer applications, to accommodate a variety of PETs.
+	\item The testbed must be able to collect information such as packet captures
+	for use in evaluating the privacy characteristics.
+	\item The testbed should support different platforms such as desktop and mobile apps,
+	and both applications where the source code is available or only pre-built binaries.
+	\item The testbed should enable a high level of automation, such that working with large test
+	environments because feasible, and the setup can easily and programmatically be replicated.
+\end{itemize}
 
 \chapter{Technical Background}
 \label{chap:technical}
