@@ -16,6 +16,11 @@ accountsDatabase:
   password:    postgres
   url:         jdbc:postgresql://127.0.0.1:5432/signal
 
+accountsDynamoDb:
+  tableName: test
+  region: test
+  phoneNumberTableName: test
+
 apn:
   sandbox: true
   bundleId: test
@@ -36,10 +41,12 @@ awsAttachments:
 
 backupService:
   userAuthenticationTokenSharedSecret: test
+  uri: redis://127.0.0.1:6379/
+  backupCaCertificate: test
 
 cacheCluster:
   urls:
-    - redis://127.0.0.1:6379/
+    - redis://127.0.0.1:7000/
 
 cdn:
   accessKey: test
@@ -49,7 +56,7 @@ cdn:
 
 clientPresenceCluster:
   urls:
-    - redis://127.0.0.1:6379/
+    - redis://127.0.0.1:7000/
 
 directory:
   client:
@@ -61,8 +68,7 @@ directory:
     queueUrls:
       - https://sqs.region.amazonaws.com/id/name.fifo
   server:
-    -
-      replicationName: test
+    - replicationName: test
       replicationUrl: http://127.0.0.1:9090
       replicationPassword: password
       replicationCaCertificate: |
@@ -88,7 +94,7 @@ keysDynamoDb:
 messageCache:
   cluster:
     urls:
-      - redis://127.0.0.1:6379/
+      - redis://127.0.0.1:7000/
 
 messageDynamoDb:
   region: us-east-1
@@ -96,7 +102,7 @@ messageDynamoDb:
 
 metricsCluster:
   urls:
-    - redis://127.0.0.1:6379/
+    - redis://127.0.0.1:7000/
 
 micrometer:
   uri: proxy://localhost:2878
@@ -108,16 +114,16 @@ paymentsService:
     - USD
 
 pubsub:
-  url: redis://127.0.0.1:6379/cache
+  url: redis://127.0.0.1:7000/cache
   replicaUrls:
-    - redis://127.0.0.1:6379/cacheReplica
+    - redis://127.0.0.1:7000/cacheReplica
 
 push:
   queueSize: 200
 
 pushSchedulerCluster:
   urls:
-    - redis://127.0.0.1:6379/
+    - redis://127.0.0.1:7000/
 
 recaptcha:
   secret: test
@@ -138,7 +144,8 @@ server:
 
 storageService:
   userAuthenticationTokenSharedSecret: test
-  uri: redis://127.0.0.1:6379/
+  uri: redis://127.0.0.1:7000/
+  storageCaCertificate: test
 
 turn:
   secret: secret# TURN server secret
@@ -157,11 +164,11 @@ twilio:
   iosVerificationText: "verification code is - %s"
   androidNgVerificationText: "verification code is - %s"
   android202001VerificationText: "verification code is - %s"
+  android202103VerificationText: "verification code is - %s"
   genericVerificationText: "verification code is - %s"
-  numbers:
-    - test
-  senderId:
-    defaultSenderId: test
+  verifyServiceFriendlyName: test
+  verifyServiceSid: test
+  androidAppHash: test
 
 unidentifiedDelivery:
   certificate: BVC9jOozLZpK43nsekdIdSgAJgPYpKJHJTBIdLJbGuB3 # java -jar TextSecureServer.jar certificate -ca
@@ -177,3 +184,29 @@ zkConfig:
   serverSecret: test # java -jar TextSecure.jar zkparams
   serverPublic: test # java -jar TextSecure.jar zkparams
   enabled: true
+
+
+migrationDeletedAccountsDynamoDb:
+  region: us-east-1
+  tableName: test
+
+migrationRetryAccountsDynamoDb:
+  region: us-east-1
+  tableName: test
+
+pushChallengeDynamoDb:
+  region: us-east-1
+  tableName: test
+
+donation:
+  uri: test
+  apiKey: test
+  supportedCurrencies:
+    - usd
+
+rateLimitersCluster:
+  urls:
+    - redis://127.0.0.1:7000/
+
+tor:
+  listUrl: test
