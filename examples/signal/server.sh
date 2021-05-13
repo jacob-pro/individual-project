@@ -29,4 +29,4 @@ docker run -d --name redis -e "IP=0.0.0.0" -p 7000-7005:7000-7005 grokzen/redis-
 
 # Run Server
 cd /opt/signal/Signal-Server/service/target
-java -jar TextSecureServer-5.80.jar server /home/ubuntu/config.yml
+java -jar -Ddw.logging.level=ERROR TextSecureServer-5.80.jar server /home/ubuntu/config.yml
