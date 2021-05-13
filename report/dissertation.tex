@@ -204,6 +204,55 @@ testbed platform for evaluating PETs:
 \chapter{Technical Background}
 \label{chap:technical}
 
+In this chapter I will discuss some of the technologies which this project depends or builds upon.
+
+\section{Virtualization}
+
+\begin{quotation}
+	`Virtualization uses software to create an abstraction layer over computer hardware that allows the hardware 
+	elements of a single computer—processors, memory, storage and more—to be divided into multiple virtual computers, 
+	commonly called virtual machines (VMs). Each VM runs its own operating system (OS) and behaves like an independent 
+	computer, even though it is running on just a portion of the actual underlying computer hardware.' \cite{ibm_virtualization}
+\end{quotation}
+
+Virtualization will therefore be a very useful technology for the testbed, since it will allow us to model
+an environment consisting of multiple computers such as application clients and servers, and run
+them all within a single machine. In addition, modern CPU extensions (such as Intel VT and AMD-V) 
+provide hardware-assisted / accelerated virtualization support, allowing the virtual machines to 
+have near native performance which will help in meeting the goal of minimal overhead for the testbed. \\
+
+In order to use virtualization a \emph{Hypervisor} is required, this is the software layer sits between
+the physical hardware and manages the virtual machines. A hypervisor may run directly on the physical machine
+in place of a conventional operating system - a Type 1 or \emph{bare-metal} hypervisor,
+or run within a separate host operating system - a Type 2 or \emph{hosted} hypervisor. \\
+
+\subsection{KVM}
+
+For the prototype testbed I will be using \emph{Kernel-based Virtual Machine} (KVM), which is a 
+kernel module for the Linux operating system that allows it to function as a hypervisor. 
+The advantage is that KVM (and the Linux kernel itself) are free and open-source software 
+under GNU licenses, and it is a stable and mature platform \cite{redhat_kvm}.
+In userspace QEMU 
+\footnote{Note QEMU can also function as its own independent type 2 hypervisor 
+	but KVM is required to enable hardware acceleration,
+see \url{https://www.packetflow.co.uk/what-is-the-difference-between-qemu-and-kvm/}}
+may then use KVM to provide a full virtualization platform. \\
+
+\emph{libvirt} is an open-source toolkit for managing virtualization platforms \cite{libvirt},
+it supports QEMU/KVM as well as hypervisors from other vendors. It is written in C, 
+with bindings available in many other programming languages, making it a suitable library for developing 
+the testbed. Support for other platforms also means it would be easier to add support
+for additional hypervisors in future.
+
+\section{Containerization}
+
+\section{Virtual Networks}
+
+\section{Software Defined Networking}
+
+\section{The Rust Language}
+
+\vspace{1cm}
 {\bf A compulsory chapter,     of roughly $10$ pages} 
 \vspace{1cm} 
 
