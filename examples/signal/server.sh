@@ -6,6 +6,10 @@
 # Copy config file
 scp .\config.yml ubuntu@${SIGNAL_IP}:/home/ubuntu/
 
+# Disable lines in service/src/main/java/org/whispersystems/textsecuregcm/WhisperServerService.java
+#   // environment.lifecycle().manage(accountDatabaseCrawler);
+#   // environment.lifecycle().manage(remoteConfigsManager);
+
 # Download and build server
 sudo su
 apt update
@@ -14,15 +18,14 @@ mkdir -p /opt/signal
 cd /opt/signal
 git clone https://github.com/signalapp/Signal-Server.git
 cd Signal-Server
+git checkout 1999bd2bcbf88162325f446119e8f10e0291fdb5
 mvn -DskipTests package
 
 # Install Docker + Dependencies
 https://docs.docker.com/engine/install/ubuntu/
-apt install docker-compose
 cd /opt/signal
-wget https://raw.githubusercontent.com/madeindra/signal-setup-guide/master/signal-server-5.xx/docker-compose.yml
-docker-compose up -d signal_database
-docker-compose up -d redis_cluster
+docker run -d --name postgres -e "POSTGRES_PASSWORD=postgres" -e "POSTGRES_DB=signal" -p 5432:5432 postgres:11
+docker run -d --name redis -e "IP=0.0.0.0" -p 7000-7005:7000-7005 grokzen/redis-cluster:latest
 
 # Run Server
 cd /opt/signal/Signal-Server/service/target
