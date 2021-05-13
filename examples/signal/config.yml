@@ -26,7 +26,12 @@ apn:
   bundleId: test
   keyId: test
   teamId: test
-  signingKey: test
+  signingKey: |   # openssl genpkey -out rsakey.pem -algorithm EC -pkeyopt ec_paramgen_curve:P-256
+    -----BEGIN PRIVATE KEY-----
+    MIGHAgEAMBMGByqGSM49AgEGCCqGSM49AwEHBG0wawIBAQQg8Xm4953FJclVZ7eQ
+    7MEiP0B/3wKof2Wbwm+o531iMNyhRANCAAQrBkSrGKDLmIH4I5qTspOkmd/rUW4x
+    D7rJUuFnC2Lp4400oz/P1jz153BqyPgAHHjG8PaG/nxp3qVszQv2lkV/
+    -----END PRIVATE KEY-----
 
 appConfig:
   application: test
@@ -40,9 +45,58 @@ awsAttachments:
   region: us-east-1
 
 backupService:
-  userAuthenticationTokenSharedSecret: test
+  userAuthenticationTokenSharedSecret: 6b9cf1432f4dc50f991bdab29ff44377
   uri: redis://127.0.0.1:6379/
-  backupCaCertificate: test
+  backupCaCertificate: |
+    -----BEGIN CERTIFICATE-----
+    MIIDtTCCAp2gAwIBAgIUGuJPNyUSvPBvs1XJvDigM8+/ZJ8wDQYJKoZIhvcNAQEL
+    BQAwajELMAkGA1UEBhMCQVUxEzARBgNVBAgMClNvbWUtU3RhdGUxDTALBgNVBAcM
+    BENpdHkxITAfBgNVBAoMGEludGVybmV0IFdpZGdpdHMgUHR5IEx0ZDEUMBIGA1UE
+    AwwLc2lnbmFsLnRlc3QwHhcNMjEwNTEzMDAzMDIyWhcNMzEwNTExMDAzMDIyWjBq
+    MQswCQYDVQQGEwJBVTETMBEGA1UECAwKU29tZS1TdGF0ZTENMAsGA1UEBwwEQ2l0
+    eTEhMB8GA1UECgwYSW50ZXJuZXQgV2lkZ2l0cyBQdHkgTHRkMRQwEgYDVQQDDAtz
+    aWduYWwudGVzdDCCASIwDQYJKoZIhvcNAQEBBQADggEPADCCAQoCggEBAKz212yE
+    bz5LMTqH1N+Y5ZSd/tssdehM+w2YljP0bgAt7oJ79UIIuHS7id9AdQmnIkKL5Rje
+    jmL6Z0+gGLadiETVwG/74Sh1HSFw31dlB4YahLc8+ANE1gzgVLfbacdn3S6WboZd
+    +dm2RZy2zWAoqUCRHk5+Tzi7GtQw4zQ2lWKQvqgcDwPRVkx5g2sOd/KEuyK9dsMf
+    mgbkwMX1YQIMc41DIn2DwL/zvtprnPJKs9WYlsU+XKj0bqU7fqIPAilBSVhn6AdY
+    VRpacXSiA6cDbKEX/UHmE9C0YllYsfkD6r0uSpv3KdTZlnnvl7SLKERdyWqtbGwv
+    jlKOE4XB3OV0vokCAwEAAaNTMFEwHQYDVR0OBBYEFAcWGQyBgw6VN8rQmBpQxKfc
+    kLCWMB8GA1UdIwQYMBaAFAcWGQyBgw6VN8rQmBpQxKfckLCWMA8GA1UdEwEB/wQF
+    MAMBAf8wDQYJKoZIhvcNAQELBQADggEBADW3KVIHeBhvGsoCg41l3sHA4THQ/HXU
+    s41o5+GJaGMEPrcnXlvir+Y/fwyD4+H8OYFPCaJlkgXsaqIiQfteiOkZHOoYrzeH
+    C2zuMpvIobgrljbPSkPHhK7IMFnn7MGowNsvRx76jC+8sotefIN0fhpqk4N2C8zt
+    snH32Cvl5oHn28jfnpe12gVCoFBrMZARMogocnquFQS/e96Tl7Opx3KUMPBMVk7a
+    L/LADqtCH4Q6XmmORxTlAd6B7S0xVG3WYv4vRwe2NDE8tuoDL6jx19gJy7ZwIAWR
+    vUa9IsWB3g1Z7zvoftqbDKMulURZCuFSrkUqXtDGcpex0E4tjb+/UkY=
+    -----END CERTIFICATE-----
+    -----BEGIN RSA PRIVATE KEY-----
+    MIIEpAIBAAKCAQEArPbXbIRvPksxOofU35jllJ3+2yx16Ez7DZiWM/RuAC3ugnv1
+    Qgi4dLuJ30B1CaciQovlGN6OYvpnT6AYtp2IRNXAb/vhKHUdIXDfV2UHhhqEtzz4
+    A0TWDOBUt9tpx2fdLpZuhl352bZFnLbNYCipQJEeTn5POLsa1DDjNDaVYpC+qBwP
+    A9FWTHmDaw538oS7Ir12wx+aBuTAxfVhAgxzjUMifYPAv/O+2muc8kqz1ZiWxT5c
+    qPRupTt+og8CKUFJWGfoB1hVGlpxdKIDpwNsoRf9QeYT0LRiWVix+QPqvS5Km/cp
+    1NmWee+XtIsoRF3Jaq1sbC+OUo4ThcHc5XS+iQIDAQABAoIBACkymlk0qjKSQmWI
+    mQGxL23YvC2ER4lPXLT+VTiGzfSo/BiEYgSagyT6znoopjfoYVasb6Mez5dvwU/L
+    +Fb26tBKgY2q1xSF4KxocCom3EXq5xWmJgTRTpK+lC8+ydE/QgWouyayF6LtsWME
+    f6KZzMaeSjO0DjabCmbkRhnXrnlNUHDENBacH2Lam90TOjjZL2QVBLRyGC4Rj4J/
+    DsTFnCnuBrXFHL9uErid/UDczzVAuBUF5dlztEVjtpKQuy/egy/VT047D4IdFefF
+    kYp2GbIQkgGjsva1Bl6BvnIOr36c5Wn+AD9b/SbEm0j/uJkqBGKUYMWVozCyJtOp
+    lB+kIgECgYEA2Vsj7ZdSUUNpYatMz0A0+CKeCQ0Gzek+DC9tN3vpLRCPFP2be+Cv
+    nDnK2D77la/NaePm8RP94s6RlmvI3lAcEiyby7SenAEuk47mwTV5Gu7SFM2MkPLP
+    NWz7rk+rrzPqmv/aT58wNSajR7BSdhc9y86z1S3+jlYR7FSUTfAkYmkCgYEAy7c6
+    okeX4bolxInAKWaFjIhVE1uGPSxItYFmUz9qd7oJBpUQ3cZCbV28+mEUZ9BzWWS0
+    KbLI/gdF1iKKRMThVgecf/m8BfYIipr9dc6ZLLqIwJEeoFBl/oULCGNMmJmPMKDg
+    00ymc+CikwhFqI0vP/PuQLfvt1zcVDqVs0eztyECgYBhAxfXHLomASOQ70caHbtG
+    oRTOT10hHKCQCb8Ci7C4Z3KlWMhEEzXuUbEisYHS/qN9RrY2Fck0qSQ78iG2cCUH
+    S5fB5P0B/lkOjTKbO8Ww6rUjidbafzVS0DDJTVAAo/hrdBS5gwCeSH+KKL21bYws
+    YjbLyHqchvf69ok2/B8ROQKBgQDDnxbyAJfrzgo4eiMKXoW+FqjDpu74TU8g5Lqz
+    FEGT6RSDup9wp9LgHNS9Bn5G1pf97sNHC4UQ00EPySlHslvEdhill9YjT0iSeRUN
+    jK/wkMuDR5fGUI4w4+ddTaWfIE6tXr+miIOK4NqdIKNroPAPlJlkknzicoytYXih
+    qSf9oQKBgQCvkGWEikBIAZBNAAF7fR2PHplkP5gGUNkQr/1foWHWGoV5TdOPib7i
+    jK8885pwwAEeUnk4EEW25++X9Lx5etRQhCrzsY8zMq9s56RbWkyieWiHsMvAI6ql
+    Jr7UydoDSTN1n16490fStSlSIb78MAZWdffT+ZFgXAjbXzheSCX/Tg==
+    -----END RSA PRIVATE KEY-----
 
 cacheCluster:
   urls:
@@ -71,10 +125,56 @@ directory:
     - replicationName: test
       replicationUrl: http://127.0.0.1:9090
       replicationPassword: password
-      replicationCaCertificate: |
+      replicationCaCertificate: |  # https://www.ibm.com/docs/en/runbook-automation?topic=certificate-generate-root-ca-key
         -----BEGIN CERTIFICATE-----
-        .....
+        MIIDtTCCAp2gAwIBAgIUGuJPNyUSvPBvs1XJvDigM8+/ZJ8wDQYJKoZIhvcNAQEL
+        BQAwajELMAkGA1UEBhMCQVUxEzARBgNVBAgMClNvbWUtU3RhdGUxDTALBgNVBAcM
+        BENpdHkxITAfBgNVBAoMGEludGVybmV0IFdpZGdpdHMgUHR5IEx0ZDEUMBIGA1UE
+        AwwLc2lnbmFsLnRlc3QwHhcNMjEwNTEzMDAzMDIyWhcNMzEwNTExMDAzMDIyWjBq
+        MQswCQYDVQQGEwJBVTETMBEGA1UECAwKU29tZS1TdGF0ZTENMAsGA1UEBwwEQ2l0
+        eTEhMB8GA1UECgwYSW50ZXJuZXQgV2lkZ2l0cyBQdHkgTHRkMRQwEgYDVQQDDAtz
+        aWduYWwudGVzdDCCASIwDQYJKoZIhvcNAQEBBQADggEPADCCAQoCggEBAKz212yE
+        bz5LMTqH1N+Y5ZSd/tssdehM+w2YljP0bgAt7oJ79UIIuHS7id9AdQmnIkKL5Rje
+        jmL6Z0+gGLadiETVwG/74Sh1HSFw31dlB4YahLc8+ANE1gzgVLfbacdn3S6WboZd
+        +dm2RZy2zWAoqUCRHk5+Tzi7GtQw4zQ2lWKQvqgcDwPRVkx5g2sOd/KEuyK9dsMf
+        mgbkwMX1YQIMc41DIn2DwL/zvtprnPJKs9WYlsU+XKj0bqU7fqIPAilBSVhn6AdY
+        VRpacXSiA6cDbKEX/UHmE9C0YllYsfkD6r0uSpv3KdTZlnnvl7SLKERdyWqtbGwv
+        jlKOE4XB3OV0vokCAwEAAaNTMFEwHQYDVR0OBBYEFAcWGQyBgw6VN8rQmBpQxKfc
+        kLCWMB8GA1UdIwQYMBaAFAcWGQyBgw6VN8rQmBpQxKfckLCWMA8GA1UdEwEB/wQF
+        MAMBAf8wDQYJKoZIhvcNAQELBQADggEBADW3KVIHeBhvGsoCg41l3sHA4THQ/HXU
+        s41o5+GJaGMEPrcnXlvir+Y/fwyD4+H8OYFPCaJlkgXsaqIiQfteiOkZHOoYrzeH
+        C2zuMpvIobgrljbPSkPHhK7IMFnn7MGowNsvRx76jC+8sotefIN0fhpqk4N2C8zt
+        snH32Cvl5oHn28jfnpe12gVCoFBrMZARMogocnquFQS/e96Tl7Opx3KUMPBMVk7a
+        L/LADqtCH4Q6XmmORxTlAd6B7S0xVG3WYv4vRwe2NDE8tuoDL6jx19gJy7ZwIAWR
+        vUa9IsWB3g1Z7zvoftqbDKMulURZCuFSrkUqXtDGcpex0E4tjb+/UkY=
         -----END CERTIFICATE-----
+        -----BEGIN RSA PRIVATE KEY-----
+        MIIEpAIBAAKCAQEArPbXbIRvPksxOofU35jllJ3+2yx16Ez7DZiWM/RuAC3ugnv1
+        Qgi4dLuJ30B1CaciQovlGN6OYvpnT6AYtp2IRNXAb/vhKHUdIXDfV2UHhhqEtzz4
+        A0TWDOBUt9tpx2fdLpZuhl352bZFnLbNYCipQJEeTn5POLsa1DDjNDaVYpC+qBwP
+        A9FWTHmDaw538oS7Ir12wx+aBuTAxfVhAgxzjUMifYPAv/O+2muc8kqz1ZiWxT5c
+        qPRupTt+og8CKUFJWGfoB1hVGlpxdKIDpwNsoRf9QeYT0LRiWVix+QPqvS5Km/cp
+        1NmWee+XtIsoRF3Jaq1sbC+OUo4ThcHc5XS+iQIDAQABAoIBACkymlk0qjKSQmWI
+        mQGxL23YvC2ER4lPXLT+VTiGzfSo/BiEYgSagyT6znoopjfoYVasb6Mez5dvwU/L
+        +Fb26tBKgY2q1xSF4KxocCom3EXq5xWmJgTRTpK+lC8+ydE/QgWouyayF6LtsWME
+        f6KZzMaeSjO0DjabCmbkRhnXrnlNUHDENBacH2Lam90TOjjZL2QVBLRyGC4Rj4J/
+        DsTFnCnuBrXFHL9uErid/UDczzVAuBUF5dlztEVjtpKQuy/egy/VT047D4IdFefF
+        kYp2GbIQkgGjsva1Bl6BvnIOr36c5Wn+AD9b/SbEm0j/uJkqBGKUYMWVozCyJtOp
+        lB+kIgECgYEA2Vsj7ZdSUUNpYatMz0A0+CKeCQ0Gzek+DC9tN3vpLRCPFP2be+Cv
+        nDnK2D77la/NaePm8RP94s6RlmvI3lAcEiyby7SenAEuk47mwTV5Gu7SFM2MkPLP
+        NWz7rk+rrzPqmv/aT58wNSajR7BSdhc9y86z1S3+jlYR7FSUTfAkYmkCgYEAy7c6
+        okeX4bolxInAKWaFjIhVE1uGPSxItYFmUz9qd7oJBpUQ3cZCbV28+mEUZ9BzWWS0
+        KbLI/gdF1iKKRMThVgecf/m8BfYIipr9dc6ZLLqIwJEeoFBl/oULCGNMmJmPMKDg
+        00ymc+CikwhFqI0vP/PuQLfvt1zcVDqVs0eztyECgYBhAxfXHLomASOQ70caHbtG
+        oRTOT10hHKCQCb8Ci7C4Z3KlWMhEEzXuUbEisYHS/qN9RrY2Fck0qSQ78iG2cCUH
+        S5fB5P0B/lkOjTKbO8Ww6rUjidbafzVS0DDJTVAAo/hrdBS5gwCeSH+KKL21bYws
+        YjbLyHqchvf69ok2/B8ROQKBgQDDnxbyAJfrzgo4eiMKXoW+FqjDpu74TU8g5Lqz
+        FEGT6RSDup9wp9LgHNS9Bn5G1pf97sNHC4UQ00EPySlHslvEdhill9YjT0iSeRUN
+        jK/wkMuDR5fGUI4w4+ddTaWfIE6tXr+miIOK4NqdIKNroPAPlJlkknzicoytYXih
+        qSf9oQKBgQCvkGWEikBIAZBNAAF7fR2PHplkP5gGUNkQr/1foWHWGoV5TdOPib7i
+        jK8885pwwAEeUnk4EEW25++X9Lx5etRQhCrzsY8zMq9s56RbWkyieWiHsMvAI6ql
+        Jr7UydoDSTN1n16490fStSlSIb78MAZWdffT+ZFgXAjbXzheSCX/Tg==
+        -----END RSA PRIVATE KEY-----
 
 gcm:
   senderId: 12345
@@ -85,7 +185,35 @@ gcpAttachments:
   email: dummy@dummy.com
   maxSizeInBytes: 1000000
   pathPrefix: /
-  rsaSigningKey: "-----BEGIN RSA PRIVATE KEY-----\n ..... \n-----END RSA PRIVATE KEY-----\n"
+  rsaSigningKey: |  # openssl genpkey -out rsakey.pem -algorithm RSA -pkeyopt rsa_keygen_bits:2048
+    -----BEGIN PRIVATE KEY-----
+    MIIEwAIBADANBgkqhkiG9w0BAQEFAASCBKowggSmAgEAAoIBAQDeTL3eup+loda1
+    bvdUTjM5jCr0rCA7ApkQmup4A3dw+91ki3FIxSPdtIpz6itpjP46fFAiGSsAfYnK
+    XIFXcJ8HM6SMl7osMJXHwGGbew+EWAI4/ftM3CYAUgc09ECev86DnLD0pIv1ivm5
+    VXbsC9SMIJt5akxx4xj6QJzGr33bues+Aw6eigjoRRuUa4I5rqvc/7mkawqgqr4w
+    T1SHR0/APxofVESmzyP9g9GoRYgXu2rXeyyHVD7c255yiIjJs7pdwd38Ghm15rXv
+    kzbBG59t4EYBEmfx0lYqPAkyDS+KIMHBjZWUNf2AlKP8AMLwuqEKvSiHAGKb/CeF
+    S2WIhV+BAgMBAAECggEBAJTSpa6OHEFD5r1Si8xqCgs11rA05+L5q0WdoOk10OnY
+    BHDCldXU/Vz4+FP/6o5gcPbwsKkTVmGeqffLFGBYqm6k2T2yelYJNM0k83Om4E2G
+    qf5DstDS9bHzOJXwC6771CLybNlrq7N4FhVIrTP7+5DQZ6XST1lTYy5uwUaWyFin
+    kJgQmSBhinUtL7VXu/u91WtdeBatgdy75kw2GPE+6fVYKpbceHLbVRLmvF5uWzr7
+    sxVqOjvt6Bto7Iy75HGFAYqQ9hciXIWojJs7Mv4dPXKZli/UwIi6QakHLuBdSy1A
+    cN46yxwJOrX31L3GDjzVlkTBYHHu2rP8uA6KBwpwFZECgYEA+knbJDZD4zR1Y6TU
+    0uUrv4FACvMQjLGlxG9TxG9zRm/de4pdKF0tirVKoh2WdUtXyF2fSBAzex9vfTYA
+    GiBmKvs6JD/iaAuMYGsYMYS6G8tzAuaNRkHcXOq6xYDSk1B8YkpfY00QOCF3HRwB
+    t4S9UCb3xdH9A2O9fGmHIAe0NwUCgYEA419hUR9dZNYLxr3NytIbC8/6UC+1IDtc
+    4ERYFu0uz/ZwFBCIjrqI+3lRce85ZOixqxfhQDROuYt1jCAY+0VQ4TVL0/HELfIX
+    PpUU4bfF5GAtw4G1RaTnuo1Leu1ABw/ufzne7GPjOKFUsjlE7W0NblR1tHe9mh9c
+    6OEpcVw/900CgYEA8Qb+yjiX181E3th1O0MGhj1p9yFr5pGNGUY8XQcW89X2bGoq
+    nBxfJxy+6q+jnQEZYBMIuNUhPohfTS0bnA1nVizpKM98sMWuQYvgmI9AylN6RmjP
+    08DI/ZHumxQbtVHk9qK4iWBFJkjT9GxsGtbxmKZuJUq7ZPBAIfdd8TJ6EiECgYEA
+    lhTwTLbSU+wBq/a/LyCOn7ZxeJp1CUiF3rbeGowGuVjm1Cexq9yu7KdAvl702InM
+    NK43jcS5LjpCpfLN6pXvdChU3BqaruU8uJ95QCCo7D0cGA+3ErhuCTKY3xRZjg/T
+    EoGlhw3L/yZmnJm2yK2SDwCLDUt4iJIpJsLxMxV8V4UCgYEAgMjb1hFMhZK3gbR/
+    V4i/9g5jQI1mXzCq63ObVwy71L70eIIvJXqhLLEEvlZxbCklhWfA8UO4WldR6skh
+    EmaXh/I7NbJmoVumhm7oFxsxMIv071myarL1mxrPL1lYR9lH+PPk8WXRQn0tT9gM
+    LWl9Xbs1IyZ99wHAV35A/ZPuBZI=
+    -----END PRIVATE KEY-----
 
 keysDynamoDb:
   region: us-east-1
@@ -108,7 +236,7 @@ micrometer:
   uri: proxy://localhost:2878
 
 paymentsService:
-  userAuthenticationTokenSharedSecret: test
+  userAuthenticationTokenSharedSecret: 6b9cf1432f4dc50f991bdab29ff44377
   fixerApiKey: test
   paymentCurrencies:
     - USD
@@ -143,9 +271,58 @@ server:
       port: 8081
 
 storageService:
-  userAuthenticationTokenSharedSecret: test
+  userAuthenticationTokenSharedSecret: 6b9cf1432f4dc50f991bdab29ff44377
   uri: redis://127.0.0.1:7000/
-  storageCaCertificate: test
+  storageCaCertificate: |
+    -----BEGIN CERTIFICATE-----
+    MIIDtTCCAp2gAwIBAgIUGuJPNyUSvPBvs1XJvDigM8+/ZJ8wDQYJKoZIhvcNAQEL
+    BQAwajELMAkGA1UEBhMCQVUxEzARBgNVBAgMClNvbWUtU3RhdGUxDTALBgNVBAcM
+    BENpdHkxITAfBgNVBAoMGEludGVybmV0IFdpZGdpdHMgUHR5IEx0ZDEUMBIGA1UE
+    AwwLc2lnbmFsLnRlc3QwHhcNMjEwNTEzMDAzMDIyWhcNMzEwNTExMDAzMDIyWjBq
+    MQswCQYDVQQGEwJBVTETMBEGA1UECAwKU29tZS1TdGF0ZTENMAsGA1UEBwwEQ2l0
+    eTEhMB8GA1UECgwYSW50ZXJuZXQgV2lkZ2l0cyBQdHkgTHRkMRQwEgYDVQQDDAtz
+    aWduYWwudGVzdDCCASIwDQYJKoZIhvcNAQEBBQADggEPADCCAQoCggEBAKz212yE
+    bz5LMTqH1N+Y5ZSd/tssdehM+w2YljP0bgAt7oJ79UIIuHS7id9AdQmnIkKL5Rje
+    jmL6Z0+gGLadiETVwG/74Sh1HSFw31dlB4YahLc8+ANE1gzgVLfbacdn3S6WboZd
+    +dm2RZy2zWAoqUCRHk5+Tzi7GtQw4zQ2lWKQvqgcDwPRVkx5g2sOd/KEuyK9dsMf
+    mgbkwMX1YQIMc41DIn2DwL/zvtprnPJKs9WYlsU+XKj0bqU7fqIPAilBSVhn6AdY
+    VRpacXSiA6cDbKEX/UHmE9C0YllYsfkD6r0uSpv3KdTZlnnvl7SLKERdyWqtbGwv
+    jlKOE4XB3OV0vokCAwEAAaNTMFEwHQYDVR0OBBYEFAcWGQyBgw6VN8rQmBpQxKfc
+    kLCWMB8GA1UdIwQYMBaAFAcWGQyBgw6VN8rQmBpQxKfckLCWMA8GA1UdEwEB/wQF
+    MAMBAf8wDQYJKoZIhvcNAQELBQADggEBADW3KVIHeBhvGsoCg41l3sHA4THQ/HXU
+    s41o5+GJaGMEPrcnXlvir+Y/fwyD4+H8OYFPCaJlkgXsaqIiQfteiOkZHOoYrzeH
+    C2zuMpvIobgrljbPSkPHhK7IMFnn7MGowNsvRx76jC+8sotefIN0fhpqk4N2C8zt
+    snH32Cvl5oHn28jfnpe12gVCoFBrMZARMogocnquFQS/e96Tl7Opx3KUMPBMVk7a
+    L/LADqtCH4Q6XmmORxTlAd6B7S0xVG3WYv4vRwe2NDE8tuoDL6jx19gJy7ZwIAWR
+    vUa9IsWB3g1Z7zvoftqbDKMulURZCuFSrkUqXtDGcpex0E4tjb+/UkY=
+    -----END CERTIFICATE-----
+    -----BEGIN RSA PRIVATE KEY-----
+    MIIEpAIBAAKCAQEArPbXbIRvPksxOofU35jllJ3+2yx16Ez7DZiWM/RuAC3ugnv1
+    Qgi4dLuJ30B1CaciQovlGN6OYvpnT6AYtp2IRNXAb/vhKHUdIXDfV2UHhhqEtzz4
+    A0TWDOBUt9tpx2fdLpZuhl352bZFnLbNYCipQJEeTn5POLsa1DDjNDaVYpC+qBwP
+    A9FWTHmDaw538oS7Ir12wx+aBuTAxfVhAgxzjUMifYPAv/O+2muc8kqz1ZiWxT5c
+    qPRupTt+og8CKUFJWGfoB1hVGlpxdKIDpwNsoRf9QeYT0LRiWVix+QPqvS5Km/cp
+    1NmWee+XtIsoRF3Jaq1sbC+OUo4ThcHc5XS+iQIDAQABAoIBACkymlk0qjKSQmWI
+    mQGxL23YvC2ER4lPXLT+VTiGzfSo/BiEYgSagyT6znoopjfoYVasb6Mez5dvwU/L
+    +Fb26tBKgY2q1xSF4KxocCom3EXq5xWmJgTRTpK+lC8+ydE/QgWouyayF6LtsWME
+    f6KZzMaeSjO0DjabCmbkRhnXrnlNUHDENBacH2Lam90TOjjZL2QVBLRyGC4Rj4J/
+    DsTFnCnuBrXFHL9uErid/UDczzVAuBUF5dlztEVjtpKQuy/egy/VT047D4IdFefF
+    kYp2GbIQkgGjsva1Bl6BvnIOr36c5Wn+AD9b/SbEm0j/uJkqBGKUYMWVozCyJtOp
+    lB+kIgECgYEA2Vsj7ZdSUUNpYatMz0A0+CKeCQ0Gzek+DC9tN3vpLRCPFP2be+Cv
+    nDnK2D77la/NaePm8RP94s6RlmvI3lAcEiyby7SenAEuk47mwTV5Gu7SFM2MkPLP
+    NWz7rk+rrzPqmv/aT58wNSajR7BSdhc9y86z1S3+jlYR7FSUTfAkYmkCgYEAy7c6
+    okeX4bolxInAKWaFjIhVE1uGPSxItYFmUz9qd7oJBpUQ3cZCbV28+mEUZ9BzWWS0
+    KbLI/gdF1iKKRMThVgecf/m8BfYIipr9dc6ZLLqIwJEeoFBl/oULCGNMmJmPMKDg
+    00ymc+CikwhFqI0vP/PuQLfvt1zcVDqVs0eztyECgYBhAxfXHLomASOQ70caHbtG
+    oRTOT10hHKCQCb8Ci7C4Z3KlWMhEEzXuUbEisYHS/qN9RrY2Fck0qSQ78iG2cCUH
+    S5fB5P0B/lkOjTKbO8Ww6rUjidbafzVS0DDJTVAAo/hrdBS5gwCeSH+KKL21bYws
+    YjbLyHqchvf69ok2/B8ROQKBgQDDnxbyAJfrzgo4eiMKXoW+FqjDpu74TU8g5Lqz
+    FEGT6RSDup9wp9LgHNS9Bn5G1pf97sNHC4UQ00EPySlHslvEdhill9YjT0iSeRUN
+    jK/wkMuDR5fGUI4w4+ddTaWfIE6tXr+miIOK4NqdIKNroPAPlJlkknzicoytYXih
+    qSf9oQKBgQCvkGWEikBIAZBNAAF7fR2PHplkP5gGUNkQr/1foWHWGoV5TdOPib7i
+    jK8885pwwAEeUnk4EEW25++X9Lx5etRQhCrzsY8zMq9s56RbWkyieWiHsMvAI6ql
+    Jr7UydoDSTN1n16490fStSlSIb78MAZWdffT+ZFgXAjbXzheSCX/Tg==
+    -----END RSA PRIVATE KEY-----
 
 turn:
   secret: secret# TURN server secret
@@ -171,8 +348,8 @@ twilio:
   androidAppHash: test
 
 unidentifiedDelivery:
-  certificate: BVC9jOozLZpK43nsekdIdSgAJgPYpKJHJTBIdLJbGuB3 # java -jar TextSecureServer.jar certificate -ca
-  privateKey: yPapEts7DC4n1JcQlT/pBZrYh+/uDWzrsxlxr6tQ3Fs= # java -jar TextSecureServer.jar certificate --key priv_key_from_step_above --id key_ID
+  certificate: CiUIARIhBUc2GiscUWb7FOc/9swptlrdqkv60VRkDxHCxocv5mQ/EkDWWNAsdZmKwlaEAl7uZFd4wDRDaKluk8M2A7wzoZi8HpIzyeYpZWkvoNOR/iLO9SnRkJ9flJEpF76XEXND/6OE # java -jar TextSecureServer.jar certificate -ca
+  privateKey: WKwggOctbbzIz/q1SIVEh8ZcYyDBqltZ5VnbpC0u0V8= # java -jar TextSecureServer.jar certificate --key priv_key_from_step_above --id key_ID
   expiresDays: 365
 
 voiceVerification:
@@ -181,10 +358,9 @@ voiceVerification:
     - en
 
 zkConfig:
-  serverSecret: test # java -jar TextSecure.jar zkparams
-  serverPublic: test # java -jar TextSecure.jar zkparams
+  serverSecret: AI+cM8qbobDsiuNhgb74q96DjqUi/+ugwp95MZUDqZQP0zHAmIlga2I+Ynxu4r1ta3v1q8dzg06MhS665NWpcwt6bGenPdHLNSzp3BsUc7uxhU7V9eFELH5zhJSfFW3aB69YQ7Q2FMG7kIa6xHmEBNCTgYIPkQVskhCHLfQeZNQLZtkrSVpbCTk8DSFhky70aPlAIwVKGc/JOQ6vYQB8swxVsHvT8zcDUtl39kXAav4EZWBHEvLoTBY7ILc1rwIgB98N94rgfD/dF06cx66NKtG6lIBbVn8aJ8aoUEyKFAUGKSx0CvSrAj4GZS4mSsAeMdRL6w4d/L9yPxs9rR4G1gRW59It5jwDKrR+vGmwiECJf/OI2PSZj++E9FESsosEBY4X9dsPKXTdarSezacDsaM4OuA1ZALJuQUNXgM86TZ4lEIsto2dCNwxSlZ9s0KxwcsIKC5Imje+5omr2cgly0FPnK6CWRFt0dTb/dqG/uyC6AAhiOZphnZZSvTySZOsByAZQunkDfBWrSEOoYBXYt8i3V5u+hCvsDQtOzvoFMUKPnXiBE3qJ6GRPDP/myCbrRXkniy1xetK0jZnzwwHVFvhiP4MQpke9xrrKmLxBM8j3MukZqaKQgC0IMcF1u6/CA5IHJzJbAPJyg6cnVZjFpwvQTC9AZMMRBRB0n7oxVIAAsan++gNe+yqbKDHTDnqWyTQYnJ46k4m0ZHeTcE+NgL2tsS9WSdjdJwbRzdk8AjS0TQ4TXn4GhEqzQYouZ2DAQe2LWg/wGkFNwuKaqZkOwub9XOE3AcJprMU5+uLMr0CZdzeHiACYnPm3GdkUPVBRfDNZONrYny/J7g7ZnURHgb8W6i0sc7oHXebzlJUSjH0xiM/P+Iei29dxr9hoKs1ePQFR2FHk1KjCTZEp68EhfVWjY0e562QEJocHcmG1n0wxW9KIgL755W9BkhKC8kffzZnQc3Iig33QV+jAnJargdIopo0wMlsarBATqIWvjEHe4nnn8561aT6ua7hDLrNWw # java -jar TextSecure.jar zkparams
+  serverPublic: AI4X9dsPKXTdarSezacDsaM4OuA1ZALJuQUNXgM86TZ4lEIsto2dCNwxSlZ9s0KxwcsIKC5Imje+5omr2cgly0H8W6i0sc7oHXebzlJUSjH0xiM/P+Iei29dxr9hoKs1ePQFR2FHk1KjCTZEp68EhfVWjY0e562QEJocHcmG1n0wSKKaNMDJbGqwQE6iFr4xB3uJ55/OetWk+rmu4Qy6zVs # java -jar TextSecure.jar zkparams
   enabled: true
-
 
 migrationDeletedAccountsDynamoDb:
   region: us-east-1

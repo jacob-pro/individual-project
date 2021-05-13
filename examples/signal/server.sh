@@ -1,5 +1,7 @@
 # Guide to setup Signal Server
 # Must be on an Ubuntu AWS Instance
+# AWS Instance must have an IAM role
+# Role must access a deployed AWS AppConfig with Environment
 
 # Copy config file
 scp .\config.yml ubuntu@${SIGNAL_IP}:/home/ubuntu/
@@ -8,8 +10,6 @@ scp .\config.yml ubuntu@${SIGNAL_IP}:/home/ubuntu/
 sudo su
 apt update
 apt install -y git maven
-sed -i '/# cluster-enabled yes/c\cluster-enabled yes' /etc/redis/redis.conf
-systemctl restart redis
 mkdir -p /opt/signal
 cd /opt/signal
 git clone https://github.com/signalapp/Signal-Server.git
