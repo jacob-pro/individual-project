@@ -264,6 +264,7 @@ the testbed. Support for other platforms also means it would be easier to add su
 for additional hypervisors in future.
 
 \section{Containerization}
+\label{sect:containerization}
 
 Having discussed full platform / machine virtualization it is worth also mentioning containerization
 which is an alternative lightweight approach to virtualizing applications. In particular 
@@ -331,13 +332,95 @@ and concurrency. \\
 \chapter{Project Execution}
 \label{chap:execution}
 
-\section{Modifications to \emph{libvirt-rust}}
+\section{\emph{kvm-compose}}
 
-As mentioned in section \ref{subsect:kvm} I was going need to use the \emph{libvirt} library for interacting
-with QEMU/KVM, as well as the bindings to access it from the Rust language: \emph{libvirt-rust}~\cite{libvirt_rust}.
+To provide the core functionality of the testbed I have developed a command line tool called \emph{kvm-compose},
+using the technologies described in chapter \ref{chap:technical}, namely \emph{QEMU/KVM}, \emph{libvirt}, \emph{Open vSwitch}, and the \emph{Rust} language.
+
+\subsection{Dependencies and Installation}
+
+In order to compile the project it requires the \emph{Rust} compiler\footnote{\url{https://www.rust-lang.org/tools/install}},
+and the \texttt{libvirt-dev} and \texttt{libssl-dev} packages (or system equivalent).
+The \emph{bash} script \texttt{kvm-compose/install.sh} may be used to compile \emph{kvm-compose},
+install the binary into a system folder, and change its ownership to \emph{root}.
+Note that the \emph{root} permission is added so that the utiltiy may access \texttt{qemu:///system}
+and modify the \emph{Open vSwitch} and other networking configurations. \\
+
+To successfully use \emph{kvm-compose} the following packages should be installed (or equivalent):
+\texttt{qemu-kvm libvirt-daemon-system libvirt-clients openvswitch-switch}. Hardware acceleration
+for virtualization should be enabled in the system, and if needed for the application being tested - 
+nested virtualization for KVM should also be 
+enabled\footnote{\url{https://docs.fedoraproject.org/en-US/quick-docs/using-nested-virtualization-in-kvm/}}.
+
+\subsection{Command Line Interface (CLI)}
+
+As mentioned in section \ref{sect:containerization} the CLI is partly inspired by \emph{docker-compose}.
+It has two main subcommands \texttt{up} and \texttt{down} which create or destroy a testbed environment.
+It will look for a configuration file called \texttt{kvm-compose.yaml} in the current directory (unless
+otherwise specified with the \texttt{--input} flag).
+And current directory name is taken to be used as the `project name' (again unless specified with
+the \texttt{--project-name} flag).\\ 
+
+The basic principle for the \texttt{up} command is to first iterate over all the configured network bridges,
+if each bridge does not already exist it is then created as per the configuration, with the project name as a prefix.
+The prefix is used to reduce the possibility that resources in the current testbed project will collide
+with other existing configuration on the system or other testbed projects. 
+After creating the bridges it then iterates over all the configured virtual machines, if it does not exist
+it is created according to its specification (with the project prefix). 
+Files required for the virtual machines to function such as disk images are placed in the current directory.
+The \texttt{down} does the opposite in reverse order;
+removing the machines (and any left over files) and then the bridges. \\
+
+There is also the \texttt{machine} subcommand which can be used to \texttt{up} or \texttt{down} individual machines
+without affecting the rest of the testbed, in the event the user wishes to just make configuration changes
+to a small number of virtual machines.
+
+\begin{figure}
+	\begin{verbatim}
+		kvm-compose 1.0
+		Jacob Halsey
+		
+		USAGE:
+		kvm-compose [FLAGS] [OPTIONS] <SUBCOMMAND>
+		
+		FLAGS:
+		-h, --help       Prints help information
+		--no-ask     Suppress (accept) continue prompts
+		-V, --version    Prints version information
+		
+		OPTIONS:
+		--input <input>                  Configuration file [default: kvm-compose.yaml]
+		--project-name <project-name>    Defaults to the current folder name
+		-v, --verbosity <verbosity>          
+		
+		SUBCOMMANDS:
+		cloud-images    List supported cloud images
+		down            Destroy all virtual devices in the current configuration
+		help            Prints this message or the help of the given subcommand(s)
+		machine         Configure individual machine
+		up              Create all virtual devices in the current configuration
+	\end{verbatim}
+	\caption{\emph{kvm-compose} usage / help output}
+	\label{fig:kvm_compose_usage}
+\end{figure}
+
+
+\subsection{Configuration File Format}
+
+
+
+
+
+
+
+\subsection{Modifications to \emph{libvirt-rust}}
+
+While developing \emph{kvm-compose} I needed to use the \emph{libvirt} library for interacting
+with \emph{QEMU/KVM}, as well as the bindings to
+ access it from the \emph{Rust} language: \emph{libvirt-rust}~\cite{libvirt_rust}.
 During my initial experiments developing the project I discovered that under certain build setups / toolchains
 the \emph{libvirt-rust} crate\footnote{Rust packages such as libraries, managed through the \emph{Cargo} package
-manager are known as `Crates'}
+	manager are known as `\emph{Crates}'}
 failed to compile, due to it containing function declarations that did not actually exist in the \emph{libvirt}
 library. This is described in full detail in my issue
 report: \url{https://gitlab.com/libvirt/libvirt-rust/-/issues/1}.\\
@@ -357,15 +440,24 @@ which on failure I was also printing to the console
 via the logging framework. So I also added a \lstinline|clear_error_func()| that binds to \lstinline|virSetErrorFunc|
 along with my changes, so that the default error handler can be disabled.
 
-\section{\emph{kvm-compose}}
 
 \section{Examples}
+
+I have provided two example projects demonstrating how \emph{kvm-compose} can be used to automatically
+create a virtual testbed environment for privacy enhancing technologies (PETs).
+
+\subsection{DP3T App}
+
+\subsection{Signal}
 
 \section{Development Practice}
 
 During development I used the \emph{Git} version control system, with free hosting from \emph{GitHub Inc}.
+The \emph{IntelliJ Rust} plugin for \emph{CLion} proved very useful for code completion and other typical
+IDE features\footnote{\url{https://www.jetbrains.com/rust/}}.
 I also made use of the \emph{GitHub Actions} CI/CD platform, with a workflow configured to check that
-the project builds and passes style checks on each push to the repository.
+the project builds and passes style checks on each push to the repository\footnote{See 
+\texttt{.github/workflows/rust.yml}}.
 
 \chapter{Critical Evaluation}
 \label{chap:evaluation}
