@@ -270,7 +270,7 @@ it would mean all applications would have to use the same operating system; it c
 used to simulate different platforms. \\
 
 While I will not be using containerization, the \emph{Docker Compose} tool \cite{docker_compose} 
-for orchestrating containers has provided some useful inspiration for the testbed.
+used for orchestrating containers has provided some useful inspiration for the testbed.
 \emph{Docker Compose} is a command line program with two core subcommands \emph{up}
 and \emph{down} which are used to either build or destroy a set of containers as defined
 in a YAML configuration file. The configuration file may define a list of containers, each 
@@ -285,29 +285,32 @@ I will try to replicate them but within a fully virtualized environment (QEMU/KV
 
 \section{The Rust Language}
 
+As you will see in Chapter \ref{chap:execution}, I have chosen to use the Rust programming
+language for developing the testbed. Although there are no doubt many languages which
+could have been used, I will provide some background on Rust, and its advantages for this
+project. \\
+
+Rust is a modern systems programming language, originally developed by Mozilla, 
+with its first stable release in 2015. It is designed with a focus on performance, safety
+and concurrency. \\
+
+\begin{singlespace}
+	It has some key advantages:
+	\begin{itemize}
+		\item Excellent performance; on par with
+		 C/C++\footnote{\url{https://benchmarksgame-team.pages.debian.net/benchmarksgame/index.html}}.
+		\item Easy interaction with C libraries via FFI, making 
+		the \emph{libvirt} \cite{libvirt_rust} bindings possible.
+		\item A simple to use package manager - \emph{Cargo}, along with a rich ecosystem of 
+		libraries\footnote{\url{https://crates.io/}}.
+		\item Modern functional constructs such as sum types and pattern matching.
+		\item Memory and thread safety are enforced at compile time~\cite{systems_rust}.
+		\item The compiler and standard library support a large number of platforms.
+	\end{itemize}
+\end{singlespace}
+
 \section{Cloud Init}
 
-\vspace{1cm}
-{\bf A compulsory chapter,     of roughly $10$ pages} 
-\vspace{1cm} 
-
-\noindent
-This chapter is intended to describe the technical basis on which execution
-of the project depends.  The goal is to provide a detailed explanation of
-the specific problem at hand, and existing work that is relevant (e.g., an
-existing algorithm that you use, alternative solutions proposed, supporting
-technologies).  
-
-Per the same advice in the handbook, note there is a subtly difference from
-this and a full-blown literature review (or survey).  The latter might try
-to capture and organise (e.g., categorise somehow) {\em all} related work,
-potentially offering meta-analysis, whereas here the goal is simple to
-ensure the dissertation is self-contained.  Put another way, after reading 
-this chapter a non-expert reader should have obtained enough background to 
-understand what {\em you} have done (by reading subsequent sections), then 
-accurately assess your work.  You might view an additional goal as giving 
-the reader confidence that you are able to absorb, understand and clearly 
-communicate highly technical material.
 
 \chapter{Project Execution}
 \label{chap:execution}
