@@ -16,6 +16,21 @@
 
 \usepackage{subfig}
 
+\usepackage{listings, listings-rust}
+\lstset{
+	frame=tb,
+	language=Rust,
+	keywordstyle=\color{blue},
+	stringstyle=\color{code-string},
+	commentstyle=\color{code-comment},
+	tabsize=4,
+	basicstyle={\small\ttfamily},
+	showstringspaces=false,
+	breaklines=true,
+	aboveskip=3mm,
+	belowskip=0mm,
+}
+
 \begin{document}
 
 \maketitle
@@ -116,7 +131,7 @@ Before we discuss Privacy Enhancing Technologies we must consider what we mean b
 primarily using the definitions set out by D. J. Solove in his
 2006 article \emph{A Taxonomy of Privacy}~\cites{solove_privacy}{rephrain_harms}. Solove notes that the
 definition of privacy has often been very broad or vague, and therefore sets out to develop
-a taxonomy of privacy violations. He has defined four groups of harmful activities (See figure \ref{privacy_taxonomy}). \\
+a taxonomy of privacy violations. He has defined four groups of harmful activities (See figure~\ref{privacy_taxonomy}). \\
 
 \begin{figure}
 \centering
@@ -166,8 +181,8 @@ Broadly speaking a Privacy Enhancing Technology is any solution or approach in h
 protect a user from such privacy violations~\cite{buckley_pets}. Some examples of PETs could include 
 Onion routing such as the Tor network (which enables anonymous communication), or
 end-to-end encrypted messaging systems such as the Signal protocol. 
-Kaaniche et al. \cite{kaaniche_2020_privacy} have defined a more comprehensive classification of PETs
- (see Figure \ref{pet_taxonomy}).
+Kaaniche et al.~\cite{kaaniche_2020_privacy} have defined a more comprehensive classification of PETs
+ (see Figure~\ref{pet_taxonomy}).
 
 \begin{figure}
 	\centering
@@ -212,7 +227,7 @@ In this chapter I will discuss some of the technologies which this project depen
 	`Virtualization uses software to create an abstraction layer over computer hardware that allows the hardware 
 	elements of a single computer—processors, memory, storage and more—to be divided into multiple virtual computers, 
 	commonly called virtual machines (VMs). Each VM runs its own operating system (OS) and behaves like an independent 
-	computer, even though it is running on just a portion of the actual underlying computer hardware.' \cite{ibm_virtualization}
+	computer, even though it is running on just a portion of the actual underlying computer hardware.'~\cite{ibm_virtualization}
 \end{quotation}
 
 Virtualization\footnote{I am a British citizen, and this is a dissertation at a British university, 
@@ -231,17 +246,18 @@ in place of a conventional operating system - as a Type 1 or \emph{bare-metal} h
 or run within a separate host operating system - as a Type 2 or \emph{hosted} hypervisor. \\
 
 \subsection{KVM}
+\label{subsect:kvm}
 
 For the prototype testbed I will be using \emph{Kernel-based Virtual Machine} (KVM), which is a 
 kernel module for the Linux operating system that allows it to function as a hypervisor. 
 The advantage is that KVM (and the Linux kernel itself) are free and open-source software 
-under GNU licenses, and it is a stable and mature platform \cite{redhat_kvm}.
+under GNU licenses, and it is a stable and mature platform~\cite{redhat_kvm}.
 In userspace QEMU\footnote{Note QEMU can also function as its own independent type 2 hypervisor 
 	but KVM is required to enable hardware acceleration,
 see \url{https://www.packetflow.co.uk/what-is-the-difference-between-qemu-and-kvm/}}
 may then use KVM to provide a full virtualization platform. \\
 
-\emph{libvirt} is an open-source toolkit for managing virtualization platforms \cite{libvirt},
+\emph{libvirt} is an open-source toolkit for managing virtualization platforms~\cite{libvirt},
 it supports QEMU/KVM as well as hypervisors from other vendors. It is written in C, 
 with bindings available in many other programming languages, making it a suitable library for developing 
 the testbed. Support for other platforms also means it would be easier to add support
@@ -269,7 +285,7 @@ software and services very quick and easy, but unfortunately it is not ideal for
 it would mean all applications would have to use the same operating system; it couldn't be 
 used to simulate different platforms. \\
 
-While I will not be using containerization, the \emph{Docker Compose} tool \cite{docker_compose} 
+While I will not be using containerization, the \emph{Docker Compose} tool~\cite{docker_compose}
 used for orchestrating containers has provided some useful inspiration for the testbed.
 \emph{Docker Compose} is a command line program with two core subcommands \emph{up}
 and \emph{down} which are used to either build or destroy a set of containers as defined
@@ -281,11 +297,11 @@ I will try to replicate them but within a fully virtualized environment (QEMU/KV
 
 \section{Virtual Networks}
 
-\section{Software Defined Networking}
+\subsection{Software Defined Networking}
 
 \section{The Rust Language}
 
-As you will see in Chapter \ref{chap:execution}, I have chosen to use the Rust programming
+As you will see in Chapter~\ref{chap:execution}, I have chosen to use the Rust programming
 language for developing the testbed. Although there are no doubt many languages which
 could have been used, I will provide some background on Rust, and its advantages for this
 project. \\
@@ -300,7 +316,7 @@ and concurrency. \\
 		\item Excellent performance; on par with
 		 C/C++\footnote{\url{https://benchmarksgame-team.pages.debian.net/benchmarksgame/index.html}}.
 		\item Easy interaction with C libraries via FFI, making 
-		the \emph{libvirt} \cite{libvirt_rust} bindings possible.
+		the \emph{libvirt}~\cite{libvirt_rust} bindings possible.
 		\item A simple to use package manager - \emph{Cargo}, along with a rich ecosystem of 
 		libraries\footnote{\url{https://crates.io/}}.
 		\item Modern functional constructs such as sum types and pattern matching.
@@ -315,102 +331,41 @@ and concurrency. \\
 \chapter{Project Execution}
 \label{chap:execution}
 
-{\bf A topic-specific chapter, of roughly $15$ pages} 
-\vspace{1cm} 
+\section{Modifications to \emph{libvirt-rust}}
 
-\noindent
-This chapter is intended to describe what you did: the goal is to explain
-the main activity or activities, of any type, which constituted your work 
-during the project.  The content is highly topic-specific, but for many 
-projects it will make sense to split the chapter into two sections: one 
-will discuss the design of something (e.g., some hardware or software, or 
-an algorithm, or experiment), including any rationale or decisions made, 
-and the other will discuss how this design was realised via some form of 
-implementation.  
+As mentioned in section \ref{subsect:kvm} I was going need to use the \emph{libvirt} library for interacting
+with QEMU/KVM, as well as the bindings to access it from the Rust language: \emph{libvirt-rust}~\cite{libvirt_rust}.
+During my initial experiments developing the project I discovered that under certain build setups / toolchains
+the \emph{libvirt-rust} crate\footnote{Rust packages such as libraries, managed through the \emph{Cargo} package
+manager are known as `Crates'}
+failed to compile, due to it containing function declarations that did not actually exist in the \emph{libvirt}
+library. This is described in full detail in my issue
+report: \url{https://gitlab.com/libvirt/libvirt-rust/-/issues/1}.\\
 
-This is, of course, far from ideal for {\em many} project topics.  Some
-situations which clearly require a different approach include:
+I submitted a fixed version of \emph{libvirt-rust} with these invalid functions removed, but also with
+a test case that builds the bindings in a static library, therefore checking that all the symbols (such as
+functions) did actually exist in the underlying \emph{libvirt} library. 
+The tests are automatically run as part of the 
+CI/CD pipeline so this sort of problem should be prevented in future. The merge request was approved by
+the project maintainers: \url{https://gitlab.com/libvirt/libvirt-rust/-/merge_requests/14}. \\
 
-\begin{itemize}
-\item In a project where asymptotic analysis of some algorithm is the goal,
-      there is no real ``design and implementation'' in a traditional sense
-      even though the activity of analysis is clearly within the remit of
-      this chapter.
-\item In a project where analysis of some results is as major, or a more
-      major goal than the implementation that produced them, it might be
-      sensible to merge this chapter with the next one: the main activity 
-      is such that discussion of the results cannot be viewed separately.
-\end{itemize}
+Whilst working with \emph{libirt} I also discovered that I was receiving duplicate error messages printed
+to the console (via \emph{stdout/stderr}), this was because by default \emph{libvirt} has an error handler
+configured to print all errors, but at the same time the \emph{libvirt-rust} binding functions also returned
+a \lstinline|Result<_, virt::error::Error>| type (the idiomatic approach in Rust), 
+which on failure I was also printing to the console
+via the logging framework. So I also added a \lstinline|clear_error_func()| that binds to \lstinline|virSetErrorFunc|
+along with my changes, so that the default error handler can be disabled.
 
-\noindent
-Note that it is common to include evidence of ``best practice'' project 
-management (e.g., use of version control, choice of programming language 
-and so on).  Rather than simply a rote list, make sure any such content 
-is useful and/or informative in some way: for example, if there was a 
-decision to be made then explain the trade-offs and implications 
-involved.
+\section{\emph{kvm-compose}}
 
-\section{Example Section}
+\section{Examples}
 
-This is an example section; 
-the following content is auto-generated dummy text.
-\lipsum
+\section{Development Practice}
 
-\subsection{Example Sub-section}
-
-\begin{figure}[t]
-\centering
-foo
-\caption{This is an example figure.}
-\label{fig}
-\end{figure}
-
-\begin{table}[t]
-\centering
-\begin{tabular}{|cc|c|}
-\hline
-foo      & bar      & baz      \\
-\hline
-$0     $ & $0     $ & $0     $ \\
-$1     $ & $1     $ & $1     $ \\
-$\vdots$ & $\vdots$ & $\vdots$ \\
-$9     $ & $9     $ & $9     $ \\
-\hline
-\end{tabular}
-\caption{This is an example table.}
-\label{tab}
-\end{table}
-
-\begin{algorithm}[t]
-\For{$i=0$ {\bf upto} $n$}{
-  $t_i \leftarrow 0$\;
-}
-\caption{This is an example algorithm.}
-\label{alg}
-\end{algorithm}
-
-\begin{lstlisting}[float={t},caption={This is an example listing.},label={lst},language=C]
-for( i = 0; i < n; i++ ) {
-  t[ i ] = 0;
-}
-\end{lstlisting}
-
-This is an example sub-section;
-the following content is auto-generated dummy text.
-Notice the examples in Figure~\ref{fig}, Table~\ref{tab}, Algorithm~\ref{alg}
-and Listing~\ref{lst}.
-\lipsum
-
-\subsubsection{Example Sub-sub-section}
-
-This is an example sub-sub-section;
-the following content is auto-generated dummy text.
-\lipsum
-
-\paragraph{Example paragraph.}
-
-This is an example paragraph; note the trailing full-stop in the title,
-which is intended to ensure it does not run into the text.
+During development I used the \emph{Git} version control system, with free hosting from \emph{GitHub Inc}.
+I also made use of the \emph{GitHub Actions} CI/CD platform, with a workflow configured to check that
+the project builds and passes style checks on each push to the repository.
 
 \chapter{Critical Evaluation}
 \label{chap:evaluation}
