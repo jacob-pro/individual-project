@@ -215,7 +215,11 @@ In this chapter I will discuss some of the technologies which this project depen
 	computer, even though it is running on just a portion of the actual underlying computer hardware.' \cite{ibm_virtualization}
 \end{quotation}
 
-Virtualization will therefore be a very useful technology for the testbed, since it will allow us to model
+Virtualization\footnote{I am a British citizen, and this is a dissertation at a British university, 
+and therefore I am very much aware that the correct spelling in British English is `virtualisation', however the
+majority of platforms, libraries, and sources I will be referencing use the US English spelling, 
+so I have chosen to do the same. }
+ will therefore be a very useful technology for the testbed, since it will allow us to model
 an environment consisting of multiple computers such as application clients and servers, and run
 them all within a single machine. In addition, modern CPU extensions (such as Intel VT and AMD-V) 
 provide hardware-assisted / accelerated virtualization support, allowing the virtual machines to 
@@ -223,8 +227,8 @@ have near native performance which will help in meeting the goal of minimal over
 
 In order to use virtualization a \emph{Hypervisor} is required, this is the software layer sits between
 the physical hardware and manages the virtual machines. A hypervisor may run directly on the physical machine
-in place of a conventional operating system - a Type 1 or \emph{bare-metal} hypervisor,
-or run within a separate host operating system - a Type 2 or \emph{hosted} hypervisor. \\
+in place of a conventional operating system - as a Type 1 or \emph{bare-metal} hypervisor,
+or run within a separate host operating system - as a Type 2 or \emph{hosted} hypervisor. \\
 
 \subsection{KVM}
 
@@ -232,8 +236,7 @@ For the prototype testbed I will be using \emph{Kernel-based Virtual Machine} (K
 kernel module for the Linux operating system that allows it to function as a hypervisor. 
 The advantage is that KVM (and the Linux kernel itself) are free and open-source software 
 under GNU licenses, and it is a stable and mature platform \cite{redhat_kvm}.
-In userspace QEMU 
-\footnote{Note QEMU can also function as its own independent type 2 hypervisor 
+In userspace QEMU\footnote{Note QEMU can also function as its own independent type 2 hypervisor 
 	but KVM is required to enable hardware acceleration,
 see \url{https://www.packetflow.co.uk/what-is-the-difference-between-qemu-and-kvm/}}
 may then use KVM to provide a full virtualization platform. \\
@@ -246,11 +249,43 @@ for additional hypervisors in future.
 
 \section{Containerization}
 
+Having discussed full platform / machine virtualization it is worth also mentioning containerization
+which is an alternative lightweight approach to virtualizing applications. In particular 
+there is the Docker platform for Linux containers which has become very popular in recent
+years~\cite{zdnet_docker_2018}. \\
+
+\begin{figure}
+	\centering
+	\includegraphics[width=12cm]{img/containers}
+	\caption[]{Platform Virtualization vs Containerization\footnotemark}
+	\label{containers_diagram}
+\end{figure}
+\footnotetext{Graphic from \url{https://blog.netapp.com/blogs/containers-vs-vms/}}
+
+Unlike full platform virtualization, containerization does not virtualize a whole computer 
+(or require hardware acceleration), instead it uses namespacing within the host operating 
+system kernel to create an isolated environment. This has many practical uses, making deploying
+software and services very quick and easy, but unfortunately it is not ideal for our testbed, since
+it would mean all applications would have to use the same operating system; it couldn't be 
+used to simulate different platforms. \\
+
+While I will not be using containerization, the \emph{Docker Compose} tool \cite{docker_compose} 
+for orchestrating containers has provided some useful inspiration for the testbed.
+\emph{Docker Compose} is a command line program with two core subcommands \emph{up}
+and \emph{down} which are used to either build or destroy a set of containers as defined
+in a YAML configuration file. The configuration file may define a list of containers, each 
+with options including an image to download, an entry command to run, volumes to attach,
+and environment variables, the config may also define virtual networks and attach them
+to the containers. These are all very useful features in line with the goals for the testbed, and as such
+I will try to replicate them but within a fully virtualized environment (QEMU/KVM).
+
 \section{Virtual Networks}
 
 \section{Software Defined Networking}
 
 \section{The Rust Language}
+
+\section{Cloud Init}
 
 \vspace{1cm}
 {\bf A compulsory chapter,     of roughly $10$ pages} 
