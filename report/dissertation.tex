@@ -367,7 +367,7 @@ and concurrency. \\
 		along with a rich ecosystem\footnote{\url{https://crates.io/}} of 
 		libraries / crates\footnote{Rust packages 
 			managed through the \emph{Cargo} package
-				manager are known as `\emph{Crates}'}.
+				manager are known as \emph{Crates}}.
 		\item Modern functional constructs such as sum types and pattern matching.
 		\item Memory and thread safety are enforced at compile time~\cite{systems_rust}.
 		\item The compiler and standard library support a large number of platforms.
@@ -376,6 +376,36 @@ and concurrency. \\
 
 \section{\emph{cloud-init}}
 
+One of the goals of the project is to support a high level of automation when building a 
+test environment. So far we have looked at technologies we can use to create virtual machines,
+but that would still leave the tester with a lot of work in terms of installing the operating
+systems and software on the virtual machines. \\
+
+One approach the tester could take is pre-building a machine step by step,
+installing all their software and configuring it appropriately, and then saving
+a disk image, which they could attach to virtual test machines. However that approach 
+has some weaknesses; first of all if they wish to change on of the earlier steps
+such as their choice of operating system it would require starting the process from scratch,
+another problem is that each clone of the disk image would be the same, and customisation
+would require manually logging in to each individual instance.
+Also if the tester wants to transfer or replicate the testbed it would mean copying
+a series of potentially large disk images with duplicate data. \\
+
+The problem of automatically initialising virtual machines is not unique to this testbed project,
+in fact it is shared by public cloud providers (such as \emph{Amazon AWS}, \emph{Microsoft Azure},
+\emph{Oracle OCI}, etc.), who need to deploy various operating systems (of many different versions)
+and then configure them so the customer can remotely connect.
+As a result a standard system for initialising cloud machines has
+been developed called \emph{cloud-init}~\cite{cloud_init} - which has support for many popular operating systems,
+cloud platforms and data sources. \\
+
+It works by having a \emph{cloud-init} package already installed as part of the operating system,
+in a `cloud image', usually available directly from the operating system maintainers
+\footnote{For example \url{https://cloud-images.ubuntu.com/}}.
+On the first boot of the image \emph{cloud-init} will check for supported data sources,
+(such as from a list of supported URLs) from which to obtain user data and instance meta data.
+The data can include things such locale, hostname, and SSH keys which are then automatically
+applied to the instance.
 
 \chapter{Project Execution}
 \label{chap:execution}
@@ -384,7 +414,7 @@ and concurrency. \\
 
 To provide the core functionality of the testbed I have developed a command line tool called \emph{kvm-compose},
 using the technologies described in chapter \ref{chap:technical}, namely \emph{QEMU/KVM}, 
-\emph{libvirt}, \emph{Open vSwitch}, and the \emph{Rust} language.
+\emph{libvirt}, \emph{Open vSwitch}, \emph{cloud-init}, and the \emph{Rust} language.
 
 \subsection{Dependencies and Installation}
 
@@ -513,8 +543,8 @@ An example virtual bridge config could look like:
       # Optionally connect to a physical interface on the host
       # Such as to allow the virtual machines internet access
   connect_external_interfaces: [eth0]
-      # When 'stealing' one of the hosts adapters 
-      # you will need to assign the new adapter an IP
+      # When 'stealing' one of the host's adapters 
+      # you will need to assign the new virtual adapter an IP
   enable_dhcp_client: true
       # Optional: Specify an SDN controller to use
   controller: tcp:127.0.0.1:6653
