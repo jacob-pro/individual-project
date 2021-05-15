@@ -375,6 +375,7 @@ and concurrency. \\
 \end{singlespace}
 
 \section{\emph{cloud-init}}
+\label{sect:cloud-init-background}
 
 One of the goals of the project is to support a high level of automation when building a 
 test environment. So far we have looked at technologies we can use to create virtual machines,
@@ -621,9 +622,58 @@ along with my changes, so that the default error handler can be disabled.
 
 \subsection{Cloud Images}
 
-The currently supported cloud images may be listed using the \texttt{cloud-images} subcommand of \emph{kvm-compose}.
+The currently supported cloud images may be listed using the \texttt{cloud-images} subcommand 
+of \emph{kvm-compose}. When a cloud image is chosen and launched \emph{kvm-compose} takes the following
+steps:
+
+\begin{singlespace}
+	\begin{enumerate}
+		\item Checks if the image has already been downloaded, the \texttt{directories} crate 
+		is used to resolve the path (\texttt{\$HOME/.kvm-compose/} on Linux).
+		\item If not it will prompt the user before downloading; the download may be large so it makes sense
+		to check first (this behaviour can be disabled with the \texttt{--no-ask} option for use in
+		an unattended script). \texttt{Reqwest} is used for the download along with the \texttt{indicatif}
+		crate to display progress.
+		\item A copy of the image with the machine name will be made in the current directory.
+		\item The disk image will be expanded if the \texttt{expand\_gigabytes} option is specified.
+		\item The disk is attached to virtual machine via the \emph{libvirt Domain} XML.
+	\end{enumerate}
+\end{singlespace}
 
 \subsection{\emph{cloud-init}}
+
+Section \ref{sect:cloud-init-background} provides an introduction to \emph{cloud-init}, but I
+will now explain how it has been used in \emph{kvm-compose}.
+When a virtual machine is created the virtual bios is configured to use the string
+\texttt{ds=nocloud} in the serial number. This indicates to \emph{cloud-init} that 
+the \texttt{NoCloud} datasource\footnote{\url{https://cloudinit.readthedocs.io/en/latest/topics/datasources/nocloud.html}}
+is being used. On startup the \emph{cloud-init} agent will then look for an \emph{ISO9660/Joliet} or \emph{vfat}
+filesystem with a volume label of \texttt{cidata}. \\
+
+When creating virtal machines \emph{kvm-compose} calls the \texttt{genisoimage} program\footnote{\url{https://linux.die.net/man/1/genisoimage}}
+to generate a \emph{Joliet} filesystem containing a \emph{cloud-init} user data and instance metadata file.
+The instance metadata is a JSON encoded file; on \texttt{NoCloud} this can contain an automatically configured
+hostname, as well as any other keys. 
+The keys also accessible via the \texttt{cloud-init query ds.meta\_data.*key*} command inside the VM.
+The user data is a \texttt{\#cloud-config} file in the YAML format, which when loaded by the \emph{cloud-init}
+agent it is put through the \emph{jinja} templating engine, allowing variable substitution from the instance
+metadata values\footnote{See \texttt{/kvm-compose/assets/cloud\_init.yaml}, the file is embedded in the binary
+using the \texttt{rust-embed} crate.}.
+The context file(s) are made available to the virtual machine as a \emph{tarball} in the same \emph{Joliet} volume.
+The \texttt{\#cloud-config} file is used to list a number of startup commands
+necessary to provide the features
+needed by \emph{kvm-compose} - such as launching and logging the \texttt{run\_script} and extracting in
+the \texttt{context} file(s) to the local disk.\\
+
+\emph{kvm-compose} also supports the \emph{Cirros} cloud image - this is a minimal Linux distribution
+by the \emph{OpenStack Project}\footnote{\url{https://docs.openstack.org/image-guide/obtain-images.html\#cirros-test}}.
+I have added support because due to its small footprint it could be useful when launching a large 
+number of virtual machines on a resource constrained system.
+Note that when using \emph{Cirros} the \emph{cloud-init} setup works slightly differently because \emph{Cirros}
+does not have a full \emph{cloud-init} implementation - instead it uses \emph{cirros-init} which doesn't support
+\texttt{\#cloud-config}; the user data can only be a simple 
+script\footnote{See \texttt{/kvm-compose/assets/cirros\_init.sh}}.
+Instance metadata keys are instead accessed via \texttt{cirros-query get *key*} command.
 
 \section{Examples}
 
@@ -636,7 +686,9 @@ create a virtual testbed environment for privacy enhancing technologies (PETs).
 
 \section{Development Practices}
 
-During development I used the \emph{Git} version control system, with free hosting from \emph{GitHub Inc}.
+During development I used the \emph{Git} version control system, with free hosting from \emph{GitHub Inc},
+a \texttt{.gitignore} file was used to prevent temporary and user specific files being added to the
+repository.
 The \emph{IntelliJ Rust} plugin for \emph{CLion} proved very useful for code completion and other typical
 IDE features\footnote{\url{https://www.jetbrains.com/rust/}}.
 I also made use of the \emph{GitHub Actions} CI/CD platform, with a workflow configured to check that
