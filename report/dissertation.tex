@@ -31,6 +31,8 @@
 	belowskip=0mm,
 }
 
+\usepackage{nameref}
+
 \begin{document}
 
 \maketitle
@@ -59,6 +61,7 @@ Summary of work:
 \end{itemize}
 
 \chapter*{Supporting Technologies}
+\label{chap:supporting_tech}
 
 \begin{singlespace}
 	\begin{itemize}
@@ -245,7 +248,7 @@ the physical hardware and manages the virtual machines. A hypervisor may run dir
 in place of a conventional operating system - as a Type 1 or \emph{bare-metal} hypervisor,
 or run within a separate host operating system - as a Type 2 or \emph{hosted} hypervisor. \\
 
-\subsection{KVM}
+\subsection{\emph{KVM}}
 \label{subsect:kvm}
 
 For the prototype testbed I will be using \emph{Kernel-based Virtual Machine} (KVM), which is a 
@@ -318,15 +321,18 @@ and concurrency. \\
 		 C/C++\footnote{\url{https://benchmarksgame-team.pages.debian.net/benchmarksgame/index.html}}.
 		\item Easy interaction with C libraries via FFI, making 
 		the \emph{libvirt}~\cite{libvirt_rust} bindings possible.
-		\item A simple to use package manager - \emph{Cargo}, along with a rich ecosystem of 
-		libraries\footnote{\url{https://crates.io/}}.
+		\item A simple to use package manager - \emph{Cargo},
+		along with a rich ecosystem\footnote{\url{https://crates.io/}} of 
+		libraries / crates\footnote{Rust packages 
+			managed through the \emph{Cargo} package
+				manager are known as `\emph{Crates}'}.
 		\item Modern functional constructs such as sum types and pattern matching.
 		\item Memory and thread safety are enforced at compile time~\cite{systems_rust}.
 		\item The compiler and standard library support a large number of platforms.
 	\end{itemize}
 \end{singlespace}
 
-\section{Cloud Init}
+\section{\emph{cloud-init}}
 
 
 \chapter{Project Execution}
@@ -348,7 +354,7 @@ and modify the \emph{Open vSwitch} and other networking configurations. \\
 
 To successfully use \emph{kvm-compose} the following packages should be installed (or equivalent):
 \texttt{qemu-kvm libvirt-daemon-system libvirt-clients openvswitch-switch}. Hardware acceleration
-for virtualization should be enabled in the system, and if needed for the application being tested - 
+for virtualization should be enabled in the system, and if required for the application being tested - 
 nested virtualization for KVM should also be 
 enabled\footnote{\url{https://docs.fedoraproject.org/en-US/quick-docs/using-nested-virtualization-in-kvm/}}.
 
@@ -358,18 +364,19 @@ As mentioned in section \ref{sect:containerization} the CLI is partly inspired b
 It has two main subcommands \texttt{up} and \texttt{down} which create or destroy a testbed environment.
 It will look for a configuration file called \texttt{kvm-compose.yaml} in the current directory (unless
 otherwise specified with the \texttt{--input} flag).
-And current directory name is taken to be used as the `project name' (again unless specified with
-the \texttt{--project-name} flag).\\ 
+And the current directory name is taken to be used as the `project name' (again unless specified with
+the \texttt{--project-name} flag). The \emph{clap} crate was used to automatically parse the command line arguments
+in a type-safe manner. \\ 
 
 The basic principle for the \texttt{up} command is to first iterate over all the configured network bridges,
 if each bridge does not already exist it is then created as per the configuration, with the project name as a prefix.
-The prefix is used to reduce the possibility that resources in the current testbed project will collide
+The prefix is used to reduce the possibility that resources in the current testbed project will conflict
 with other existing configuration on the system or other testbed projects. 
 After creating the bridges it then iterates over all the configured virtual machines, if it does not exist
-it is created according to its specification (with the project prefix). 
+it is created according to its specification (with the project prefix) and then launched. 
 Files required for the virtual machines to function such as disk images are placed in the current directory.
-The \texttt{down} does the opposite in reverse order;
-removing the machines (and any left over files) and then the bridges. \\
+The \texttt{down} command does the opposite in reverse order;
+stopping and removing the machines (and any left over files), and then removing the bridges. \\
 
 There is also the \texttt{machine} subcommand which can be used to \texttt{up} or \texttt{down} individual machines
 without affecting the rest of the testbed, in the event the user wishes to just make configuration changes
@@ -404,23 +411,122 @@ to a small number of virtual machines.
 	\label{fig:kvm_compose_usage}
 \end{figure}
 
-
 \subsection{Configuration File Format}
 
+The configuration file is expected to be in the YAML format~\cite{yaml}, internally \emph{kvm-compose}
+uses the \emph{serde} and \emph{serde-yaml} crates to parse the file.
+The root of the config file should look like:
+
+\begin{verbatim}
+machines:                       # List of testbed virtual machines
+bridges:                        # List of testbed virtual bridges
+ssh_public_key: ssh-rsa...      # Your SSH public key
+\end{verbatim}
+
+An example machine config could look like:
+
+\begin{verbatim}
+- name: example1                # (VM will be prefixed with project name)
+  memory_mb: 4096               # Optional: default 512MiB
+  cpus: 4                       # Optional: default 1
+  disk:                         # Two variants: cloud_image or existing_disk 
+    cloud_image:
+      name: ubuntu_18_04
+      expand_gigabytes: 25      # Optional: Adds additional space to the virtual disk
+  interfaces:                   # List of connected network interfaces
+    - bridge: br0               # (A bridge defined in the same project)
+  run_script: ./script.sh       # Optional: path to a script
+  context: ./file.txt           # Optional: path to a file or folder
+\end{verbatim}
+
+Alternatively an existing disk image may be used instead of a cloud image:
+
+\begin{verbatim}
+    existing_disk:
+      path: ./disk.img         # Path to the disk image
+      driver_type: qcow2       # raw or qcow2 (Default: raw)
+      device_type: disk        # disk or cdrom (Default: disk)
+      readonly: false          # Default: false
+\end{verbatim}
 
 
+Assuming that the disk image supports \emph{cloud-init}\footnote{
+	\emph{cirros-init} is also supported but only when used with the \emph{cirros} cloud image
+} at first boot the following will happen:
 
+\begin{singlespace}
+	\begin{itemize}
+		\item The machine \texttt{name} (with project prefix) is used as the hostname.
+		\item The SSH public key is injected into the instance.
+		\item File(s) specified in \texttt{context} are copied into the \texttt{/etc/nocloud/context} directory.
+		\item The \texttt{run\_script} is executed, with its output log saved into \texttt{/etc/nocloud/}.
+	\end{itemize}
+\end{singlespace}
 
+An example virtual bridge config could look like:
 
+\begin{verbatim}
+- name: br0                     # (Bridge will be prefixed with project name)
+      # Optionally connect to a physical interface on the host
+      # Such as to allow the virtual machines internet access
+  connect_external_interfaces: [eth0]
+      # When 'stealing' one of the hosts adapters 
+      # you will need to assign the new adapter an IP
+  enable_dhcp_client: true
+      # Optional: Specify an SDN controller to use
+  controller: tcp:127.0.0.1:6653
+      # Optional: Specify which protocol to use for the SDN controller
+  protocol: OpenFlow13
+\end{verbatim}
+
+\subsection{Interaction with \emph{QEMU/KVM}}
+
+I have used the \emph{libvirt} library for interacting with \emph{QEMU/KVM}, 
+via the bindings to access it from the \emph{Rust} language: \emph{libvirt-rust}~\cite{libvirt_rust}.
+One of the benefits of the \emph{kvm-compose} tool is that it automates the creation of \emph{libvirt Domain}
+XML configurations (with the help of the \emph{xml-rs} crate). These are otherwise tedious to write, for 
+example it generates the following XML to send to \emph{libvirt}:
+
+\begin{verbatim}
+<?xml version="1.0" encoding="UTF-8"?>
+<domain type="kvm">
+  <name>signal-client1</name>
+  <cpu mode="host-model" />
+  <vcpu>2</vcpu>
+  <memory unit="MiB">2048</memory>
+  <os>
+    <type arch="x86_64">hvm</type>
+  </os>
+  <devices>
+    <graphics type="vnc" port="-1" autoport="yes" />
+    <disk type="file" device="disk">
+      <driver name="qemu" type="qcow2" />
+      <source file="/home/jacob/independent-project/examples/signal/client1-cloud-disk.img" />
+      <target dev="hda" bus="ide" />
+    </disk>
+    <disk type="file" device="cdrom">
+      <driver name="qemu" type="raw" />
+      <source file="/home/jacob/independent-project/examples/signal/client1-cloud-init.iso" />
+      <readonly />
+      <target dev="hdb" bus="ide" />
+    </disk>
+    <interface type="bridge">
+      <source bridge="signal-br0" />
+      <virtualport type="openvswitch" />
+    </interface>
+  </devices>
+  <sysinfo type="smbios">
+    <system>
+      <entry name="serial">ds=nocloud;</entry>
+    </system>
+  </sysinfo>
+</domain>
+\end{verbatim}
 
 \subsection{Modifications to \emph{libvirt-rust}}
 
-While developing \emph{kvm-compose} I needed to use the \emph{libvirt} library for interacting
-with \emph{QEMU/KVM}, as well as the bindings to
- access it from the \emph{Rust} language: \emph{libvirt-rust}~\cite{libvirt_rust}.
-During my initial experiments developing the project I discovered that under certain build setups / toolchains
-the \emph{libvirt-rust} crate\footnote{Rust packages such as libraries, managed through the \emph{Cargo} package
-	manager are known as `\emph{Crates}'}
+During my early work developing the project I discovered that under certain build setups / toolchains
+the \emph{libvirt-rust} crate
 failed to compile, due to it containing function declarations that did not actually exist in the \emph{libvirt}
 library. This is described in full detail in my issue
 report: \url{https://gitlab.com/libvirt/libvirt-rust/-/issues/1}.\\
@@ -440,6 +546,11 @@ which on failure I was also printing to the console
 via the logging framework. So I also added a \lstinline|clear_error_func()| that binds to \lstinline|virSetErrorFunc|
 along with my changes, so that the default error handler can be disabled.
 
+\subsection{Cloud Images}
+
+The currently supported cloud images may be listed using the \texttt{cloud-images} subcommand of \emph{kvm-compose}.
+
+\subsection{\emph{cloud-init}}
 
 \section{Examples}
 
@@ -450,7 +561,7 @@ create a virtual testbed environment for privacy enhancing technologies (PETs).
 
 \subsection{Signal}
 
-\section{Development Practice}
+\section{Development Practices}
 
 During development I used the \emph{Git} version control system, with free hosting from \emph{GitHub Inc}.
 The \emph{IntelliJ Rust} plugin for \emph{CLion} proved very useful for code completion and other typical
