@@ -239,7 +239,7 @@ majority of platforms, libraries, and sources I will be referencing use the US E
 so I have chosen to do the same. }
  will therefore be a very useful technology for the testbed, since it will allow us to model
 an environment consisting of multiple computers such as application clients and servers, and run
-them all within a single machine. In addition, modern CPU extensions (such as Intel VT and AMD-V) 
+them all within a single machine. In addition, modern CPU extensions (such as \emph{Intel VT} and \emph{AMD-V}) 
 provide hardware-assisted / accelerated virtualization support, allowing the virtual machines to 
 have near native performance which will help in meeting the goal of minimal overhead for the testbed. \\
 
@@ -253,15 +253,15 @@ or run within a separate host operating system - as a Type 2 or \emph{hosted} hy
 
 For the prototype testbed I will be using \emph{Kernel-based Virtual Machine} (KVM), which is a 
 kernel module for the Linux operating system that allows it to function as a hypervisor. 
-The advantage is that KVM (and the Linux kernel itself) are free and open-source software 
+The advantage is that \emph{KVM} (and the Linux kernel itself) are free and open-source software 
 under GNU licenses, and it is a stable and mature platform~\cite{redhat_kvm}.
-In userspace QEMU\footnote{Note QEMU can also function as its own independent type 2 hypervisor 
-	but KVM is required to enable hardware acceleration,
+In userspace \emph{QEMU}\footnote{Note \emph{QEMU} can also function as its own independent type 2 hypervisor 
+	but \emph{KVM} is required to enable hardware acceleration,
 see \url{https://www.packetflow.co.uk/what-is-the-difference-between-qemu-and-kvm/}}
 may then use KVM to provide a full virtualization platform. \\
 
 \emph{libvirt} is an open-source toolkit for managing virtualization platforms~\cite{libvirt},
-it supports QEMU/KVM as well as hypervisors from other vendors. It is written in C, 
+it supports \emph{QEMU/KVM} as well as hypervisors from other vendors. It is written in C, 
 with bindings available in many other programming languages, making it a suitable library for developing 
 the testbed. Support for other platforms also means it would be easier to add support
 for additional hypervisors in future.
@@ -297,11 +297,40 @@ in a YAML configuration file. The configuration file may define a list of contai
 with options including an image to download, an entry command to run, volumes to attach,
 and environment variables, the config may also define virtual networks and attach them
 to the containers. These are all very useful features in line with the goals for the testbed, and as such
-I will try to replicate them but within a fully virtualized environment (QEMU/KVM).
+I will try to replicate them but within a fully virtualized environment (\emph{QEMU/KVM}).
 
 \section{Virtual Networks}
 
-\subsection{Software Defined Networking}
+\subsection{Software Defined Networking (SDN)}
+
+In order to understand Software Defined Networking (SDN) we must first explain how networking
+devices such as switches and routers function. 
+
+The \emph{data plane} refers to the functions of a network device that actually process and forward
+packets between interfaces. For example the ASIC (application specific integrated circuit) logic
+that matches packets to a routing table.
+
+The \emph{control plane} refers to the processes that a network device uses in order to control
+the data plane, such as to determine which paths a particular packet should take. For example a
+dynamic routing protocol such as OSPF that programs a routing table.
+
+The \emph{management plane} refers to the protocols that a network administrator can
+use to manage and configure the network device. For example the SSH protocol.
+
+SDN refers to the practice of removing the control plane responsibilities of each individual
+network device, and centralising the control plane within an 
+SDN controller~\cite[760]{odom_2016_ccna}.\\
+
+The benefit of SDN is that it can simplify network management since the network can be 
+managed from a single controller. This is especially useful in this scenario of 
+a virtual testbed because researchers are likely to want to be able to quickly conduct experiments 
+varying the structure of the virtual network while testing PETs.\\
+
+\emph{OpenFlow} is a protocol that implements SDN by allowing remote access / control to the data plane
+of a switch or router~\cite{openflow}. \emph{OpenFlow} is supported by \emph{Open vSwitch}, and there
+are a number of free and open-source SDN controllers that also support \emph{OpenFlow} such as
+\emph{Floodlight}\footnote{\url{https://floodlight.atlassian.net/wiki/spaces/floodlightcontroller/overview}}
+and \emph{OpenDaylight} (ODL)\footnote{\url{https://www.opendaylight.org/}}.
 
 \section{The Rust Language}
 
@@ -318,8 +347,8 @@ and concurrency. \\
 	It has some key advantages:
 	\begin{itemize}
 		\item Excellent performance; on par with
-		 C/C++\footnote{\url{https://benchmarksgame-team.pages.debian.net/benchmarksgame/index.html}}.
-		\item Easy interaction with C libraries via FFI, making 
+		 \emph{C/C++}\footnote{\url{https://benchmarksgame-team.pages.debian.net/benchmarksgame/index.html}}.
+		\item Easy interaction with \emph{C} libraries via FFI, making 
 		the \emph{libvirt}~\cite{libvirt_rust} bindings possible.
 		\item A simple to use package manager - \emph{Cargo},
 		along with a rich ecosystem\footnote{\url{https://crates.io/}} of 
@@ -341,7 +370,8 @@ and concurrency. \\
 \section{\emph{kvm-compose}}
 
 To provide the core functionality of the testbed I have developed a command line tool called \emph{kvm-compose},
-using the technologies described in chapter \ref{chap:technical}, namely \emph{QEMU/KVM}, \emph{libvirt}, \emph{Open vSwitch}, and the \emph{Rust} language.
+using the technologies described in chapter \ref{chap:technical}, namely \emph{QEMU/KVM}, 
+\emph{libvirt}, \emph{Open vSwitch}, and the \emph{Rust} language.
 
 \subsection{Dependencies and Installation}
 
