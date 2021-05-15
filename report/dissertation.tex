@@ -301,6 +301,18 @@ I will try to replicate them but within a fully virtualized environment (\emph{Q
 
 \section{Virtual Networks}
 
+Once we have created virtual machines, a hypervisor needs the ability to bridge traffic between
+the virtual machines and the external network~\cite{openvswitch_why}. 
+One method of doing of doing so with \emph{QEMU/KVM} is to use the 
+\emph{Linux Bridge}\footnote{\url{https://wiki.linuxfoundation.org/networking/bridge}},
+this is a virtual layer 2 switch built into the \emph{Linux} kernel, that can be
+managed with the \texttt{bridge-utils} package (or equivalent). \\
+
+There is also an alternative virtual networking solution for \emph{Linux} (and other platforms)
+- \emph{Open vSwitch}. The advantages of \emph{Open vSwitch} over \emph{Linux Bridge} include that it has
+easy management via SDN (explained below), it can support more complex network protocols, and it can
+function as a Layer 3 router (as opposed to just a Layer 2 bridge).
+
 \subsection{Software Defined Networking (SDN)}
 
 In order to understand Software Defined Networking (SDN) we must first explain how networking
@@ -311,11 +323,12 @@ packets between interfaces. For example the ASIC (application specific integrate
 that matches packets to a routing table.
 
 The \emph{control plane} refers to the processes that a network device uses in order to control
-the data plane, such as to determine which paths a particular packet should take. For example a
+the data plane; to determine which paths a particular packet should take. For example a
 dynamic routing protocol such as OSPF that programs a routing table.
 
 The \emph{management plane} refers to the protocols that a network administrator can
-use to manage and configure the network device. For example the SSH protocol.
+use to manage and configure the network device. For example the SSH protocol can be used
+to remotely connect a console.
 
 SDN refers to the practice of removing the control plane responsibilities of each individual
 network device, and centralising the control plane within an 
