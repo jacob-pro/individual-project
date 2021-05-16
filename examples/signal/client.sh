@@ -1,15 +1,12 @@
 set -e
 
-SIGNAL_SERVER="http://3.8.29.164:8080/"
-
 sudo apt update
-sudo apt install -y git default-jdk
+sudo apt install -y git openjdk-14-jdk
 mkdir -p /opt/signal
 cd /opt/signal
 git clone https://github.com/AsamK/signal-cli.git
 cd signal-cli
-sed -i "s#https://textsecure-service.whispersystems.org#${SIGNAL_SERVER}#" \
-./lib/src/main/java/org/asamk/signal/manager/config/LiveConfig.java
+git apply --ignore-space-change --ignore-whitespace /etc/nocloud/context/use_custom_server.patch
 ./gradlew build
 ./gradlew installDist
 

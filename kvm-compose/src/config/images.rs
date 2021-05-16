@@ -10,6 +10,7 @@ use std::path::PathBuf;
 #[allow(non_camel_case_types)]
 pub enum OnlineCloudImage {
     Ubuntu_18_04,
+    Ubuntu_20_04,
     Cirros_0_5_1,
 }
 
@@ -18,6 +19,9 @@ impl OnlineCloudImage {
         match &self {
             OnlineCloudImage::Ubuntu_18_04 => {
                 "https://cloud-images.ubuntu.com/bionic/current/bionic-server-cloudimg-amd64.img"
+            }
+            OnlineCloudImage::Ubuntu_20_04 => {
+                "https://cloud-images.ubuntu.com/focal/current/focal-server-cloudimg-amd64.img"
             }
             OnlineCloudImage::Cirros_0_5_1 => {
                 "http://download.cirros-cloud.net/0.5.1/cirros-0.5.1-x86_64-disk.img"

@@ -5,11 +5,12 @@ machines:
     memory_mb: 2048
     disk:
       cloud_image:
-        name: ubuntu_18_04
+        name: ubuntu_20_04
         expand_gigabytes: 15
     interfaces:
       - bridge: br0
     run_script: ./client.sh
+    context: ./use_custom_server.patch
 
 bridges:
   - name: br0
