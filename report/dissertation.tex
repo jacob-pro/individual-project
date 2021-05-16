@@ -125,8 +125,8 @@ The three missions will require looking at Privacy Enhancing Technologies (PETs)
 applications of PETs in addressing existing online harms, mitigating the potential abuse of PETs, embedding the PETs
 into infrastructures, and developing new PETs.
 In order to facilitate this REPHRAIN intends to build a toolbox of resources including a PETs testbed. The testbed
-will be used researchers in developing, testing, and evaluating the PETs. The aim of this project is to develop
-a prototype for this testbed.
+will be used by researchers in developing, testing, and evaluating the PETs. 
+The aim of this project is to develop a prototype for this testbed.
 
 \section{What are Privacy Enhancing Technologies (PETs)?}
 
@@ -211,7 +211,7 @@ testbed platform for evaluating PETs:
 \begin{itemize}
 	\item The testbed should support testing various architectures and network topologies, 
 	including client/server and peer-to-peer applications, to accommodate a variety of PETs.
-	\item The testbed must be able to collect information such as packet captures
+	\item The testbed should be able to collect information such as packet captures
 	for use in evaluating the privacy properties.
 	\item The testbed should support different platforms such as desktop and mobile apps,
 	and both applications where the source code is available or only pre-built binaries.
@@ -236,7 +236,7 @@ In this chapter I will discuss some of the technologies which this project depen
 Virtualization\footnote{I am a British citizen, and this is a dissertation at a British university, 
 and therefore I am very much aware that the correct spelling in British English is `virtualisation', however the
 majority of platforms, libraries, and sources I will be referencing use the US English spelling, 
-so I have chosen to do the same. }
+so I have chosen to do the same. Likewise the same applies for `containerization'.}
  will therefore be a very useful technology for the testbed, since it will allow us to model
 an environment consisting of multiple computers such as application clients and servers, and run
 them all within a single machine. In addition, modern CPU extensions (such as \emph{Intel VT} and \emph{AMD-V}) 
@@ -333,6 +333,13 @@ to remotely connect a console.
 SDN refers to the practice of removing the control plane responsibilities of each individual
 network device, and centralising the control plane within an 
 SDN controller~\cite[760]{odom_2016_ccna}.\\
+
+\begin{figure}
+	\centering
+	\includegraphics[width=12cm]{img/sdn}
+	\caption{Use of an SDN controller~\cite[767]{odom_2016_ccna}}
+	\label{fig:sdn_diagram}
+\end{figure}
 
 The benefit of SDN is that it can simplify network management since the network can be 
 managed from a single controller. This is especially useful in this scenario of 
@@ -617,8 +624,8 @@ to the console (via \emph{stdout/stderr}), this was because by default \emph{lib
 configured to print all errors, but at the same time the \emph{libvirt-rust} binding functions also returned
 a \lstinline|Result<_, virt::error::Error>| type (the idiomatic approach in Rust), 
 which on failure I was also printing to the console
-via the logging framework. So I also added a \lstinline|clear_error_func()| that binds to \lstinline|virSetErrorFunc|
-along with my changes, so that the default error handler can be disabled.
+via the logging framework. So I also added a \lstinline|clear_error_func()| to the merge request
+that binds to \lstinline|virSetErrorFunc| so that the default error handler can be disabled.
 
 \subsection{Cloud Images}
 
