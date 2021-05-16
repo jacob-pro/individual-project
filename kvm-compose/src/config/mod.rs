@@ -46,6 +46,7 @@ pub struct ConfigMachine {
     pub run_script: Option<PathBuf>,
     #[validate(custom = "validate_context")]
     pub context: Option<PathBuf>,
+    pub environment: HashMap<String, String>,
 }
 
 fn validate_context(context: &PathBuf) -> Result<(), ValidationError> {

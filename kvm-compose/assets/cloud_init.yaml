@@ -21,6 +21,8 @@ runcmd:
   - tar -xf /nocloudtmp/context.tar -C /etc/nocloud/context
   - umount /nocloudtmp
   - rm -rf /nocloudtmp
+  - echo 'cloud-init query ds.meta_data.environment."$@"' > /etc/nocloud/env.sh
+  - chmod +x /etc/nocloud/env.sh
   - /etc/nocloud/run_script.sh > /etc/nocloud/run_script_out.txt 2>/etc/nocloud/run_script_err.txt
 
 

@@ -11,6 +11,9 @@ machines:
       - bridge: br0
     run_script: ./client.sh
     context: ./use_custom_server.patch
+    environment:
+      number: "+447722000001"
+      code: "111111"
 
 bridges:
   - name: br0

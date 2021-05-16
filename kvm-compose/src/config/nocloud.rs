@@ -12,6 +12,7 @@ use std::path::Path;
 use std::path::PathBuf;
 use std::process::Command;
 use tempfile::tempdir;
+use std::collections::HashMap;
 
 // NoCloud supports three keys: [local-hostname, instance-id, seedfrom]
 // Other keys will show up under `cloud-init query ds.meta_data.key`
@@ -24,6 +25,7 @@ struct NoCloudMetadata {
     local_hostname: String,
     public_ssh_key: String,
     run_script: String,
+    environment: HashMap<String, String>,
 }
 
 impl<'t> ConfigConverter<'t> {
@@ -38,6 +40,7 @@ impl<'t> ConfigConverter<'t> {
             local_hostname: instance_name.clone(),
             public_ssh_key: self.config.ssh_public_key.clone(),
             run_script: script,
+            environment: machine.environment.clone(),
         };
 
         let init_type = if let ConfigDisk::CloudImage { name, .. } = &machine.disk {
