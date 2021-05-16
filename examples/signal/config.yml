@@ -1,5 +1,13 @@
 # https://github.com/madeindra/signal-setup-guide/blob/master/signal-server-5.xx/config.yml
 
+# Number must be in "" to include +
+# Code must be 6 digits
+testDevices:
+  - number: "+447722000001"
+    code: 111111
+  - number: "+447722000002"
+    code: 222222
+
 abuseDatabase:
   driverClass: org.postgresql.Driver
   user:        postgres
@@ -265,10 +273,10 @@ remoteConfig:
 server:
   applicationConnectors:
     - type: http
-      port: 8080
+      port: 8081
   adminConnectors:
     - type: http
-      port: 8081
+      port: 8082
 
 storageService:
   userAuthenticationTokenSharedSecret: 6b9cf1432f4dc50f991bdab29ff44377
