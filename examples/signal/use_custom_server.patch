@@ -32,19 +32,3 @@ diff --git a/lib/src/main/java/org/asamk/signal/manager/config/LiveConfig.java b
                  Map.of(0,
                          new SignalCdnUrl[]{new SignalCdnUrl(CDN_URL, TRUST_STORE)},
                          2,
-Index: src/main/java/org/asamk/signal/Main.java
-IDEA additional info:
-Subsystem: com.intellij.openapi.diff.impl.patch.CharsetEP
-<+>UTF-8
-===================================================================
-diff --git a/src/main/java/org/asamk/signal/Main.java b/src/main/java/org/asamk/signal/Main.java
---- a/src/main/java/org/asamk/signal/Main.java	(revision 5c3fc44d00cb7b18c4c5b4b6b5d7fe09f18973db)
-+++ b/src/main/java/org/asamk/signal/Main.java	(date 1621130837976)
-@@ -52,6 +52,7 @@
-         } catch (CommandException e) {
-             System.err.println(e.getMessage());
-             status = getStatusForError(e);
-+            throw new RuntimeException(e);
-         }
-         System.exit(status);
-     }
