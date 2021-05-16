@@ -6,13 +6,13 @@ use crate::virt_util::{DiskDeviceType, DiskDriverType, TargetBus};
 use anyhow::bail;
 use anyhow::Context;
 use serde::Serialize;
+use std::collections::HashMap;
 use std::io::Write;
 use std::os::unix::fs::PermissionsExt;
 use std::path::Path;
 use std::path::PathBuf;
 use std::process::Command;
 use tempfile::tempdir;
-use std::collections::HashMap;
 
 // NoCloud supports three keys: [local-hostname, instance-id, seedfrom]
 // Other keys will show up under `cloud-init query ds.meta_data.key`
