@@ -232,9 +232,10 @@ messageCache:
     urls:
       - redis://127.0.0.1:7000/
 
+# Create with KEY_PARTITION = "H" & KEY_SORT = "S"
 messageDynamoDb:
-  region: us-east-1
-  tableName: test
+  region: eu-west-2
+  tableName: messages
 
 metricsCluster:
   urls:

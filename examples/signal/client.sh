@@ -11,3 +11,5 @@ git apply --ignore-space-change --ignore-whitespace /etc/nocloud/context/use_cus
 ./gradlew installDist
 
 # cd /opt/signal/signal-cli/build/install/signal-cli/bin
+# ./signal-cli -u +447722000001 register
+# ./signal-cli -u +447722000001 verify 111-111
