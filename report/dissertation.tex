@@ -726,6 +726,20 @@ system\footnote{\url{https://github.com/DP-3T/dp3t-sdk-android/tree/master/calib
 The \texttt{/examples/dp3t} contains a small patch to the source of the \texttt{calibration-app} that
 changes the server URL to the backend in the testbed (as well as setting the correct keys). \\
 
+\begin{figure}
+	\centering
+	\includegraphics[width=13.5cm]{img/anbox}
+	\caption{\emph{DP3T} \texttt{calibration-app} running in \emph{Anbox} on the testbed}
+	\label{fig:anbox}
+\end{figure}
+
+\begin{figure}
+	\centering
+	\includegraphics[width=13.5cm]{img/android_emulator}
+	\caption{\emph{DP3T} \texttt{calibration-app} running in \emph{Android Emulator} on the testbed}
+	\label{fig:anbox}
+\end{figure}
+
 To run the \texttt{calibration-app} I have provided two different example machines. The first
 uses \emph{Anbox} which is a compatibility layer for running \emph{Android} apps within a \emph{Linux}
 container\footnote{\url{https://anbox.io/}}, and the second uses the \emph{Android Emulator} 
@@ -735,9 +749,7 @@ which uses full virtualization instead\footnote{It therefore requires nested
 virtualization to be enabled, see section \ref{sect:dependencies}.}.
 For each of the two machines their \texttt{run\_script} installs the
 dependencies and simulators. The \texttt{calibration-app} is made available in the machine in the 
-\texttt{/etc/nocloud/context} folder, ready to be launched and used by the tester. The tester
-can easily connect to the machines because \emph{kvm-compose} will have 
-automatically injected their SSH keys, and set their hostnames.
+\texttt{/etc/nocloud/context} folder, ready to be launched and used by the tester.
 I chose to provide two \emph{Android} examples because each of the emulators have different
 strengths and weaknesses; the \emph{Android Emulator} has more support for customising sensor
 input such as GPS data, but it has poorer performance due to the extra layer of virtualization
