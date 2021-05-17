@@ -425,6 +425,7 @@ using the technologies described in chapter \ref{chap:technical}, namely \emph{Q
 \emph{libvirt}, \emph{Open vSwitch}, \emph{cloud-init}, and the \emph{Rust} language.
 
 \subsection{Dependencies and Installation}
+\label{sect:dependencies}
 
 In order to compile the project it requires the \emph{Rust} compiler\footnote{\url{https://www.rust-lang.org/tools/install}},
 and the \texttt{libvirt-dev} and \texttt{libssl-dev} packages (or system equivalent).
@@ -518,6 +519,8 @@ An example machine config could look like:
     - bridge: br0               # (A bridge defined in the same project)
   run_script: ./script.sh       # Optional: path to a script
   context: ./file.txt           # Optional: path to a file or folder
+  environment:                  # Dictionary of arbitary environment variables
+    key: value                  # Use /etc/nocloud/env.sh *key* to query
 \end{verbatim}
 
 Alternatively an existing disk image may be used instead of a cloud image:
@@ -687,9 +690,62 @@ Instance metadata keys are instead accessed via \texttt{cirros-query get *key*} 
 I have provided two example projects demonstrating how \emph{kvm-compose} can be used to automatically
 create a virtual testbed environment for privacy enhancing technologies (PETs).
 
-\subsection{DP3T App}
+\subsection{\emph{DP3T}}
 
-\subsection{Signal}
+Decentralized Privacy-Preserving Proximity Tracing (\emph{DP3T}) is an open protocol developed for
+digital contact tracing during the COVID-19 pandemic, originating from the École polytechnique fédérale 
+de Lausanne (EPFL) and ETH Zurich, it was developed with the intention of being less centralised
+than alternative solutions, and therefore more private~\cite{busvine_2020}. 
+Switzerland's national contact tracing app \emph{SwissCovid} 
+has been built using the \emph{DP3T} protocol~\cite{swisscovid}. \\
+
+The files in \texttt{/examples/dp3t} demonstrate how \emph{kvm-compose} can be used to build
+a test environment. First of all a virtual machine for the backend service is defined,
+which has a \texttt{run\_script} that on launch will:
+
+\begin{singlespace}
+	\begin{enumerate}
+		\item Install dependencies \texttt{git}, \texttt{maven} etc.
+		\item Clone and build the 
+		\texttt{dp3t-sdk-backend}\footnote{\url{https://github.com/DP-3T/dp3t-sdk-backend}}.
+		\item Install and run \emph{dp3t} as a service.
+		\item Configure the network address of the server\footnote{
+			Unfortunately \emph{Anbox} (discussed below) does not support using hostnames / DNS from 
+			the host machine's network, so a static address has been used.}.
+	\end{enumerate}
+\end{singlespace}
+
+\subsubsection{\emph{Android} App}
+
+The \emph{DP3T} project provides an SDK (Software Development Kit) 
+for both \emph{Android} and \emph{Apple iOS} which
+is used to communicate with the backend server, it is this library which is used in the official
+implementations such as \emph{SwissCovid}. The SDK also has a demo \texttt{calibration-app} (that uses
+the SDK library) with a simple user interface of diagnostic tools and info, for use in testing the 
+system\footnote{\url{https://github.com/DP-3T/dp3t-sdk-android/tree/master/calibration-app}}.
+The \texttt{/examples/dp3t} contains a small patch to the source of the \texttt{calibration-app} that
+changes the server URL to the backend in the testbed (as well as setting the correct keys). \\
+
+To run the \texttt{calibration-app} I have provided two different example machines. The first
+uses \emph{Anbox} which is a compatibility layer for running \emph{Android} apps within a \emph{Linux}
+container\footnote{\url{https://anbox.io/}}, and the second uses the \emph{Android Emulator} 
+(from the official \emph{Android SDK} / 
+\emph{Android Studio})\footnote{\url{https://developer.android.com/studio/run/emulator}}
+which uses full virtualization instead\footnote{It therefore requires nested 
+virtualization to be enabled, see section \ref{sect:dependencies}.}.
+For each of the two machines their \texttt{run\_script} installs the
+dependencies and simulators. The \texttt{calibration-app} is made available in the machine in the 
+\texttt{/etc/nocloud/context} folder, ready to be launched and used by the tester. The tester
+can easily connect to the machines because \emph{kvm-compose} will have 
+automatically injected their SSH keys, and set their hostnames.
+I chose to provide two \emph{Android} examples because each of the emulators have different
+strengths and weaknesses; the \emph{Android Emulator} has more support for customising sensor
+input such as GPS data, but it has poorer performance due to the extra layer of virtualization
+when compared to \emph{Anbox}.
+
+\subsection{\emph{Signal}}
+
+\subsection{Capturing Traffic}
 
 \section{Development Practices}
 
@@ -700,7 +756,7 @@ The \emph{IntelliJ Rust} plugin for \emph{CLion} proved very useful for code com
 IDE features\footnote{\url{https://www.jetbrains.com/rust/}}.
 I also made use of the \emph{GitHub Actions} CI/CD platform, with a workflow configured to check that
 the project builds and passes style checks on each push to the repository\footnote{See 
-\texttt{.github/workflows/rust.yml}}.
+\texttt{.github/workflows/rust.yml}}. 
 
 \chapter{Critical Evaluation}
 \label{chap:evaluation}
