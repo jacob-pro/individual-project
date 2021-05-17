@@ -747,6 +747,22 @@ when compared to \emph{Anbox}.
 
 \subsection{Capturing Traffic}
 
+When a test environment has been built (using the \texttt{kvm-compose up} command), network
+traffic can then be collected using the \texttt{ovs-tcpdump} utlity of 
+\emph{Open vSwitch}\footnote{\url{https://docs.openvswitch.org/en/latest/ref/ovs-tcpdump.8/}}.
+For example:
+
+\begin{verbatim}
+	sudo ovs-tcpdump --span -i dp3t-br0 -w output.pcap
+\end{verbatim}
+
+The \texttt{-i} option is where the bridge name is specified, in the format of the project name
+and bridge name (from the \texttt{kvm-compose.yaml} file) joined with a hyphen.
+What this does is create a temporary mirror port on the specified bridge, with the \texttt{--span}
+option indicating that traffic from all bridge ports should be mirrored. The output is saved as a
+packet capture file which may be opened with software such as 
+\emph{Wireshark}\footnote{\url{https://www.wireshark.org/}}.
+
 \section{Development Practices}
 
 During development I used the \emph{Git} version control system, with free hosting from \emph{GitHub Inc},

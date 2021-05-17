@@ -46,6 +46,7 @@ pub struct ConfigMachine {
     pub run_script: Option<PathBuf>,
     #[validate(custom = "validate_context")]
     pub context: Option<PathBuf>,
+    #[serde(default)]
     pub environment: HashMap<String, String>,
 }
 
