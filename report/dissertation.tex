@@ -55,8 +55,8 @@ Summary of work:
 \begin{itemize}
 \item I have developed a flexible command line tool called \emph{kvm-compose} for Linux using the Rust
       language and \emph{libvirt} library for building and destroying virtual testing environments.
-\item In the process I have made some contributions to the \emph{libvirt-rust} language
-      bindings open source library.
+\item In the process I have made some contributions to open source libraries including \texttt{libvirt-rust}
+(the \emph{Rust} language bindings to \emph{libvirt}).
 \item I have then implemented some example projects using the testbed tool.
 \end{itemize}
 
@@ -701,15 +701,15 @@ has been built using the \emph{DP3T} protocol~\cite{swisscovid}. \\
 
 The files in \texttt{/examples/dp3t} demonstrate how \emph{kvm-compose} can be used to build
 a test environment. First of all a virtual machine for the backend service is defined,
-which has a \texttt{run\_script} that on launch will:
+which has a \texttt{run\_script} that on launch:
 
 \begin{singlespace}
 	\begin{enumerate}
-		\item Install dependencies \texttt{git}, \texttt{maven} etc.
-		\item Clone and build the 
+		\item Installs dependencies \emph{Git} and \emph{Maven}.
+		\item Clones and builds the 
 		\texttt{dp3t-sdk-backend}\footnote{\url{https://github.com/DP-3T/dp3t-sdk-backend}}.
-		\item Install and run \emph{dp3t} as a service.
-		\item Configure the network address of the server\footnote{
+		\item Installs and runs \emph{dp3t} as a service.
+		\item Configures the network address of the server\footnote{
 			Unfortunately \emph{Anbox} (discussed below) does not support using hostnames / DNS from 
 			the host machine's network, so a static address has been used.}.
 	\end{enumerate}
@@ -756,6 +756,58 @@ input such as GPS data, but it has poorer performance due to the extra layer of 
 when compared to \emph{Anbox}.
 
 \subsection{\emph{Signal}}
+
+\emph{Signal} is a messaging service built using its own custom end-to-end encryption protocol 
+(the \emph{Signal Protocol}), available for a number of platforms on mobile and desktop,
+designed with a focus on privacy~\cite{signal}. The standard service uses a central server
+hosted and maintained by the \emph{Signal Foundation},
+however the server code is also available under an open source 
+license\footnote{\url{https://github.com/signalapp/Signal-Server}}. \\
+
+The files in \texttt{/examples/signal} demonstrate how \emph{kvm-compose} can be used to build
+a test environment. First of all a virtual machine for the signal server is defined,
+which has a \texttt{run\_script} that on launch:
+
+\begin{singlespace}
+	\begin{enumerate}
+		\item Installs dependencies \emph{Git}, \emph{Maven}, \emph{Docker} etc.
+		\item Clones and builds the \emph{Signal} server.
+		\item Launches a number of dependent services (\emph{Redis}, \emph{Postgres}, \emph{Nginx})
+		in \emph{Docker} containers.
+		\item Initialises the databases.
+		\item Installs and runs the \emph{Signal} server as a service; configuration files
+		are provided via \emph{kvm-compose}'s \texttt{context} option.
+	\end{enumerate}
+\end{singlespace}
+
+The Signal server's configuration has test device numbers defined, allowing them
+to be registered without requiring phone number verification.
+The \emph{kvm-compose} configuration file then defines client 
+machines using a \texttt{run\_script} that:
+
+\begin{singlespace}
+	\begin{enumerate}
+		\item Installs dependencies \emph{Git} and \emph{Java}.
+		\item Clones and builds \texttt{signal-cli}\footnote{\url{https://github.com/AsamK/signal-cli}}
+		which is an open source command line wrapper around the \emph{Signal} SDK / client libraries.
+		\item Before building, applies a small patch to change the server address to the hostname of the 
+		\emph{Signal} server within the testbed. 
+	\end{enumerate}
+\end{singlespace}
+
+When the client's \emph{Signal} server URL is patched, an \lstinline[language=java]|okhttp3.ConnectionSpec|
+is also provided allowing cleartext (non HTTPS) communication between the client and server. This is useful
+because it allows inspection of the packets which would otherwise be TLS encrypted. Unfortunately this 
+exposed a bug in \texttt{libsignal-service-java} (a dependency of \texttt{signal-cli}) where the given
+\lstinline[language=java]|ConnectionSpec| is only respected for RESTful but not WebSocket communications
+with the \emph{Signal} server. I have submitted a pull request to fix this: \url{https://github.com/Turasa/libsignal-service-java/pull/28}.
+
+\begin{figure}
+	\centering
+	\includegraphics[width=16cm]{img/signal-cli}
+	\caption{\texttt{signal-cli} registering and connecting via WebSockets to the testbed server}
+	\label{fig:signal_cli}
+\end{figure}
 
 \subsection{Capturing Traffic}
 
