@@ -15,6 +15,21 @@ machines:
       number: "+447722000001"
       code: "111111"
 
+  - name: client2
+    cpus: 2
+    memory_mb: 2048
+    disk:
+      cloud_image:
+        name: ubuntu_20_04
+        expand_gigabytes: 15
+    interfaces:
+      - bridge: br0
+    run_script: ./client.sh
+    context: ./use_custom_server.patch
+    environment:
+      number: "+447722000002"
+      code: "222222"
+
 bridges:
   - name: br0
     connect_external_interfaces: [eth0]

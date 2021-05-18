@@ -12,7 +12,7 @@ abuseDatabase:
   driverClass: org.postgresql.Driver
   user:        postgres
   password:    postgres
-  url:         jdbc:postgresql://127.0.0.1:5432/signal
+  url:         jdbc:postgresql://127.0.0.1:5433/abusedb
 
 accountDatabaseCrawler:
   chunkSize: 1000
@@ -22,12 +22,13 @@ accountsDatabase:
   driverClass: org.postgresql.Driver
   user:        postgres
   password:    postgres
-  url:         jdbc:postgresql://127.0.0.1:5432/signal
+  url:         jdbc:postgresql://127.0.0.1:5432/accountdb
 
-accountsDynamoDb:
-  tableName: test
-  region: test
-  phoneNumberTableName: test
+messageStore:
+  driverClass: org.postgresql.Driver
+  user:        postgres
+  password:    postgres
+  url:         jdbc:postgresql://127.0.0.1:5434/messagedb
 
 apn:
   sandbox: true
@@ -41,11 +42,6 @@ apn:
     D7rJUuFnC2Lp4400oz/P1jz153BqyPgAHHjG8PaG/nxp3qVszQv2lkV/
     -----END PRIVATE KEY-----
 
-appConfig:
-  application: test
-  environment: test
-  configuration: test
-
 awsAttachments:
   accessKey: test
   accessSecret: test
@@ -54,57 +50,6 @@ awsAttachments:
 
 backupService:
   userAuthenticationTokenSharedSecret: 6b9cf1432f4dc50f991bdab29ff44377
-  uri: redis://127.0.0.1:6379/
-  backupCaCertificate: |
-    -----BEGIN CERTIFICATE-----
-    MIIDtTCCAp2gAwIBAgIUGuJPNyUSvPBvs1XJvDigM8+/ZJ8wDQYJKoZIhvcNAQEL
-    BQAwajELMAkGA1UEBhMCQVUxEzARBgNVBAgMClNvbWUtU3RhdGUxDTALBgNVBAcM
-    BENpdHkxITAfBgNVBAoMGEludGVybmV0IFdpZGdpdHMgUHR5IEx0ZDEUMBIGA1UE
-    AwwLc2lnbmFsLnRlc3QwHhcNMjEwNTEzMDAzMDIyWhcNMzEwNTExMDAzMDIyWjBq
-    MQswCQYDVQQGEwJBVTETMBEGA1UECAwKU29tZS1TdGF0ZTENMAsGA1UEBwwEQ2l0
-    eTEhMB8GA1UECgwYSW50ZXJuZXQgV2lkZ2l0cyBQdHkgTHRkMRQwEgYDVQQDDAtz
-    aWduYWwudGVzdDCCASIwDQYJKoZIhvcNAQEBBQADggEPADCCAQoCggEBAKz212yE
-    bz5LMTqH1N+Y5ZSd/tssdehM+w2YljP0bgAt7oJ79UIIuHS7id9AdQmnIkKL5Rje
-    jmL6Z0+gGLadiETVwG/74Sh1HSFw31dlB4YahLc8+ANE1gzgVLfbacdn3S6WboZd
-    +dm2RZy2zWAoqUCRHk5+Tzi7GtQw4zQ2lWKQvqgcDwPRVkx5g2sOd/KEuyK9dsMf
-    mgbkwMX1YQIMc41DIn2DwL/zvtprnPJKs9WYlsU+XKj0bqU7fqIPAilBSVhn6AdY
-    VRpacXSiA6cDbKEX/UHmE9C0YllYsfkD6r0uSpv3KdTZlnnvl7SLKERdyWqtbGwv
-    jlKOE4XB3OV0vokCAwEAAaNTMFEwHQYDVR0OBBYEFAcWGQyBgw6VN8rQmBpQxKfc
-    kLCWMB8GA1UdIwQYMBaAFAcWGQyBgw6VN8rQmBpQxKfckLCWMA8GA1UdEwEB/wQF
-    MAMBAf8wDQYJKoZIhvcNAQELBQADggEBADW3KVIHeBhvGsoCg41l3sHA4THQ/HXU
-    s41o5+GJaGMEPrcnXlvir+Y/fwyD4+H8OYFPCaJlkgXsaqIiQfteiOkZHOoYrzeH
-    C2zuMpvIobgrljbPSkPHhK7IMFnn7MGowNsvRx76jC+8sotefIN0fhpqk4N2C8zt
-    snH32Cvl5oHn28jfnpe12gVCoFBrMZARMogocnquFQS/e96Tl7Opx3KUMPBMVk7a
-    L/LADqtCH4Q6XmmORxTlAd6B7S0xVG3WYv4vRwe2NDE8tuoDL6jx19gJy7ZwIAWR
-    vUa9IsWB3g1Z7zvoftqbDKMulURZCuFSrkUqXtDGcpex0E4tjb+/UkY=
-    -----END CERTIFICATE-----
-    -----BEGIN RSA PRIVATE KEY-----
-    MIIEpAIBAAKCAQEArPbXbIRvPksxOofU35jllJ3+2yx16Ez7DZiWM/RuAC3ugnv1
-    Qgi4dLuJ30B1CaciQovlGN6OYvpnT6AYtp2IRNXAb/vhKHUdIXDfV2UHhhqEtzz4
-    A0TWDOBUt9tpx2fdLpZuhl352bZFnLbNYCipQJEeTn5POLsa1DDjNDaVYpC+qBwP
-    A9FWTHmDaw538oS7Ir12wx+aBuTAxfVhAgxzjUMifYPAv/O+2muc8kqz1ZiWxT5c
-    qPRupTt+og8CKUFJWGfoB1hVGlpxdKIDpwNsoRf9QeYT0LRiWVix+QPqvS5Km/cp
-    1NmWee+XtIsoRF3Jaq1sbC+OUo4ThcHc5XS+iQIDAQABAoIBACkymlk0qjKSQmWI
-    mQGxL23YvC2ER4lPXLT+VTiGzfSo/BiEYgSagyT6znoopjfoYVasb6Mez5dvwU/L
-    +Fb26tBKgY2q1xSF4KxocCom3EXq5xWmJgTRTpK+lC8+ydE/QgWouyayF6LtsWME
-    f6KZzMaeSjO0DjabCmbkRhnXrnlNUHDENBacH2Lam90TOjjZL2QVBLRyGC4Rj4J/
-    DsTFnCnuBrXFHL9uErid/UDczzVAuBUF5dlztEVjtpKQuy/egy/VT047D4IdFefF
-    kYp2GbIQkgGjsva1Bl6BvnIOr36c5Wn+AD9b/SbEm0j/uJkqBGKUYMWVozCyJtOp
-    lB+kIgECgYEA2Vsj7ZdSUUNpYatMz0A0+CKeCQ0Gzek+DC9tN3vpLRCPFP2be+Cv
-    nDnK2D77la/NaePm8RP94s6RlmvI3lAcEiyby7SenAEuk47mwTV5Gu7SFM2MkPLP
-    NWz7rk+rrzPqmv/aT58wNSajR7BSdhc9y86z1S3+jlYR7FSUTfAkYmkCgYEAy7c6
-    okeX4bolxInAKWaFjIhVE1uGPSxItYFmUz9qd7oJBpUQ3cZCbV28+mEUZ9BzWWS0
-    KbLI/gdF1iKKRMThVgecf/m8BfYIipr9dc6ZLLqIwJEeoFBl/oULCGNMmJmPMKDg
-    00ymc+CikwhFqI0vP/PuQLfvt1zcVDqVs0eztyECgYBhAxfXHLomASOQ70caHbtG
-    oRTOT10hHKCQCb8Ci7C4Z3KlWMhEEzXuUbEisYHS/qN9RrY2Fck0qSQ78iG2cCUH
-    S5fB5P0B/lkOjTKbO8Ww6rUjidbafzVS0DDJTVAAo/hrdBS5gwCeSH+KKL21bYws
-    YjbLyHqchvf69ok2/B8ROQKBgQDDnxbyAJfrzgo4eiMKXoW+FqjDpu74TU8g5Lqz
-    FEGT6RSDup9wp9LgHNS9Bn5G1pf97sNHC4UQ00EPySlHslvEdhill9YjT0iSeRUN
-    jK/wkMuDR5fGUI4w4+ddTaWfIE6tXr+miIOK4NqdIKNroPAPlJlkknzicoytYXih
-    qSf9oQKBgQCvkGWEikBIAZBNAAF7fR2PHplkP5gGUNkQr/1foWHWGoV5TdOPib7i
-    jK8885pwwAEeUnk4EEW25++X9Lx5etRQhCrzsY8zMq9s56RbWkyieWiHsMvAI6ql
-    Jr7UydoDSTN1n16490fStSlSIb78MAZWdffT+ZFgXAjbXzheSCX/Tg==
-    -----END RSA PRIVATE KEY-----
 
 cacheCluster:
   urls:
@@ -116,11 +61,11 @@ cdn:
   bucket: signal
   region: us-east-1
 
-clientPresenceCluster:
-  urls:
-    - redis://127.0.0.1:7000/
-
 directory:
+  redis:
+    url: redis://127.0.0.1:7000/directory
+    replicaUrls:
+      - redis://127.0.0.1:7000/directoryReplica
   client:
     userAuthenticationTokenSharedSecret: 6b9cf1432f4dc50f991bdab29ff44377 # head -c 16 /dev/urandom | hexdump -ve '1/1 "%.2x"'
     userAuthenticationTokenUserIdSecret: 003d0b0115e293abd3186cc28eebbc61 # head -c 16 /dev/urandom | hexdump -ve '1/1 "%.2x"'
@@ -223,19 +168,10 @@ gcpAttachments:
     LWl9Xbs1IyZ99wHAV35A/ZPuBZI=
     -----END PRIVATE KEY-----
 
-keysDynamoDb:
-  region: us-east-1
-  tableName: test
-
 messageCache:
   cluster:
     urls:
       - redis://127.0.0.1:7000/
-
-# Create with KEY_PARTITION = "H" & KEY_SORT = "S"
-messageDynamoDb:
-  region: eu-west-2
-  tableName: messages
 
 metricsCluster:
   urls:
@@ -246,9 +182,6 @@ micrometer:
 
 paymentsService:
   userAuthenticationTokenSharedSecret: 6b9cf1432f4dc50f991bdab29ff44377
-  fixerApiKey: test
-  paymentCurrencies:
-    - USD
 
 pubsub:
   url: redis://127.0.0.1:7000/cache
@@ -258,9 +191,10 @@ pubsub:
 push:
   queueSize: 200
 
-pushSchedulerCluster:
-  urls:
-    - redis://127.0.0.1:7000/
+pushScheduler:
+  url: redis://127.0.0.1:7000/pushScheduler
+  replicaUrls:
+    - redis://127.0.0.1:7000/pushSchedulerReplica
 
 recaptcha:
   secret: test
@@ -282,56 +216,6 @@ server:
 storageService:
   userAuthenticationTokenSharedSecret: 6b9cf1432f4dc50f991bdab29ff44377
   uri: redis://127.0.0.1:7000/
-  storageCaCertificate: |
-    -----BEGIN CERTIFICATE-----
-    MIIDtTCCAp2gAwIBAgIUGuJPNyUSvPBvs1XJvDigM8+/ZJ8wDQYJKoZIhvcNAQEL
-    BQAwajELMAkGA1UEBhMCQVUxEzARBgNVBAgMClNvbWUtU3RhdGUxDTALBgNVBAcM
-    BENpdHkxITAfBgNVBAoMGEludGVybmV0IFdpZGdpdHMgUHR5IEx0ZDEUMBIGA1UE
-    AwwLc2lnbmFsLnRlc3QwHhcNMjEwNTEzMDAzMDIyWhcNMzEwNTExMDAzMDIyWjBq
-    MQswCQYDVQQGEwJBVTETMBEGA1UECAwKU29tZS1TdGF0ZTENMAsGA1UEBwwEQ2l0
-    eTEhMB8GA1UECgwYSW50ZXJuZXQgV2lkZ2l0cyBQdHkgTHRkMRQwEgYDVQQDDAtz
-    aWduYWwudGVzdDCCASIwDQYJKoZIhvcNAQEBBQADggEPADCCAQoCggEBAKz212yE
-    bz5LMTqH1N+Y5ZSd/tssdehM+w2YljP0bgAt7oJ79UIIuHS7id9AdQmnIkKL5Rje
-    jmL6Z0+gGLadiETVwG/74Sh1HSFw31dlB4YahLc8+ANE1gzgVLfbacdn3S6WboZd
-    +dm2RZy2zWAoqUCRHk5+Tzi7GtQw4zQ2lWKQvqgcDwPRVkx5g2sOd/KEuyK9dsMf
-    mgbkwMX1YQIMc41DIn2DwL/zvtprnPJKs9WYlsU+XKj0bqU7fqIPAilBSVhn6AdY
-    VRpacXSiA6cDbKEX/UHmE9C0YllYsfkD6r0uSpv3KdTZlnnvl7SLKERdyWqtbGwv
-    jlKOE4XB3OV0vokCAwEAAaNTMFEwHQYDVR0OBBYEFAcWGQyBgw6VN8rQmBpQxKfc
-    kLCWMB8GA1UdIwQYMBaAFAcWGQyBgw6VN8rQmBpQxKfckLCWMA8GA1UdEwEB/wQF
-    MAMBAf8wDQYJKoZIhvcNAQELBQADggEBADW3KVIHeBhvGsoCg41l3sHA4THQ/HXU
-    s41o5+GJaGMEPrcnXlvir+Y/fwyD4+H8OYFPCaJlkgXsaqIiQfteiOkZHOoYrzeH
-    C2zuMpvIobgrljbPSkPHhK7IMFnn7MGowNsvRx76jC+8sotefIN0fhpqk4N2C8zt
-    snH32Cvl5oHn28jfnpe12gVCoFBrMZARMogocnquFQS/e96Tl7Opx3KUMPBMVk7a
-    L/LADqtCH4Q6XmmORxTlAd6B7S0xVG3WYv4vRwe2NDE8tuoDL6jx19gJy7ZwIAWR
-    vUa9IsWB3g1Z7zvoftqbDKMulURZCuFSrkUqXtDGcpex0E4tjb+/UkY=
-    -----END CERTIFICATE-----
-    -----BEGIN RSA PRIVATE KEY-----
-    MIIEpAIBAAKCAQEArPbXbIRvPksxOofU35jllJ3+2yx16Ez7DZiWM/RuAC3ugnv1
-    Qgi4dLuJ30B1CaciQovlGN6OYvpnT6AYtp2IRNXAb/vhKHUdIXDfV2UHhhqEtzz4
-    A0TWDOBUt9tpx2fdLpZuhl352bZFnLbNYCipQJEeTn5POLsa1DDjNDaVYpC+qBwP
-    A9FWTHmDaw538oS7Ir12wx+aBuTAxfVhAgxzjUMifYPAv/O+2muc8kqz1ZiWxT5c
-    qPRupTt+og8CKUFJWGfoB1hVGlpxdKIDpwNsoRf9QeYT0LRiWVix+QPqvS5Km/cp
-    1NmWee+XtIsoRF3Jaq1sbC+OUo4ThcHc5XS+iQIDAQABAoIBACkymlk0qjKSQmWI
-    mQGxL23YvC2ER4lPXLT+VTiGzfSo/BiEYgSagyT6znoopjfoYVasb6Mez5dvwU/L
-    +Fb26tBKgY2q1xSF4KxocCom3EXq5xWmJgTRTpK+lC8+ydE/QgWouyayF6LtsWME
-    f6KZzMaeSjO0DjabCmbkRhnXrnlNUHDENBacH2Lam90TOjjZL2QVBLRyGC4Rj4J/
-    DsTFnCnuBrXFHL9uErid/UDczzVAuBUF5dlztEVjtpKQuy/egy/VT047D4IdFefF
-    kYp2GbIQkgGjsva1Bl6BvnIOr36c5Wn+AD9b/SbEm0j/uJkqBGKUYMWVozCyJtOp
-    lB+kIgECgYEA2Vsj7ZdSUUNpYatMz0A0+CKeCQ0Gzek+DC9tN3vpLRCPFP2be+Cv
-    nDnK2D77la/NaePm8RP94s6RlmvI3lAcEiyby7SenAEuk47mwTV5Gu7SFM2MkPLP
-    NWz7rk+rrzPqmv/aT58wNSajR7BSdhc9y86z1S3+jlYR7FSUTfAkYmkCgYEAy7c6
-    okeX4bolxInAKWaFjIhVE1uGPSxItYFmUz9qd7oJBpUQ3cZCbV28+mEUZ9BzWWS0
-    KbLI/gdF1iKKRMThVgecf/m8BfYIipr9dc6ZLLqIwJEeoFBl/oULCGNMmJmPMKDg
-    00ymc+CikwhFqI0vP/PuQLfvt1zcVDqVs0eztyECgYBhAxfXHLomASOQ70caHbtG
-    oRTOT10hHKCQCb8Ci7C4Z3KlWMhEEzXuUbEisYHS/qN9RrY2Fck0qSQ78iG2cCUH
-    S5fB5P0B/lkOjTKbO8Ww6rUjidbafzVS0DDJTVAAo/hrdBS5gwCeSH+KKL21bYws
-    YjbLyHqchvf69ok2/B8ROQKBgQDDnxbyAJfrzgo4eiMKXoW+FqjDpu74TU8g5Lqz
-    FEGT6RSDup9wp9LgHNS9Bn5G1pf97sNHC4UQ00EPySlHslvEdhill9YjT0iSeRUN
-    jK/wkMuDR5fGUI4w4+ddTaWfIE6tXr+miIOK4NqdIKNroPAPlJlkknzicoytYXih
-    qSf9oQKBgQCvkGWEikBIAZBNAAF7fR2PHplkP5gGUNkQr/1foWHWGoV5TdOPib7i
-    jK8885pwwAEeUnk4EEW25++X9Lx5etRQhCrzsY8zMq9s56RbWkyieWiHsMvAI6ql
-    Jr7UydoDSTN1n16490fStSlSIb78MAZWdffT+ZFgXAjbXzheSCX/Tg==
-    -----END RSA PRIVATE KEY-----
 
 turn:
   secret: secret# TURN server secret
@@ -350,11 +234,11 @@ twilio:
   iosVerificationText: "verification code is - %s"
   androidNgVerificationText: "verification code is - %s"
   android202001VerificationText: "verification code is - %s"
-  android202103VerificationText: "verification code is - %s"
   genericVerificationText: "verification code is - %s"
-  verifyServiceFriendlyName: test
-  verifyServiceSid: test
-  androidAppHash: test
+  numbers:
+    - test
+  senderId:
+    defaultSenderId: test
 
 unidentifiedDelivery:
   certificate: CiUIARIhBUc2GiscUWb7FOc/9swptlrdqkv60VRkDxHCxocv5mQ/EkDWWNAsdZmKwlaEAl7uZFd4wDRDaKluk8M2A7wzoZi8HpIzyeYpZWkvoNOR/iLO9SnRkJ9flJEpF76XEXND/6OE # java -jar TextSecureServer.jar certificate -ca
@@ -371,27 +255,6 @@ zkConfig:
   serverPublic: AI4X9dsPKXTdarSezacDsaM4OuA1ZALJuQUNXgM86TZ4lEIsto2dCNwxSlZ9s0KxwcsIKC5Imje+5omr2cgly0H8W6i0sc7oHXebzlJUSjH0xiM/P+Iei29dxr9hoKs1ePQFR2FHk1KjCTZEp68EhfVWjY0e562QEJocHcmG1n0wSKKaNMDJbGqwQE6iFr4xB3uJ55/OetWk+rmu4Qy6zVs # java -jar TextSecure.jar zkparams
   enabled: true
 
-migrationDeletedAccountsDynamoDb:
-  region: us-east-1
-  tableName: test
-
-migrationRetryAccountsDynamoDb:
-  region: us-east-1
-  tableName: test
-
-pushChallengeDynamoDb:
-  region: us-east-1
-  tableName: test
-
-donation:
-  uri: test
-  apiKey: test
-  supportedCurrencies:
-    - usd
-
-rateLimitersCluster:
-  urls:
-    - redis://127.0.0.1:7000/
-
-tor:
-  listUrl: test
+featureFlag:
+  authorizedTokens:
+    - test
