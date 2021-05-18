@@ -1,5 +1,17 @@
 machines:
 
+  - name: server
+    cpus: 2
+    memory_mb: 2048
+    disk:
+      cloud_image:
+        name: ubuntu_20_04
+        expand_gigabytes: 20
+    interfaces:
+      - bridge: br0
+    run_script: ./server.sh
+    context: ./server
+
   - name: client1
     cpus: 2
     memory_mb: 2048
