@@ -240,9 +240,14 @@ twilio:
   senderId:
     defaultSenderId: test
 
+# java -jar TextSecureServer.jar certificate -ca
+# Public: BTcQdFMFhwPQ6npECgpdrEObeTJT16VjGTjFSvzWZL5C
+# Private: CDQZFbjRzGfGqzoJ1ZCYUxgeOouUzE6QdBWym0IqJ0w=
+# java -jar TextSecureServer-4.97.jar certificate --key CDQZFbjRzGfGqzoJ1ZCYUxgeOouUzE6QdBWym0IqJ0w= --id 1
+# Certificate: CiUIARIhBQCREgmCVEqoCgRBjkzmIDwksZvf0P4uA7Bmu2tEpJ0DEkDXTeoJifYH2pJCqqZ1WBZrs/wKz7Z6d3Se6iKnARh1pKSupc1cYEbFtcENtTwVk/9PdeN0t2ontbPU0SUd9BsC
 unidentifiedDelivery:
-  certificate: CiUIARIhBUc2GiscUWb7FOc/9swptlrdqkv60VRkDxHCxocv5mQ/EkDWWNAsdZmKwlaEAl7uZFd4wDRDaKluk8M2A7wzoZi8HpIzyeYpZWkvoNOR/iLO9SnRkJ9flJEpF76XEXND/6OE # java -jar TextSecureServer.jar certificate -ca
-  privateKey: WKwggOctbbzIz/q1SIVEh8ZcYyDBqltZ5VnbpC0u0V8= # java -jar TextSecureServer.jar certificate --key priv_key_from_step_above --id key_ID
+  certificate: CiUIARIhBQCREgmCVEqoCgRBjkzmIDwksZvf0P4uA7Bmu2tEpJ0DEkDXTeoJifYH2pJCqqZ1WBZrs/wKz7Z6d3Se6iKnARh1pKSupc1cYEbFtcENtTwVk/9PdeN0t2ontbPU0SUd9BsC
+  privateKey: CDQZFbjRzGfGqzoJ1ZCYUxgeOouUzE6QdBWym0IqJ0w
   expiresDays: 365
 
 voiceVerification:
