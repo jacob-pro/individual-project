@@ -11,6 +11,10 @@ git apply --ignore-space-change --ignore-whitespace /etc/nocloud/context/use_cus
 ./gradlew build
 ./gradlew installDist
 
+# Usage
 # cd /opt/signal/signal-cli/build/install/signal-cli/bin
-# ./signal-cli -u +447722000001 register
-# ./signal-cli -u +447722000001 verify 111111
+# USER=$(/etc/nocloud/env.sh number)
+# ./signal-cli -u $USER register
+# ./signal-cli -u $USER verify $(/etc/nocloud/env.sh code)
+# ./signal-cli -u $USER send -m "message..." DESTINATION
+# ./signal-cli --verbose -u $USER receive

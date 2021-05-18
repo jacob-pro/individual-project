@@ -33,6 +33,12 @@ docker run -d --restart unless-stopped --name messagedb -e "POSTGRES_PASSWORD=po
 docker run -d --restart unless-stopped --name redis -e "IP=0.0.0.0" -p 7000-7005:7000-7005 grokzen/redis-cluster:latest
 docker run -d --restart unless-stopped --name nginx --net="host" -v /etc/nocloud/context/nginx.conf:/etc/nginx/nginx.conf:ro nginx
 
+# Database
+cd /opt/signal/Signal-Server/service/target
+java -jar TextSecureServer-4.97.jar accountdb migrate /etc/nocloud/context/config.yml
+java -jar TextSecureServer-4.97.jar abusedb migrate /etc/nocloud/context/config.yml
+java -jar TextSecureServer-4.97.jar messagedb migrate /etc/nocloud/context/config.yml
+
 # Service
 service="[Unit]
 Description=Signal service
@@ -49,3 +55,5 @@ echo "$service" > /etc/systemd/system/signal.service
 systemctl daemon-reload
 systemctl enable signal.service
 systemctl start signal.service
+
+echo "DONE!"
