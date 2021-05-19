@@ -8,6 +8,7 @@ git clone https://github.com/DP-3T/dp3t-sdk-backend.git
 cd dp3t-sdk-backend/dpppt-backend-sdk
 # Use pre-standard server
 git checkout v1.1.2
+git apply --ignore-space-change --ignore-whitespace /etc/nocloud/context/no_bintray.patch
 mvn install -DskipTests
 
 properties="

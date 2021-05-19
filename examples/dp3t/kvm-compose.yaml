@@ -7,6 +7,7 @@ machines:
     interfaces:
       - bridge: br0
     run_script: ./backend.sh
+    context: ./no_bintray.patch
 
   - name: emulated
     memory_mb: 8192
