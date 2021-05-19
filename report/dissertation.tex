@@ -800,7 +800,7 @@ is also provided allowing cleartext (non HTTPS) communication between the client
 because it allows inspection of the packets which would otherwise be TLS encrypted. Unfortunately this 
 exposed a bug in \texttt{libsignal-service-java} (a dependency of \texttt{signal-cli}) where the given
 \lstinline[language=java]|ConnectionSpec| is only respected for RESTful but not WebSocket communications
-with the \emph{Signal} server. I have submitted a pull request to fix this: \url{https://github.com/Turasa/libsignal-service-java/pull/28}.
+with the \emph{Signal} server. I have submitted a pull request to fix this: \url{https://github.com/Turasa/libsignal-service-java/pull/28} which has since been merged.
 
 \begin{figure}
 	\centering
@@ -841,11 +841,85 @@ the project builds and passes style checks on each push to the repository\footno
 \chapter{Critical Evaluation}
 \label{chap:evaluation}
 
-To do:
+\section{Results}
+
+
+\section{REPHRAIN Feedback}
+
+\section{Explanation of Failure Cases}
+
+
+\section{Difficulties with Example Projects}
+
+\subsection{\emph{NHS} COVID App and Cloud Lock-In}
+
+Before creating the \emph{DP3T} example project I was originally intending to test the UK's \emph{NHS} COVID-19 
+contact tracing app implementation\footnote{\url{https://github.com/nihp-public/covid19-app-system-public}}. 
+However it quickly became apparent that the service is highly coupled to
+\emph{Amazon Web Services (AWS)}, and as such it is very difficult to run within the testbed.
+It is architectured using the serverless model, and depends on services includes using \emph{Amazon}'s 
+\emph{API Gateway}, \emph{Lambda}, \emph{DynamoDB} etc.
+Whilst it is indeed possible to run some of the \emph{AWS} services 
+locally\footnote{For example: \url{https://hub.docker.com/r/amazon/dynamodb-local/}}, replicating
+the entire \emph{AWS} infrastructure to simulate the COVID service would require a very substantial amount of 
+time and effort; requiring code and configuration changes to enable connecting to local endpoints rather than the
+\emph{AWS} regions.\\
+
+This can be considered part of a broader problem of vendor lock-in in the context of modern
+cloud services; due to a lack of standardization and unique cloud service implementations, it means
+that applications are being developed that target a specific cloud service, and are not easy to move
+without incurring engineering costs~\cite{cloud_lock_in}. This proves a challenge to the whole concept 
+of a local virtual testbed in a world where technologies are being developed for specific proprietary
+cloud services, without support for self hosting. As such to test them locally would require code modifications,
+and the more the code is modified from the original, the less accurate and useful any test results can be 
+considered, when compared to the real service.
+
+\begin{figure}
+	\centering
+	\includegraphics[width=16cm]{img/nhs-covid}
+	\caption{\texttt{NHS} COVID-19 App System Architecture}
+\end{figure}
+
+\subsection{Exposure Notifications API}
+
+After switching to the \emph{DP3T} service I was able to setup the backend server within
+the testbed relatively easily, since it is implemented as a stand alone Spring Boot 
+application\footnote{\url{https://spring.io/projects/spring-boot}}. However when attempting
+to deploy the mobile client I then discovered another issue: in order to 
+use the \emph{DP3T} \texttt{calibration-app}
+it is required to enable the debug mode for COVID-19 exposure notifications within the
+Android device settings, however that option was not available, since according to \emph{Google}:
+
+\begin{quotation}
+	To enable debug mode on a device, the primary account on the device must be a development account that is on the allowlist.\footnote{\url{https://developers.google.com/android/exposure-notifications/debug-mode}}
+\end{quotation}
+
+Allowlist membership is only available to government health authorities, and
+official implementations of the app are distributed through \emph{Google}'s \emph{Play Store} and are
+digitally signed, hence allowing them to make use of the exposure notification API. But these are not useful
+for our testing purposes because we need to be able to change the URL to our own server. There does not
+currently appear to be any method of using the API for debugging or testing 
+purposes\footnote{\url{https://github.com/google/exposure-notifications-android/issues/8}}, meaning it cannot
+be used within the testbed.\\
+
+As a workaround for my example project so that I could demonstrate the \emph{DP3T} service being used,
+I am using the \texttt{prestandard} edition, which used its own exposure detection protocol prior to the development
+of the Google one\footnote{\url{https://github.com/DP-3T/dp3t-sdk-android\#introduction}}. 
+Whilst this does allows the app to launch successfully and data to be collected in the testbed
+it is no longer an accurate representation of the technology that is actually in live use. This highlights another
+similar issue with the testbed concept, in that despite being designed with a focus on privacy and security~\cite{gaen}
+some applications have been engineered without the ability to use in a test environment.
+
+
+
+
+\subsection{\emph{Signal} Server}
+
+
+\section{to do}
+
 \begin{itemize}
 	\item Show the testbed working, with packet trace data
-	\item How NHS App AWS dependency, is difficult to test
-	\item Exposure notification "Only approved government public health authorities can access the APIs"
 	\item Signal v5 AWS dependency,  is difficult to test
 	\item Signal setup documentation difficulties.
 	\item rephrain meeting feedback
