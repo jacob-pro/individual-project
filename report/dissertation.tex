@@ -844,12 +844,24 @@ the project builds and passes style checks on each push to the repository\footno
 \section{Results}
 
 
-\section{REPHRAIN Feedback}
-
 \section{Explanation of Failure Cases}
 
 
+\section{REPHRAIN Feedback}
+
+On the 4th May 2021 my co-supervisor presented my work on \emph{kvm-compose} and the \emph{DP3T} example
+using the slides and video (that I prepared for the poster day), as part of a REPHRAIN scoping session.
+My work received positive feedback.  \\
+
+One question that was asked focused on the performance and throughput
+of testbed. This is not something I have had time to conduct tests for, but I can theorise that it will
+largely depend on the performance of the system being used, since modern hardware acceleration
+means there will be minimal overhead from the virtualization.
+
 \section{Difficulties with Example Projects}
+
+During the creation of the example projects I discovered some limitations and issues
+that researchers may face when using the testbed.
 
 \subsection{\emph{NHS} COVID App and Cloud Lock-In}
 
@@ -857,7 +869,7 @@ Before creating the \emph{DP3T} example project I was originally intending to te
 contact tracing app implementation\footnote{\url{https://github.com/nihp-public/covid19-app-system-public}}. 
 However it quickly became apparent that the service is highly coupled to
 \emph{Amazon Web Services (AWS)}, and as such it is very difficult to run within the testbed.
-It is architectured using the serverless model, and depends on services includes using \emph{Amazon}'s 
+It is architectured using the serverless model, and depends on services includes using \emph{AWS} 
 \emph{API Gateway}, \emph{Lambda}, \emph{DynamoDB} etc.
 Whilst it is indeed possible to run some of the \emph{AWS} services 
 locally\footnote{For example: \url{https://hub.docker.com/r/amazon/dynamodb-local/}}, replicating
@@ -910,19 +922,36 @@ it is no longer an accurate representation of the technology that is actually in
 similar issue with the testbed concept, in that despite being designed with a focus on privacy and security~\cite{gaen}
 some applications have been engineered without the ability to use in a test environment.
 
-
-
-
 \subsection{\emph{Signal} Server}
+
+Setting up the \emph{Signal} server created some challenges, which may again highlight the limitations
+of the testbed. The first difficulty is there does not appear to be any official documentation
+or guides to setup the server, and while there are some unofficial guides 
+available\footnote{See \url{https://github.com/aqnouch/Signal-Setup-Guide} and \url{https://github.com/madeindra/signal-setup-guide}}, their use is limited
+due to substantial changes between different versions of \emph{Signal}. \\
+
+At first I attempted to use one of the latest versions (v5.80) of the \emph{Signal} server
+however I immediately ran into difficulty because it has substantial dependencies on \emph{Amazon Web Services (AWS)}.
+Version 5 has a \lstinline[language=java]|DynamicConfigurationManager| class that uses the 
+\lstinline[language=java]|AmazonAppConfigClient| to connect to \emph{AWS AppConfig}, using authentication
+from \emph{Amazon}'s metadata service for \emph{EC2} instances. The server will not start until it has
+successfully connected to \emph{AppConfig}. Again this is another example of modern services being
+built tightly coupled to a cloud service provider, making it difficult to run in a test environment. \\
+
+Nevertheless I tried to setup a \emph{Signal} server in \emph{AWS}, and was able to configure
+the \emph{AppConfig} service, but I then discovered that it also depends on \emph{AWS DynamoDB}.
+However due to the lack of documentation I was unable to successfully configure the
+schema of the \emph{DynamoDB} tables. As a result I decided to use v4.97 of \emph{Signal}
+server which does not have the \emph{AWS} dependencies and as a result I was able to run it in the testbed.
+It did however take a substantial amount of time to work out how it should be configured, and in the 
+process I added to one of the guides (\url{https://github.com/madeindra/signal-setup-guide/pull/83}).
+The issue of complex but undocumented technologies could prove to be a problem for users of the testbed.
 
 
 \section{to do}
 
 \begin{itemize}
 	\item Show the testbed working, with packet trace data
-	\item Signal v5 AWS dependency,  is difficult to test
-	\item Signal setup documentation difficulties.
-	\item rephrain meeting feedback
 	\item talk about future improvements / additional features
 \end{itemize}
 
