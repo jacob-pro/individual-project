@@ -843,6 +843,38 @@ the project builds and passes style checks on each push to the repository\footno
 
 \section{Results}
 
+For \emph{DP3T} I was able to quickly build a testbed by using the
+\texttt{kvm-compose up} command. After waiting a few minutes for the machines to become ready
+I was able to login and use \emph{Anbox} to run the \texttt{calibration-app}. Figures
+\ref{fig:successfully} and \ref{fig:dp3t_capture} show an infection report being sent using the
+app, and the resulting data being captured. \\
+
+\begin{figure}
+	\centering
+	\includegraphics[width=12cm]{img/successfully}
+	\caption{\texttt{calibration-app} successfully sending an infection report}
+	\label{fig:successfully}
+\end{figure}
+
+\begin{figure}
+	\centering
+	\includegraphics[width=16cm]{img/dp3t_capture}
+	\caption{Packet capture of the send infection report}
+	\label{fig:dp3t_capture}
+\end{figure}
+
+One issue I found was that I had to manually inspect the output logs of the \texttt{run\_script}
+to confirm that the virtual machines were setup. 
+For example on an earlier attempt at running the \emph{DP3T} testbed, the installation of the backend server
+failed because it was trying to download a dependency from \emph{Bintray} which has just been
+discontinued, but I was not notified of this and had to manually inspect the virtual machine's
+logs to discover this. Fortunately I was able to apply a small patch to remove the \emph{Bintray}
+dependency and get the installation working again\footnote{See \texttt{examples/dp3t/no\_bintray.patch}}. \\
+
+Perhaps an improvement to the testbed could
+involve some sort of system so that the virtual machines can report their installation status
+directly back to the user, and alert them when it is ready for use, or otherwise if any errors have occurred.
+
 
 \section{Explanation of Failure Cases}
 
@@ -947,13 +979,9 @@ It did however take a substantial amount of time to work out how it should be co
 process I added to one of the guides (\url{https://github.com/madeindra/signal-setup-guide/pull/83}).
 The issue of complex but undocumented technologies could prove to be a problem for users of the testbed.
 
+\section{Evaluation of the Goals}
 
-\section{to do}
 
-\begin{itemize}
-	\item Show the testbed working, with packet trace data
-	\item talk about future improvements / additional features
-\end{itemize}
 
 \vspace{2cm} 
 {\bf A topic-specific chapter, of roughly $15$ pages} 
