@@ -6,7 +6,7 @@ mkdir -p /opt/signal
 cd /opt/signal
 git clone https://github.com/AsamK/signal-cli.git
 cd signal-cli
-git checkout 5c3fc44d00cb7b18c4c5b4b6b5d7fe09f18973db
+git checkout 30690785fd51f9ba841f6f57d5f403bd970f26e3
 git apply --ignore-space-change --ignore-whitespace /etc/nocloud/context/use_custom_server.patch
 ./gradlew build
 ./gradlew installDist
