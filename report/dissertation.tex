@@ -219,7 +219,8 @@ The finished REPHRAIN PETs testbed will likely include the following features:
 The overall aim of this project is to contribute to the REPHRAIN project
 by developing a prototype testbed for privacy enhancing technologies (PETs). \\
 
-The high level objectives cover a subset of the goals for the final REPHRAIN testbed, including to:
+The high level objectives for the prototype cover a subset 
+of the goals for the final REPHRAIN testbed, including to:
 
 \begin{enumerate}
 	\item Implement support for testing client-server PET applications; spanning multiple
@@ -674,6 +675,7 @@ steps:
 \end{singlespace}
 
 \subsection{\emph{cloud-init}}
+\label{sect:cloud-init-usage}
 
 Section \ref{sect:cloud-init-background} provides an introduction to \emph{cloud-init}, but I
 will now explain how it has been used in \emph{kvm-compose}.
@@ -873,7 +875,7 @@ the project builds and passes style checks on each push to the repository\footno
 \section{Results of Deploying the Testbed Example Projects}
 \label{sect:results}
 
-For \emph{DP3T} I was able to quickly build a testbed by using the
+For the \emph{DP3T} example I was able to quickly build a testbed by using the
 \texttt{kvm-compose up} command. After waiting a few minutes for the machines to become ready
 I was able to login and use \emph{Anbox} to run the \texttt{calibration-app}. Figures
 \ref{fig:successfully} and \ref{fig:dp3t_capture} show an infection report being sent using the
@@ -918,6 +920,7 @@ as a result of using the \texttt{signal-cli} program within the testbed.
 \end{figure}
 
 \section{Testbed Failure Cases}
+\label{sect:failure}
 
 Unlike other high level languages \emph{Rust} does not implement exceptions, instead fallible
 functions should return a \lstinline|Result<_, _>| type, where the left type is for success
@@ -1074,7 +1077,7 @@ The issue of complex but undocumented technologies could prove to be a problem f
 
 \section{Have the Objectives Been Met?}
 
-In section \ref{sect:objectives} I outlined the objectives for the testbed, I will now discuss
+In section \ref{sect:objectives} I outlined the high level objectives for the testbed, I will now discuss
 how well these objectives have been met. \\
 
 The first objective requires support for running client-server applications in the testbed.
@@ -1107,7 +1110,21 @@ inputs in place of the Bluetooth communications, and then its client-server netw
 be inspected as usual. Where this would however become a more severe limitation is in the context
 of closed source binaries, which cannot easily be engineered to use fake inputs. \\
 
-The final objective requires that the testbed be highly automated and easy to replicate. \\
+The final objective requires that the testbed be highly automated and easy to replicate.
+My usage of \emph{cloud-init} with \emph{kvm-compose} (see section \ref{sect:cloud-init-usage})
+has made it very easy to deploy command line applications, such as the servers for the
+\emph{DP3T} and \emph{Signal} examples.
+All it takes is a single command \texttt{kvm-compose up} within the project directory,
+and the servers are automatically downloaded, compiled, and installed. Such an environment
+would also be easy to replicate as it just requires copying a folder of small files,
+they can easily be maintained in a \emph{Git} repository for example,
+and then running the \texttt{kvm-compose up} command would produce an identical setup.
+The level of automation is
+unfortunately less well developed when it comes to mobile apps, while in the \emph{DP3T} example
+the emulators are installed automatically, it still requires the app itself to be launched and driven
+by a user using a window manager. It was also noted in \ref{sect:results} and \ref{sect:failure}
+that the progress and status (success or failure) during the virtual machine \texttt{run\_script}
+phase are not easily accessible, which also impedes full automation. \\
 
 
 \chapter{Conclusion}
