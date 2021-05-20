@@ -863,20 +863,31 @@ app, and the resulting data being captured. \\
 	\label{fig:dp3t_capture}
 \end{figure}
 
-One issue I found was that I had to manually inspect the output logs of the \texttt{run\_script}
+However one issue I found was that I had to manually inspect the output logs of the \texttt{run\_script}
 to confirm that the virtual machines were setup. 
 For example on an earlier attempt at running the \emph{DP3T} testbed, the installation of the backend server
 failed because it was trying to download a dependency from \emph{Bintray} which has just been
 discontinued, but I was not notified of this and had to manually inspect the virtual machine's
 logs to discover this. Fortunately I was able to apply a small patch to remove the \emph{Bintray}
-dependency and get the installation working again\footnote{See \texttt{examples/dp3t/no\_bintray.patch}}. \\
+dependency and get the installation working again\footnote{The root cause of this is that
+the \emph{DP3T} version is out of date - explained in \ref{sect:exposure}}. \\
 
 Perhaps an improvement to the testbed could
 involve some sort of system so that the virtual machines can report their installation status
-directly back to the user, and alert them when it is ready for use, or otherwise if any errors have occurred.
+directly back to the user, and alert them when it is ready for use, or otherwise if any errors have occurred. \\
 
+Likewise I was able to do the same with the \emph{Signal} example project, building a testbed by using the
+\texttt{kvm-compose up} command. Figure \ref{fig:signal_capture} shows some of the packet capture data
+as a result of using the \texttt{signal-cli} program within the testbed.
 
-\section{Explanation of Failure Cases}
+\begin{figure}
+	\centering
+	\includegraphics[width=16cm]{img/signal_capture}
+	\caption{Packet capture of \texttt{signal-cli} registration and messaging in Wireshark}
+	\label{fig:signal_capture}
+\end{figure}
+
+\section{Failure Cases}
 
 
 \section{REPHRAIN Feedback}
@@ -890,7 +901,7 @@ of testbed. This is not something I have had time to conduct tests for, but I ca
 largely depend on the performance of the system being used, since modern hardware acceleration
 means there will be minimal overhead from the virtualization.
 
-\section{Difficulties with Example Projects}
+\section{Difficulties Creating Example Projects}
 
 During the creation of the example projects I discovered some limitations and issues
 that researchers may face when using the testbed.
@@ -925,6 +936,7 @@ considered, when compared to the real service.
 \end{figure}
 
 \subsection{Exposure Notifications API}
+\label{sect:exposure}
 
 After switching to the \emph{DP3T} service I was able to setup the backend server within
 the testbed relatively easily, since it is implemented as a stand alone Spring Boot 
@@ -979,7 +991,7 @@ It did however take a substantial amount of time to work out how it should be co
 process I added to one of the guides (\url{https://github.com/madeindra/signal-setup-guide/pull/83}).
 The issue of complex but undocumented technologies could prove to be a problem for users of the testbed.
 
-\section{Evaluation of the Goals}
+\section{Summary}
 
 
 
