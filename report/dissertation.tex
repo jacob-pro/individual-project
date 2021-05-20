@@ -203,7 +203,7 @@ The finished REPHRAIN PETs testbed will likely include the following features:
 
 \begin{itemize}
 	\item Support for testing various architectures and network topologies, 
-	including client/server and peer-to-peer applications; in order to accommodate 
+	including client-server and peer-to-peer applications; in order to accommodate 
 	testing a wide variety of different PETs.
 	\item The ability to collect a variety of information such as packet captures and memory dumps
 	for use in evaluating the privacy and safety properties of the application.
@@ -212,6 +212,23 @@ The finished REPHRAIN PETs testbed will likely include the following features:
 	\item Implement a high degree of automation, such that working with large test
 	environments becomes feasible.
 \end{itemize}
+
+\section{High Level Objectives}
+\label{sect:objectives}
+
+The overall aim of this project is to contribute to the REPHRAIN project
+by developing a prototype testbed for privacy enhancing technologies (PETs). \\
+
+The high level objectives cover a subset of the goals for the final REPHRAIN testbed, including to:
+
+\begin{enumerate}
+	\item Implement support for testing client-server PET applications; spanning multiple
+	networked devices.
+	\item Demonstrate the ability to capture network traffic.
+	\item Demonstrate how the testbed can be used in testing both desktop and mobile apps.
+	\item Provide a high level of automation, allowing setups to be easily 
+	and programmatically be deployed and replicated.
+\end{enumerate}
 
 \section{Existing Testbeds}
 
@@ -222,25 +239,7 @@ as port vulnerability scans, checking what cipher suites are used (or not), and 
 network traffic to see what data is being collected. However their testbed is different in that it is only designed
 for IoT devices; rather than general purpose PET applications.
 
-\section{High Level Objectives}
-\label{sect:objectives}
-
-The overall aim of this project is to contribute to the REPHRAIN project
-by developing a prototype PETs testbed. \\
-
-The high level objectives cover a subset of the goals for the final REPHRAIN testbed:
-
-\begin{itemize}
-	\item Develop a simple and lightweight testbed platform for evaluating PETs.
-	\item Implement support for testing client-server PET applications; spanning multiple
-	networked devices.
-	\item Demonstrate the ability to capture network traffic.
-	\item Demonstrate how the testbed can be used in testing both desktop and mobile apps.
-	\item Provide a high level of automation, allowing setups to be easily 
-	and programmatically be replicated.
-\end{itemize}
-
-\section{Comparison to Existing Products}
+\section{Comparison to Similar Products}
 
 
 \chapter{Technical Background}
@@ -740,6 +739,7 @@ which has a \texttt{run\_script} that on launch:
 \end{singlespace}
 
 \subsubsection{\emph{Android} App}
+\label{sect:android}
 
 The \emph{DP3T} project provides an SDK (Software Development Kit) 
 for both \emph{Android} and \emph{Apple iOS} which
@@ -776,7 +776,7 @@ dependencies and simulators. The \texttt{calibration-app} is made available in t
 \texttt{/etc/nocloud/context} folder, ready to be launched and used by the tester.
 I chose to provide two \emph{Android} examples because each of the emulators have different
 strengths and weaknesses; the \emph{Android Emulator} has more support for customising sensor
-input such as GPS data, but it has poorer performance due to the extra layer of virtualization
+input such as GPS and Gyroscope data, but it has poorer performance due to the extra layer of virtualization
 when compared to \emph{Anbox}.
 
 \subsection{\emph{Signal}}
@@ -834,6 +834,7 @@ with the \emph{Signal} server. I have submitted a pull request to fix this: \url
 \end{figure}
 
 \subsection{Capturing Traffic}
+\label{sect:capturing}
 
 When a test environment has been built (using the \texttt{kvm-compose up} command), network
 traffic can then be collected using the \texttt{ovs-tcpdump} utlity of 
@@ -847,8 +848,12 @@ For example:
 The \texttt{-i} option is where the bridge name is specified, in the format of the project name
 and bridge name (from the \texttt{kvm-compose.yaml} file) joined with a hyphen.
 What this does is create a temporary mirror port on the specified bridge, with the \texttt{--span}
-option indicating that traffic from all bridge ports should be mirrored. The output is saved as a
-packet capture file which may be opened with software such as 
+option indicating that traffic from all bridge ports should be mirrored. \\
+
+Any additional options are passed onto the \texttt{tcpdump} application itself. 
+These options could include various packet filters\footnote{\url{https://www.tcpdump.org/manpages/tcpdump.1.html}}, 
+in the example above the \texttt{-w} option
+is used to write the output as a packet capture file which may then be opened and analysed with software such as 
 \emph{Wireshark}\footnote{\url{https://www.wireshark.org/}}.
 
 \section{Development Practices}
@@ -865,7 +870,7 @@ the project builds and passes style checks on each push to the repository\footno
 \chapter{Critical Evaluation}
 \label{chap:evaluation}
 
-\section{Results Produced Using the Testbed Example Projects}
+\section{Results of Deploying the Testbed Example Projects}
 \label{sect:results}
 
 For \emph{DP3T} I was able to quickly build a testbed by using the
@@ -977,6 +982,7 @@ largely depend on the performance of the system being used, since modern hardwar
 means there will be minimal overhead from the virtualization.
 
 \section{Difficulties Creating Example Projects}
+\label{sect:difficulties}
 
 During the creation of the example projects I discovered some limitations and issues
 that researchers may face when using the testbed.
@@ -1068,8 +1074,40 @@ The issue of complex but undocumented technologies could prove to be a problem f
 
 \section{Have the Objectives Been Met?}
 
-In section \ref{sect:objectives} I outlined the objectives for the tesbed, I will now discuss
-at how well these objectives have been met. \\
+In section \ref{sect:objectives} I outlined the objectives for the testbed, I will now discuss
+how well these objectives have been met. \\
+
+The first objective requires support for running client-server applications in the testbed.
+My two example projects (\emph{DP3T} and \emph{Signal}) both use a client-server architecture
+and section \ref{sect:results} shows the applications communicating successfully.
+The virtual machines in those example projects were also able to communicate with the external network
+/ internet in order to download their dependencies.
+The \emph{kvm-compose} tool does in fact provide support for defining multiple network bridges,
+connecting multiple interfaces to each virtual machine, and attaching an SDN controller to the bridges, 
+thereby providing a basis from which to start future work on deploying more
+complex networks and architectures. \\
+
+The next objective looks at the ability to intercept and capture network traffic
+generated through the testbed. I consider objective to have been met, and the process
+has been documented in section \ref{sect:capturing}. Captured network traffic from
+the example projects is shown in section \ref{sect:results}. A potential improvement
+could be to integrate the packet capture commands as part of the \emph{kvm-compose} utility
+to produce a more streamlined experience for the user. \\
+
+The third objective requires being able to use two different types of applications; desktop and
+mobile apps. My \emph{DP3T} example successfully demonstrates an \emph{Android} app launching within the testbed,
+via two different methods. As mentioned in section \ref{sect:android} there are advantages and
+disadvantages to the two different methods (\emph{Anbox} and \emph{Android Emulator}). However
+a limitation experienced by both implementations (as well as other approaches to \emph{Android} emulation)
+is that they do not support certain technologies such as Bluetooth or NFC\footnote{For example see: 
+\url{https://developer.android.com/studio/run/emulator\#limitations}}.
+Although Bluetooth is major part of its function, this does not necessarily have to be a complete barrier
+to testing \emph{DP3T}; due to its open source SDK a tester could easily add code to produce simulated
+inputs in place of the Bluetooth communications, and then its client-server network communication can still
+be inspected as usual. Where this would however become a more severe limitation is in the context
+of closed source binaries, which cannot easily be engineered to use fake inputs. \\
+
+The final objective requires that the testbed be highly automated and easy to replicate. \\
 
 
 \chapter{Conclusion}
@@ -1077,7 +1115,7 @@ at how well these objectives have been met. \\
 
 \section{Achievements}
 
-I have successfully built a virtual testbed solution, capable of deploying
+I have built a virtual testbed solution, capable of deploying
 virtual machines and virtual networks. The testbed can automatically configure
 the virtual machines with SSH keys, files, variables, and a boot script.
 I have demonstrated how the testbed can be used for deploying two different privacy enhancing technologies
@@ -1085,12 +1123,31 @@ I have demonstrated how the testbed can be used for deploying two different priv
 And how the testbed can be used for collecting network traffic data for research purposes.
 The testbed will be used as a prototype to inform the development of REPHRAIN's PET testbed, 
 as part of a major national programme of research into online safety.
-During the development process I have also made accepted contributions to three open source projects.
+During the development process I have also made contributions to three open source projects which 
+have been accepted by their respective maintainers.
 
 \section{Project Status}
 
 
-\section{Open Problems and Future Plans}
+\section{Open Problems and Future Ideas}
+
+In section \ref{sect:difficulties} I discovered that 
+applications that applications which have been built
+to run in the cloud can be difficult to deploy in local environments outside of the 
+commercial cloud infrastructure. With more and more modern applications being architectured 
+as `cloud-native"~\cite{patrizio_2018} this will be a problem the REPHRAIN testbed will have to 
+consider and work around. \\
+
+While my prototype demonstrates support for client-server applications, it has not yet been tested
+when simulating a more complex network environment. 
+The \emph{Open vSwitch (OVS)} bridges that I have used to provide the networking features 
+are indeed capable of implementing layer 3 routing and more advanced topologies, 
+but at present this would require manual configuration using the \emph{OVS} commands.
+Future development of the PET testbed could look at providing easily accessible and
+automated support 
+for deploying alternative and more complex topologies to client-server, such as peer-to-peer 
+applications, and multi subnet networks.
+As well as providing suitable examples for how to use the features. \\
 
 
 \backmatter
