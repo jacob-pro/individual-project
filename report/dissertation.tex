@@ -16,6 +16,9 @@
 
 \usepackage{subfig}
 
+\usepackage{xcolor}
+\definecolor{code-comment}{rgb}{0,0.6,0}
+\definecolor{code-string}{rgb}{0,0.8,0}
 \usepackage{listings, listings-rust}
 \lstset{
 	frame=tb,
@@ -842,6 +845,7 @@ the project builds and passes style checks on each push to the repository\footno
 \label{chap:evaluation}
 
 \section{Results}
+\label{sect:results}
 
 For \emph{DP3T} I was able to quickly build a testbed by using the
 \texttt{kvm-compose up} command. After waiting a few minutes for the machines to become ready
@@ -883,11 +887,61 @@ as a result of using the \texttt{signal-cli} program within the testbed.
 \begin{figure}
 	\centering
 	\includegraphics[width=16cm]{img/signal_capture}
-	\caption{Packet capture of \texttt{signal-cli} registration and messaging in Wireshark}
+	\caption{Packet capture of \texttt{signal-cli} registration and messaging, viewed in Wireshark}
 	\label{fig:signal_capture}
 \end{figure}
 
 \section{Failure Cases}
+
+Unlike other high level languages \emph{Rust} does not implement exceptions, instead fallible
+functions should return a \lstinline|Result<_, _>| type, where the left type is for success
+and the right type represents an error. Within \emph{kvm-compose} I have used the \texttt{anyhow} 
+crate to simplify error handling, since it reduces the need to define custom error types
+and has useful macros for manipulating errors \cite{groenen}. \\
+
+Within \emph{kvm-compose} there are many functions that could fail, these include file system
+operations, interactions with \emph{QEMU/KVM} (via \texttt{libvirt-rust}), and calls to command
+line tools. All of these return \lstinline|Result| types which are then either handled
+or passed upwards to the calling function. For example one of the functions I defined for 
+configuring \emph{Open vSwitch}: \\
+
+\begin{lstlisting}
+pub fn add_br<T: AsRef<str>>(name: T) -> anyhow::Result<()> {
+    let output = Command::new("sudo")
+    .arg("ovs-vsctl")
+    .arg("add-br")
+    .arg(name.as_ref())
+    .output()?;
+    if !output.status.success() {
+        let std_err = std::str::from_utf8(&output.stderr)?;
+        bail!("{}", std_err);
+    }
+    Ok(())
+}
+\end{lstlisting}
+\vspace{1cm}
+
+If either the operating system fails to call the command, or the result of the command was not
+a success then the Rust function will return \lstinline|Result::Err()| containing a description
+of what went wrong. This approach is used throughout the program, so if there are any errors
+then \emph{kvm-compose} will clean up and exit. The error description is printed to the console
+as part of the log.\\
+
+The \emph{kvm-compose} log output can be changed with the \texttt{--verbosity} flag, with levels
+of \texttt{[error, warn, info, trace]}. The higher levels could be useful to the user if
+they need to debug the program, for example the \texttt{trace} option will show the full XML
+output that is given to \texttt{libvirt}. Any errors or problems that occur when running
+\emph{kvm-compose} are therefore presented very clearly to the user as soon as it is executed. \\
+
+Errors that occur during the \texttt{run\_script} stage of initialising the virtual machines
+are unfortunately less accessible. The \texttt{stdout} and \texttt{stderr} streams of script
+are logged and stored in \texttt{/etc/nocloud/}. 
+But as noted in section \ref{sect:results} this will not appear to the user unless they manually look
+for those logs themselves. For example using SSH to connect to the virtual machine and running:
+
+\begin{verbatim}
+    tail -f /etc/nocloud/run_script_out.txt
+\end{verbatim}
 
 
 \section{REPHRAIN Feedback}
@@ -988,7 +1042,7 @@ However due to the lack of documentation I was unable to successfully configure 
 schema of the \emph{DynamoDB} tables. As a result I decided to use v4.97 of \emph{Signal}
 server which does not have the \emph{AWS} dependencies and as a result I was able to run it in the testbed.
 It did however take a substantial amount of time to work out how it should be configured, and in the 
-process I added to one of the guides (\url{https://github.com/madeindra/signal-setup-guide/pull/83}).
+process I have contributed to one of the guides (\url{https://github.com/madeindra/signal-setup-guide/pull/83}).
 The issue of complex but undocumented technologies could prove to be a problem for users of the testbed.
 
 \section{Summary}
