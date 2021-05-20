@@ -104,61 +104,33 @@ project proposal and support and guidance in completing it.
 \chapter{Contextual Background}
 \label{chap:context}
 
-The UK Research and Innovation (UKRI) is a non-departmental public body of the United Kingdom Government
-sponsored by the Department for Business, Energy and Industrial Strategy~\cite{ukri_who_we_are}.
-In October 2020 the UKRI announced the creation of the National Research Centre on Privacy, Harm Reduction
-and Adversarial Influence Online (REPHRAIN)~\cite{ukri_new_centre}.
-The centre is made up of researchers in computer science, international relations, law, psychology, management,
-design, digital humanities, public policy, political Science, criminology, and sociology from five British
-universities including the University of Bristol. \\
-
-REPHRAIN should be understood in the context of the UK government's \emph{Online Harms White Paper} public
-consultation beginning in April 2019~\cite{uk_gov_online_harms}, which sets out plans for new online safety 
-measures; REPHRAIN's missions and outcomes are aligned with this paper~\cite{rephrain_harms}. \\
-
-REPHRAIN will focus on three core missions~\cite{rephrain_missions}:
-
-\begin{enumerate}
-	\item Delivering privacy at scale while mitigating its misuse to inflict harms.
-	\item Minimising harms while maximising benefits from a sharing-driven digital economy.
-	\item Balancing individual agency vs. the social good.
-\end{enumerate}
-
-The three missions will require looking at Privacy Enhancing Technologies (PETs); including their capabilities,
-applications of PETs in addressing existing online harms, mitigating the potential abuse of PETs, embedding the PETs
-into infrastructures, and developing new PETs.
-In order to facilitate this REPHRAIN intends to build a toolbox of resources including a PETs testbed. The testbed
-will be used by researchers in developing, testing, and evaluating the PETs. 
-The aim of this project is to develop a prototype for this testbed.
-
 \section{What are Privacy Enhancing Technologies (PETs)?}
 
-Before we discuss Privacy Enhancing Technologies we must consider what we mean by "privacy". REPHRAIN is 
-primarily using the definitions set out by D. J. Solove in his
-2006 article \emph{A Taxonomy of Privacy}~\cites{solove_privacy}{rephrain_harms}. Solove notes that the
+Before we discuss Privacy Enhancing Technologies we must consider what we mean by `privacy". 
+In his 2006 article D. J. Solove  \emph{A Taxonomy of Privacy}~\cite{solove_privacy} notes that the
 definition of privacy has often been very broad or vague, and therefore sets out to develop
 a taxonomy of privacy violations. He has defined four groups of harmful activities (See figure~\ref{privacy_taxonomy}). \\
 
 \begin{figure}
-\centering
-\parbox{7cm}{
-	\begin{enumerate}
-		\item Information collection
+	\centering
+	\parbox{7cm}{
 		\begin{enumerate}
-			\item Surveillance
-			\item Interrogation 
+			\item Information collection
+			\begin{enumerate}
+				\item Surveillance
+				\item Interrogation 
+			\end{enumerate}
+			\item Information processing
+			\begin{enumerate}
+				\item Aggregation
+				\item Identification
+				\item Insecurity
+				\item Secondary Use
+				\item Exclusion
+			\end{enumerate}
 		\end{enumerate}
-		\item Information processing
-		\begin{enumerate}
-			\item Aggregation
-			\item Identification
-			\item Insecurity
-			\item Secondary Use
-			\item Exclusion
-		\end{enumerate}
-	\end{enumerate}
-}
-\qquad
+	}
+	\qquad
 	\begin{minipage}{7cm}
 		\begin{enumerate}
 			\setcounter{enumi}{2}
@@ -188,7 +160,7 @@ protect a user from such privacy violations~\cite{buckley_pets}. Some examples o
 Onion routing such as the Tor network (which enables anonymous communication), or
 end-to-end encrypted messaging systems such as the Signal protocol. 
 Kaaniche et al.~\cite{kaaniche_2020_privacy} have defined a more comprehensive classification of PETs
- (see Figure~\ref{pet_taxonomy}).
+(see Figure~\ref{pet_taxonomy}).
 
 \begin{figure}
 	\centering
@@ -197,7 +169,51 @@ Kaaniche et al.~\cite{kaaniche_2020_privacy} have defined a more comprehensive c
 	\label{pet_taxonomy}
 \end{figure}
 
-\section{Existing Solutions}
+\section{Importance of Evaluating PETs}
+
+\section{REPHRAIN}
+
+The UK Research and Innovation (UKRI) is a non-departmental public body of the United Kingdom Government
+sponsored by the Department for Business, Energy and Industrial Strategy~\cite{ukri_who_we_are}.
+In October 2020 the UKRI announced the creation of the National Research Centre on Privacy, Harm Reduction
+and Adversarial Influence Online (REPHRAIN)~\cite{ukri_new_centre}.
+The centre is made up of researchers in computer science, international relations, law, psychology, management,
+design, digital humanities, public policy, political Science, criminology, and sociology from five British
+universities including the University of Bristol. \\
+
+REPHRAIN should be understood in the context of the UK government's \emph{Online Harms White Paper} public
+consultation beginning in April 2019~\cite{uk_gov_online_harms}, which sets out plans for new online safety 
+measures; REPHRAIN's missions and outcomes are aligned with this paper~\cite{rephrain_harms}. \\
+
+REPHRAIN will focus on three core missions~\cite{rephrain_missions}:
+
+\begin{enumerate}
+	\item Delivering privacy at scale while mitigating its misuse to inflict harms.
+	\item Minimising harms while maximising benefits from a sharing-driven digital economy.
+	\item Balancing individual agency vs. the social good.
+\end{enumerate}
+
+The three missions will require looking at Privacy Enhancing Technologies (PETs); including their capabilities,
+applications of PETs in addressing existing online harms, mitigating the potential abuse of PETs, embedding the PETs
+into infrastructures, and developing new PETs.
+In order to facilitate this REPHRAIN intends to build a toolbox of resources including a PETs testbed. The testbed
+will be used by researchers in developing, testing, and evaluating the PETs.\\
+
+The finished REPHRAIN PETs testbed will likely include the following features:
+
+\begin{itemize}
+	\item Support for testing various architectures and network topologies, 
+	including client/server and peer-to-peer applications; in order to accommodate 
+	testing a wide variety of different PETs.
+	\item The ability to collect a variety of information such as packet captures and memory dumps
+	for use in evaluating the privacy and safety properties of the application.
+	\item Support different operating systems and platforms such as desktop and mobile apps.
+	Including applications that compiled from available source code, or using pre-built binaries.
+	\item Implement a high degree of automation, such that working with large test
+	environments becomes feasible.
+\end{itemize}
+
+\section{Existing Testbeds}
 
 There has been some existing research by Tekeoglu and Tosun~\cite{tekeoglu_2016_testbed} who have developed 
 a privacy testbed for Internet-of-Things (IoT) devices. Their approach has some similar goals to this project 
@@ -207,20 +223,25 @@ network traffic to see what data is being collected. However their testbed is di
 for IoT devices; rather than general purpose PET applications.
 
 \section{High Level Objectives}
+\label{sect:objectives}
 
-Overall the high-level objective of this project is to develop a simple and lightweight
-testbed platform for evaluating PETs:
+The overall aim of this project is to contribute to the REPHRAIN project
+by developing a prototype PETs testbed. \\
+
+The high level objectives cover a subset of the goals for the final REPHRAIN testbed:
 
 \begin{itemize}
-	\item The testbed should support testing various architectures and network topologies, 
-	including client/server and peer-to-peer applications, to accommodate a variety of PETs.
-	\item The testbed should be able to collect information such as packet captures
-	for use in evaluating the privacy properties.
-	\item The testbed should support different platforms such as desktop and mobile apps,
-	and both applications where the source code is available or only pre-built binaries.
-	\item The testbed should enable a high level of automation, such that working with large test
-	environments because feasible, and the setup can easily and programmatically be replicated.
+	\item Develop a simple and lightweight testbed platform for evaluating PETs.
+	\item Implement support for testing client-server PET applications; spanning multiple
+	networked devices.
+	\item Demonstrate the ability to capture network traffic.
+	\item Demonstrate how the testbed can be used in testing both desktop and mobile apps.
+	\item Provide a high level of automation, allowing setups to be easily 
+	and programmatically be replicated.
 \end{itemize}
+
+\section{Comparison to Existing Products}
+
 
 \chapter{Technical Background}
 \label{chap:technical}
@@ -844,7 +865,7 @@ the project builds and passes style checks on each push to the repository\footno
 \chapter{Critical Evaluation}
 \label{chap:evaluation}
 
-\section{Results}
+\section{Results Produced Using the Testbed Example Projects}
 \label{sect:results}
 
 For \emph{DP3T} I was able to quickly build a testbed by using the
@@ -891,7 +912,7 @@ as a result of using the \texttt{signal-cli} program within the testbed.
 	\label{fig:signal_capture}
 \end{figure}
 
-\section{Failure Cases}
+\section{Testbed Failure Cases}
 
 Unlike other high level languages \emph{Rust} does not implement exceptions, instead fallible
 functions should return a \lstinline|Result<_, _>| type, where the left type is for success
@@ -1045,68 +1066,32 @@ It did however take a substantial amount of time to work out how it should be co
 process I have contributed to one of the guides (\url{https://github.com/madeindra/signal-setup-guide/pull/83}).
 The issue of complex but undocumented technologies could prove to be a problem for users of the testbed.
 
-\section{Summary}
+\section{Have the Objectives Been Met?}
 
+In section \ref{sect:objectives} I outlined the objectives for the tesbed, I will now discuss
+at how well these objectives have been met. \\
 
-
-\vspace{2cm} 
-{\bf A topic-specific chapter, of roughly $15$ pages} 
-\vspace{1cm} 
-
-\noindent
-This chapter is intended to evaluate what you did.  The content is highly 
-topic-specific, but for many projects will have flavours of the following:
-
-\begin{enumerate}
-\item functional  testing, including analysis and explanation of failure 
-      cases,
-\item behavioural testing, often including analysis of any results that 
-      draw some form of conclusion wrt. the aims and objectives,
-      and
-\item evaluation of options and decisions within the project, and/or a
-      comparison with alternatives.
-\end{enumerate}
-
-\noindent
-This chapter often acts to differentiate project quality: even if the work
-completed is of a high technical quality, critical yet objective evaluation 
-and comparison of the outcomes is crucial.  In essence, the reader wants to
-learn something, so the worst examples amount to simple statements of fact 
-(e.g., ``graph X shows the result is Y''); the best examples are analytical 
-and exploratory (e.g., ``graph X shows the result is Y, which means Z; this 
-contradicts [1], which may be because I use a different assumption'').  As 
-such, both positive {\em and} negative outcomes are valid {\em if} presented 
-in a suitable manner.
 
 \chapter{Conclusion}
 \label{chap:conclusion}
 
-{\bf A compulsory chapter,     of roughly $5$ pages} 
-\vspace{1cm} 
+\section{Achievements}
 
-\noindent
-The concluding chapter of a dissertation is often underutilised because it 
-is too often left too close to the deadline: it is important to allocation
-enough attention.  Ideally, the chapter will consist of three parts:
+I have successfully built a virtual testbed solution, capable of deploying
+virtual machines and virtual networks. The testbed can automatically configure
+the virtual machines with SSH keys, files, variables, and a boot script.
+I have demonstrated how the testbed can be used for deploying two different privacy enhancing technologies
+(PETs) including \emph{DP3T} a COVID contact tracing app, and \emph{Signal} an encrypted messaging platform.
+And how the testbed can be used for collecting network traffic data for research purposes.
+The testbed will be used as a prototype to inform the development of REPHRAIN's PET testbed, 
+as part of a major national programme of research into online safety.
+During the development process I have also made accepted contributions to three open source projects.
 
-\begin{enumerate}
-\item (Re)summarise the main contributions and achievements, in essence
-      summing up the content.
-\item Clearly state the current project status (e.g., ``X is working, Y 
-      is not'') and evaluate what has been achieved with respect to the 
-      initial aims and objectives (e.g., ``I completed aim X outlined 
-      previously, the evidence for this is within Chapter Y'').  There 
-      is no problem including aims which were not completed, but it is 
-      important to evaluate and/or justify why this is the case.
-\item Outline any open problems or future plans.  Rather than treat this
-      only as an exercise in what you {\em could} have done given more 
-      time, try to focus on any unexplored options or interesting outcomes
-      (e.g., ``my experiment for X gave counter-intuitive results, this 
-      could be because Y and would form an interesting area for further 
-      study'' or ``users found feature Z of my software difficult to use,
-      which is obvious in hindsight but not during at design stage; to 
-      resolve this, I could clearly apply the technique of Smith [7]'').
-\end{enumerate}
+\section{Project Status}
+
+
+\section{Open Problems and Future Plans}
+
 
 \backmatter
 \printbibliography
