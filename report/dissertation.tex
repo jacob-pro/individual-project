@@ -172,6 +172,7 @@ Kaaniche et al.~\cite{kaaniche_2020_privacy} have defined a more comprehensive c
 \section{Importance of Evaluating PETs}
 
 \section{REPHRAIN}
+\label{sect:rephrain}
 
 The UK Research and Innovation (UKRI) is a non-departmental public body of the United Kingdom Government
 sponsored by the Department for Business, Energy and Industrial Strategy~\cite{ukri_who_we_are}.
@@ -1126,7 +1127,6 @@ by a user using a window manager. It was also noted in \ref{sect:results} and \r
 that the progress and status (success or failure) during the virtual machine \texttt{run\_script}
 phase are not easily accessible, which also impedes full automation. \\
 
-
 \chapter{Conclusion}
 \label{chap:conclusion}
 
@@ -1143,10 +1143,7 @@ as part of a major national programme of research into online safety.
 During the development process I have also made contributions to three open source projects which 
 have been accepted by their respective maintainers.
 
-\section{Project Status}
-
-
-\section{Open Problems and Future Ideas}
+\section{Open Problems and Future Improvements}
 
 In section \ref{sect:difficulties} I discovered that 
 applications that applications which have been built
@@ -1156,7 +1153,7 @@ as `cloud-native"~\cite{patrizio_2018} this will be a problem the REPHRAIN testb
 consider and work around. \\
 
 While my prototype demonstrates support for client-server applications, it has not yet been tested
-when simulating a more complex network environment. 
+when virtualizing a more complex network environment. 
 The \emph{Open vSwitch (OVS)} bridges that I have used to provide the networking features 
 are indeed capable of implementing layer 3 routing and more advanced topologies, 
 but at present this would require manual configuration using the \emph{OVS} commands.
@@ -1166,6 +1163,34 @@ for deploying alternative and more complex topologies to client-server, such as 
 applications, and multi subnet networks.
 As well as providing suitable examples for how to use the features. \\
 
+As noted in section \ref{sect:rephrain} the REPHRAIN testbed may look at additional
+forms of data collection such as memory dumps. This itself will be an interesting problem,
+approaches could look at capturing the memory externally from the hypervisor, or from within the
+virtual machine. Both would have to find a solution of selecting the useful / relevant memory
+for the technology being studied, and captures taken inside the virtual machine would need a method
+of communicating the data back out of the virtual machine to the user of the testbed.
+While I have implemented network captures in \emph{kvm-compose}, there is still the
+question of the step of actually analysing the captured data to determine the privacy properties,
+this is an area that may require further investigation, and development to make the processes
+for automated. \\
+
+Whilst my project has so far demonstrated desktop \emph{Linux} and \emph{Android} apps running
+in the testbed, it will be a further challenge to support additional platforms. It is possible
+to run unmodified \emph{Windows} images within \emph{QEMU/KVM}\footnote{\url{https://www.linux-kvm.org/page/Main_Page}},
+but this would require substantial modifications to support automatic initialisation of \emph{Windows}
+virtual machines, since they do not support \emph{cloud-init}\footnote{Alternatives such as 
+\emph{Cloudbase-Init} are available: \url{https://cloudbase.it/cloudbase-init/}}. Testing using the 
+\emph{Apple MacOS} and \emph{iOS} operating systems will be a further challenge since their license
+does not permit installation on non-Apple branded computers~\cite[Part 2, Section I]{yosemite},
+and as such virtualization and emulation solutions are far less developed. \\
+
+Finally there is clear room for improvement when it comes to the automation of mobile apps. 
+Perhaps it is possible to use the \emph{Android} emulators in a command line / headless configuration.
+Or even if the emulators do always require
+a GUI in order to launch, this could be worked around, for example I would recommend
+investigating scripting \emph{X} forwarding of the display from the virtual machine, and also
+looking at \emph{X11} command line automation tools such as
+\texttt{xdotool}\footnote{\url{http://manpages.ubuntu.com/manpages/trusty/man1/xdotool.1.html}}.
 
 \backmatter
 \printbibliography
