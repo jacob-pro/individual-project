@@ -343,7 +343,7 @@ managed with the \texttt{bridge-utils} package (or equivalent). \\
 There is also an alternative virtual networking solution for \emph{Linux} (and other platforms)
 - \emph{Open vSwitch}. The advantages of \emph{Open vSwitch} over \emph{Linux Bridge} include that it has
 easy management via SDN (explained below), it can support more complex network protocols, and it can
-function as a Layer 3 router (as opposed to just a Layer 2 bridge).
+function as a layer 3 router (as opposed to just a layer 2 bridge).
 
 \subsection{Software Defined Networking (SDN)}
 
@@ -351,7 +351,7 @@ In order to understand Software Defined Networking (SDN) we must first explain h
 devices such as switches and routers function. 
 
 The \emph{data plane} refers to the functions of a network device that actually process and forward
-packets between interfaces. For example the ASIC (application specific integrated circuit) logic
+packets between interfaces. For example the ASIC (Application Specific Integrated Circuit) logic
 that matches packets to a routing table.
 
 The \emph{control plane} refers to the processes that a network device uses in order to control
@@ -392,7 +392,7 @@ could have been used, I will provide some background on Rust, and its advantages
 project. \\
 
 Rust is a modern systems programming language, originally developed by Mozilla, 
-with its first stable release in 2015. It is designed with a focus on performance, safety
+with its first stable release in 2015. It is designed with a focus on performance, safety,
 and concurrency. \\
 
 \begin{singlespace}
@@ -424,9 +424,9 @@ systems and software on the virtual machines. \\
 One approach the tester could take is pre-building a machine step by step,
 installing all their software and configuring it appropriately, and then saving
 a disk image, which they could attach to virtual test machines. However that approach 
-has some weaknesses; first of all if they wish to change on of the earlier steps
-such as their choice of operating system it would require starting the process from scratch,
-another problem is that each clone of the disk image would be the same, and customisation
+has some weaknesses; first of all if they wish to change their earlier steps
+such as their choice of operating system, it would require starting the process from scratch.
+Another problem is that each clone of the disk image would be the same, and customisation
 would require manually logging in to each individual instance.
 Also if the tester wants to transfer or replicate the testbed it would mean copying
 a series of potentially large disk images with duplicate data. \\
@@ -440,11 +440,11 @@ been developed called \emph{cloud-init}~\cite{cloud_init} - which has support fo
 cloud platforms and data sources. \\
 
 It works by having a \emph{cloud-init} package already installed as part of the operating system,
-in a `cloud image', usually available directly from the operating system maintainers
-\footnote{For example \url{https://cloud-images.ubuntu.com/}}.
+in a `cloud image', usually available directly from the operating system 
+maintainers\footnote{For example \url{https://cloud-images.ubuntu.com/}}.
 On the first boot of the image \emph{cloud-init} will check for supported data sources,
-(such as from a list of supported URLs) from which to obtain user data and instance meta data.
-The data can include things such locale, hostname, and SSH keys which are then automatically
+(such as from a list of supported URLs) from which to obtain user data and instance metadata.
+The data can include things such locale, hostname, and SSH keys, which are then automatically
 applied to the instance.
 
 \chapter{Project Execution}
@@ -468,7 +468,7 @@ and modify the \emph{Open vSwitch} and other networking configurations. \\
 
 To successfully use \emph{kvm-compose} the following packages should be installed (or equivalent):
 \texttt{qemu-kvm libvirt-daemon-system libvirt-clients openvswitch-switch}. Hardware acceleration
-for virtualization should be enabled in the system, and if required for the application being tested - 
+for virtualization should be enabled in the system, and if required for the application being tested, 
 nested virtualization for KVM should also be 
 enabled\footnote{\url{https://docs.fedoraproject.org/en-US/quick-docs/using-nested-virtualization-in-kvm/}}.
 
@@ -678,7 +678,7 @@ steps:
 		crate to display progress.
 		\item A copy of the image with the machine name will be made in the current directory.
 		\item The disk image will be expanded if the \texttt{expand\_gigabytes} option is specified.
-		\item The disk is attached to virtual machine via the \emph{libvirt Domain} XML.
+		\item The disk is attached to the virtual machine via the \emph{libvirt Domain} XML.
 	\end{enumerate}
 \end{singlespace}
 
@@ -693,13 +693,13 @@ the \texttt{NoCloud} datasource\footnote{\url{https://cloudinit.readthedocs.io/e
 is being used. On startup the \emph{cloud-init} agent will then look for an \emph{ISO9660/Joliet} or \emph{vfat}
 filesystem with a volume label of \texttt{cidata}. \\
 
-When creating virtal machines \emph{kvm-compose} calls the \texttt{genisoimage} program\footnote{\url{https://linux.die.net/man/1/genisoimage}}
+When creating virtual machines \emph{kvm-compose} calls the \texttt{genisoimage} program\footnote{\url{https://linux.die.net/man/1/genisoimage}}
 to generate a \emph{Joliet} filesystem containing a \emph{cloud-init} user data and instance metadata file.
 The instance metadata is a JSON encoded file; on \texttt{NoCloud} this can contain an automatically configured
 hostname, as well as any other keys. 
-The keys also accessible via the \texttt{cloud-init query ds.meta\_data.*key*} command inside the VM.
+The keys are also accessible via the \texttt{cloud-init query ds.meta\_data.*key*} command inside the VM.
 The user data is a \texttt{\#cloud-config} file in the YAML format, which when loaded by the \emph{cloud-init}
-agent it is put through the \emph{jinja} templating engine, allowing variable substitution from the instance
+agent, is put through the \emph{jinja} templating engine, allowing variable substitution from the instance
 metadata values\footnote{See \texttt{/kvm-compose/assets/cloud\_init.yaml}, the file is embedded in the binary
 using the \texttt{rust-embed} crate.}.
 The context file(s) are made available to the virtual machine as a \emph{tarball} in the same \emph{Joliet} volume.
@@ -754,10 +754,11 @@ which has a \texttt{run\_script} that on launch:
 The \emph{DP3T} project provides an SDK (Software Development Kit) 
 for both \emph{Android} and \emph{Apple iOS} which
 is used to communicate with the backend server, it is this library which is used in the official
-implementations such as \emph{SwissCovid}. The SDK also has a demo \texttt{calibration-app} (that uses
+implementations such as \emph{SwissCovid}.
+ The SDK also has a demo \texttt{calibration-app} (that uses
 the SDK library) with a simple user interface of diagnostic tools and info, for use in testing the 
 system\footnote{\url{https://github.com/DP-3T/dp3t-sdk-android/tree/master/calibration-app}}.
-The \texttt{/examples/dp3t} contains a small patch to the source of the \texttt{calibration-app} that
+\texttt{/examples/dp3t} contains a small patch to the source of the \texttt{calibration-app} that
 changes the server URL to the backend in the testbed (as well as setting the correct keys). \\
 
 \begin{figure}
@@ -822,7 +823,7 @@ machines using a \texttt{run\_script} that:
 \begin{singlespace}
 	\begin{enumerate}
 		\item Installs dependencies \emph{Git} and \emph{Java}.
-		\item Clones and builds \texttt{signal-cli}\footnote{\url{https://github.com/AsamK/signal-cli}}
+		\item Clones and builds \texttt{signal-cli}\footnote{\url{https://github.com/AsamK/signal-cli}},
 		which is an open source command line wrapper around the \emph{Signal} SDK / client libraries.
 		\item Before building, applies a small patch to change the server address to the hostname of the 
 		\emph{Signal} server within the testbed. 
@@ -847,7 +848,7 @@ with the \emph{Signal} server. I have submitted a pull request to fix this: \url
 \label{sect:capturing}
 
 When a test environment has been built (using the \texttt{kvm-compose up} command), network
-traffic can then be collected using the \texttt{ovs-tcpdump} utlity of 
+traffic can then be collected using the \texttt{ovs-tcpdump} utility of 
 \emph{Open vSwitch}\footnote{\url{https://docs.openvswitch.org/en/latest/ref/ovs-tcpdump.8/}}.
 For example:
 
@@ -857,7 +858,7 @@ For example:
 
 The \texttt{-i} option is where the bridge name is specified, in the format of the project name
 and bridge name (from the \texttt{kvm-compose.yaml} file) joined with a hyphen.
-What this does is create a temporary mirror port on the specified bridge, with the \texttt{--span}
+This creates a temporary mirror port on the specified bridge, with the \texttt{--span}
 option indicating that traffic from all bridge ports should be mirrored. \\
 
 Any additional options are passed onto the \texttt{tcpdump} application itself. 
