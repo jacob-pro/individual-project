@@ -47,7 +47,7 @@
 
 Privacy Enhancing Technologies (PETs) are solutions or approaches in hardware or
 software that help protect a user from privacy violations. 
-The UK's National Research Centre on Privacy, Harm Reduction and Adversarial Influence Online (REPHRAIN)
+The UK's National Research Centre on Privacy, Harm Reduction, and Adversarial Influence Online (REPHRAIN)
 is working to conduct research into PETs.
 This project aims to develop a prototype testbed for REPHRAIN, 
 suitable for use in evaluating the privacy properties of PETs.
@@ -98,7 +98,7 @@ can be used for evaluating PETs.
 \chapter*{Acknowledgements}
 
 I would like to thank my supervisor Professor Awais Rashid and co-supervisor Joe Gardiner for their
-project proposal and support and guidance in completing it.
+project proposal, and support and guidance in completing it.
 
 \mainmatter
 
@@ -108,7 +108,7 @@ project proposal and support and guidance in completing it.
 
 \section{What are Privacy Enhancing Technologies (PETs)?}
 
-Before we discuss Privacy Enhancing Technologies we must consider what we mean by `privacy". 
+Before we discuss Privacy Enhancing Technologies we must consider what we mean by `privacy'. 
 In his 2006 article D. J. Solove  \emph{A Taxonomy of Privacy}~\cite{solove_privacy} notes that the
 definition of privacy has often been very broad or vague, and therefore sets out to develop
 a taxonomy of privacy violations. He has defined four groups of harmful activities (see figure~\ref{privacy_taxonomy}). \\
@@ -153,7 +153,7 @@ a taxonomy of privacy violations. He has defined four groups of harmful activiti
 			\end{enumerate} 
 		\end{enumerate}
 	\end{minipage}
-	\caption{A Taxonomy of Privacy Violations~\cite{solove_privacy}.}
+	\caption{A taxonomy of privacy violations~\cite{solove_privacy}.}
 	\label{privacy_taxonomy}
 \end{figure}
 
@@ -184,12 +184,12 @@ death, such as for journalists reporting corruption under a repressive regime~\c
 \section{REPHRAIN}
 \label{sect:rephrain}
 
-The UK Research and Innovation (UKRI) is a non-departmental public body of the United Kingdom Government
+UK Research and Innovation (UKRI) is a non-departmental public body of the United Kingdom Government
 sponsored by the Department for Business, Energy and Industrial Strategy~\cite{ukri_who_we_are}.
-In October 2020 the UKRI announced the creation of the National Research Centre on Privacy, Harm Reduction
+In October 2020 the UKRI announced the creation of the National Research Centre on Privacy, Harm Reduction,
 and Adversarial Influence Online (REPHRAIN)~\cite{ukri_new_centre}.
 The centre is made up of researchers in computer science, international relations, law, psychology, management,
-design, digital humanities, public policy, political Science, criminology, and sociology from five British
+design, digital humanities, public policy, political science, criminology, and sociology from five British
 universities including the University of Bristol. \\
 
 REPHRAIN should be understood in the context of the UK government's \emph{Online Harms White Paper} public
@@ -207,7 +207,7 @@ REPHRAIN will focus on three core missions~\cite{rephrain_missions}:
 The three missions will require looking at Privacy Enhancing Technologies (PETs); including their capabilities,
 applications of PETs in addressing existing online harms, mitigating the potential abuse of PETs, embedding the PETs
 into infrastructures, and developing new PETs.
-In order to facilitate this REPHRAIN intends to build a toolbox of resources including a PETs testbed. The testbed
+In order to facilitate this, REPHRAIN intends to build a toolbox of resources including a PETs testbed. The testbed
 will be used by researchers in developing, testing, and evaluating the PETs.\\
 
 The finished REPHRAIN PETs testbed will likely include the following features:
@@ -218,8 +218,8 @@ The finished REPHRAIN PETs testbed will likely include the following features:
 	testing a wide variety of different PETs.
 	\item The ability to collect a variety of information such as packet captures and memory dumps
 	for use in evaluating the privacy and safety properties of the application.
-	\item Support for different operating systems and platforms such as desktop and mobile apps.
-	Including applications that compiled from available source code, or using pre-built binaries.
+	\item Support for different operating systems and platforms such as desktop and mobile app,
+	including applications that are compiled from available source code, or using pre-built binaries.
 	\item Tools with a high degree of automation, such that working with large test
 	environments becomes feasible.
 \end{itemize}
@@ -239,7 +239,7 @@ of the goals for the final REPHRAIN testbed, including to:
 	\item Demonstrate the ability to capture network traffic.
 	\item Demonstrate how the testbed can be used in testing both desktop and mobile apps.
 	\item Provide a high level of automation, allowing setups to be easily 
-	and programmatically be deployed and replicated.
+	and programmatically deployed and replicated.
 \end{enumerate}
 
 \section{Existing Testbeds}
@@ -268,7 +268,7 @@ In this chapter I will discuss some of the technologies which this project depen
 Virtualization\footnote{I am a British citizen, and this is a dissertation at a British university, 
 and therefore I am very much aware that the correct spelling in British English is `virtualisation', however the
 majority of platforms, libraries, and sources I will be referencing use the US English spelling, 
-so I have chosen to do the same. Likewise the same applies for `containerization'.}
+so I have chosen to do the same. Likewise the same applies for `containerisation'.}
  will therefore be a very useful technology for the testbed, since it will allow us to model
 an environment consisting of multiple computers such as application clients and servers, and run
 them all within a single machine. In addition, modern CPU extensions (such as \emph{Intel VT} and \emph{AMD-V}) 
@@ -276,7 +276,7 @@ provide hardware-assisted / accelerated virtualization support, allowing the vir
 have near native performance which will help in meeting the goal of minimal overhead for the testbed. \\
 
 In order to use virtualization a \emph{Hypervisor} is required, this is the software layer sits between
-the physical hardware and manages the virtual machines. A hypervisor may run directly on the physical machine
+the physical hardware and the virtual machines. A hypervisor may run directly on the physical machine
 in place of a conventional operating system - as a Type 1 or \emph{bare-metal} hypervisor,
 or run within a separate host operating system - as a Type 2 or \emph{hosted} hypervisor. \\
 
@@ -287,7 +287,7 @@ For the prototype testbed I will be using \emph{Kernel-based Virtual Machine} (K
 kernel module for the Linux operating system that allows it to function as a hypervisor. 
 The advantage is that \emph{KVM} (and the Linux kernel itself) are free and open-source software 
 under GNU licenses, and it is a stable and mature platform~\cite{redhat_kvm}.
-In userspace \emph{QEMU}\footnote{Note \emph{QEMU} can also function as its own independent type 2 hypervisor 
+In userspace \emph{QEMU}\footnote{Note \emph{QEMU} can also function as its own independent Type 2 hypervisor 
 	but \emph{KVM} is required to enable hardware acceleration,
 see \url{https://www.packetflow.co.uk/what-is-the-difference-between-qemu-and-kvm/}}
 may then use KVM to provide a full virtualization platform. \\
@@ -301,7 +301,7 @@ for additional hypervisors in future.
 \section{Containerization}
 \label{sect:containerization}
 
-Having discussed full platform / machine virtualization it is worth also mentioning containerization
+Having discussed full platform / machine virtualization it is worth also mentioning containerization,
 which is an alternative lightweight approach to virtualizing applications. In particular 
 there is the Docker platform for Linux containers which has become very popular in recent
 years~\cite{zdnet_docker_2018}. \\
@@ -309,7 +309,7 @@ years~\cite{zdnet_docker_2018}. \\
 \begin{figure}
 	\centering
 	\includegraphics[width=12cm]{img/containers}
-	\caption[]{Platform Virtualization vs Containerization\footnotemark}
+	\caption[]{Platform virtualization vs containerization\footnotemark}
 	\label{containers_diagram}
 \end{figure}
 \footnotetext{Graphic from \url{https://blog.netapp.com/blogs/containers-vs-vms/}}
