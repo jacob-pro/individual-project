@@ -45,11 +45,12 @@
 
 \chapter*{Executive Summary}
 
-The goal of this project is to produce a simple and lightweight testbed platform for evaluating privacy enhancing
-technologies.
-It should provide support for testing varied architectures and network topologies, such as client-server and
-peer-to-peer applications.
-It should also support simulating applications for different types of platforms including mobile phone apps.
+Privacy Enhancing Technologies (PETs) are solutions or approaches in hardware or
+software that help protect a user from privacy violations. 
+The UK's National Research Centre on Privacy, Harm Reduction and Adversarial Influence Online (REPHRAIN)
+is working to conduct research into PETs.
+This project aims to develop a prototype testbed for REPHRAIN, 
+suitable for use in evaluating the privacy properties of PETs.
 
 \vspace{1cm}
 
@@ -57,10 +58,11 @@ Summary of work:
 
 \begin{itemize}
 \item I have developed a flexible command line tool called \emph{kvm-compose} for Linux using the Rust
-      language and \emph{libvirt} library for building and destroying virtual testing environments.
+      language and \emph{libvirt} library, that can build and destroy virtual testbed environments.
 \item In the process I have made some contributions to open source libraries including \texttt{libvirt-rust}
 (the \emph{Rust} language bindings to \emph{libvirt}).
-\item I have then implemented some example projects using the testbed tool.
+\item I have then implemented some example projects, which demonstrate how the \emph{kvm-compose} tool
+can be used for evaluating PETs.
 \end{itemize}
 
 \chapter*{Supporting Technologies}
