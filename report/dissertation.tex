@@ -269,7 +269,7 @@ Virtualization\footnote{I am a British citizen, and this is a dissertation at a 
 and therefore I am very much aware that the correct spelling in British English is `virtualisation', however the
 majority of platforms, libraries, and sources I will be referencing use the US English spelling, 
 so I have chosen to do the same. Likewise the same applies for `containerisation'.}
- will therefore be a very useful technology for the testbed, since it will allow us to model
+ will be a very useful technology for the testbed, since it will allow us to model
 an environment consisting of multiple computers such as application clients and servers, and run
 them all within a single machine. In addition, modern CPU extensions (such as \emph{Intel VT} and \emph{AMD-V}) 
 provide hardware-assisted / accelerated virtualization support, allowing the virtual machines to 
@@ -904,8 +904,8 @@ app, and the resulting data being captured. \\
 	\label{fig:dp3t_capture}
 \end{figure}
 
-However one issue I found was that I had to manually inspect the output logs of the \texttt{run\_script}
-to confirm that the virtual machines were setup. 
+However, one issue I found was that I had to manually inspect the output logs of the \texttt{run\_script}
+to confirm that the virtual machines were set up. 
 For example on an earlier attempt at running the \emph{DP3T} testbed, the installation of the backend server
 failed because it was trying to download a dependency from \emph{Bintray} which has just been
 discontinued, but I was not notified of this and had to manually inspect the virtual machine's
@@ -989,7 +989,7 @@ using the slides and video (that I prepared for the poster day), as part of a RE
 My work received positive feedback.  \\
 
 One question that was asked focused on the performance and throughput
-of testbed. This is not something I have had time to conduct tests for, but I can theorise that it will
+of the testbed. This is not something I have had time to conduct tests for, but I can theorise that it will
 largely depend on the performance of the system being used, since modern hardware acceleration
 means there will be minimal overhead from the virtualization.
 
@@ -1005,8 +1005,8 @@ Before creating the \emph{DP3T} example project I was originally intending to te
 contact tracing app implementation\footnote{\url{https://github.com/nihp-public/covid19-app-system-public}}. 
 However it quickly became apparent that the service is highly coupled to
 \emph{Amazon Web Services (AWS)}, and as such it is very difficult to run within the testbed.
-It is architectured using the serverless model, and depends on services includes using \emph{AWS} 
-\emph{API Gateway}, \emph{Lambda}, \emph{DynamoDB} etc.
+It is architectured using the serverless model, and depends on services including \emph{AWS} 
+\emph{API Gateway}, \emph{Lambda}, \emph{DynamoDB}, etc.
 Whilst it is indeed possible to run some of the \emph{AWS} services 
 locally\footnote{For example: \url{https://hub.docker.com/r/amazon/dynamodb-local/}}, replicating
 the entire \emph{AWS} infrastructure to simulate the COVID service would require a very substantial amount of 
@@ -1014,7 +1014,8 @@ time and effort; requiring code and configuration changes to enable connecting t
 \emph{AWS} regions.\\
 
 This can be considered part of a broader problem of vendor lock-in in the context of modern
-cloud services; due to a lack of standardization and unique cloud service implementations, it means
+cloud services; due to a lack of standardisation and unique cloud service implementations.
+This means
 that applications are being developed that target a specific cloud service, and are not easy to move
 without incurring engineering costs~\cite{cloud_lock_in}. This proves a challenge to the whole concept 
 of a local virtual testbed in a world where technologies are being developed for specific proprietary
@@ -1031,9 +1032,9 @@ considered, when compared to the real service.
 \subsection{Exposure Notifications API}
 \label{sect:exposure}
 
-After switching to the \emph{DP3T} service I was able to setup the backend server within
-the testbed relatively easily, since it is implemented as a stand alone Spring Boot 
-application\footnote{\url{https://spring.io/projects/spring-boot}}. However when attempting
+After switching to the \emph{DP3T} service I was able to set up the backend server within
+the testbed relatively easily, since it is implemented as a stand-alone Spring Boot 
+application\footnote{\url{https://spring.io/projects/spring-boot}}. However, when attempting
 to deploy the mobile client I then discovered another issue: in order to 
 use the \emph{DP3T} \texttt{calibration-app}
 it is required to enable the debug mode for COVID-19 exposure notifications within the
@@ -1054,7 +1055,7 @@ be used within the testbed.\\
 As a workaround for my example project so that I could demonstrate the \emph{DP3T} service being used,
 I am using the \texttt{prestandard} edition, which used its own exposure detection protocol prior to the development
 of the Google one\footnote{\url{https://github.com/DP-3T/dp3t-sdk-android\#introduction}}. 
-Whilst this does allows the app to launch successfully and data to be collected in the testbed
+Whilst this does allow the app to launch successfully and data to be collected in the testbed,
 it is no longer an accurate representation of the technology that is actually in live use. This highlights another
 similar issue with the testbed concept, in that despite being designed with a focus on privacy and security~\cite{gaen}
 some applications have been engineered without the ability to use in a test environment.
@@ -1075,10 +1076,10 @@ from \emph{Amazon}'s metadata service for \emph{EC2} instances. The server will 
 successfully connected to \emph{AppConfig}. Again this is another example of modern services being
 built tightly coupled to a cloud service provider, making it difficult to run in a test environment. \\
 
-Nevertheless I tried to setup a \emph{Signal} server in \emph{AWS}, and was able to configure
+Nevertheless I tried to set up a \emph{Signal} server in \emph{AWS}, and was able to configure
 the \emph{AppConfig} service, but I then discovered that it also depends on \emph{AWS DynamoDB}.
 However due to the lack of documentation I was unable to successfully configure the
-schema of the \emph{DynamoDB} tables. As a result I decided to use v4.97 of \emph{Signal}
+schema of the \emph{DynamoDB} tables. As a result I decided to use v4.97 of the \emph{Signal}
 server which does not have the \emph{AWS} dependencies and as a result I was able to run it in the testbed.
 It did however take a substantial amount of time to work out how it should be configured, and in the 
 process I have contributed to one of the guides (\url{https://github.com/madeindra/signal-setup-guide/pull/83}).
@@ -1100,7 +1101,7 @@ thereby providing a basis from which to start future work on deploying more
 complex networks and architectures. \\
 
 The next objective looks at the ability to intercept and capture network traffic
-generated through the testbed. I consider objective to have been met, and the process
+generated through the testbed. I consider this objective to have been met, and the process
 has been documented in section \ref{sect:capturing}. Captured network traffic from
 the example projects is shown in section \ref{sect:results}. A potential improvement
 could be to integrate the packet capture commands as part of the \emph{kvm-compose} utility
@@ -1113,8 +1114,8 @@ disadvantages to the two different methods (\emph{Anbox} and \emph{Android Emula
 a limitation experienced by both implementations (as well as other approaches to \emph{Android} emulation)
 is that they do not support certain technologies such as Bluetooth or NFC\footnote{For example see: 
 \url{https://developer.android.com/studio/run/emulator\#limitations}}.
-Although Bluetooth is major part of its function, this does not necessarily have to be a complete barrier
-to testing \emph{DP3T}; due to its open source SDK a tester could easily add code to produce simulated
+Although Bluetooth is a major part of its function, this does not necessarily have to be a complete barrier
+to testing \emph{DP3T}; due to its open source SDK, a tester could easily add code to produce simulated
 inputs in place of the Bluetooth communications, and then its client-server network communication can still
 be inspected as usual. Where this would however become a more severe limitation is in the context
 of closed source binaries, which cannot easily be engineered to use fake inputs. \\
@@ -1126,10 +1127,11 @@ has made it very easy to deploy command line applications, such as the servers f
 All it takes is a single command \texttt{kvm-compose up} within the project directory,
 and the servers are automatically downloaded, compiled, and installed. Such an environment
 would also be easy to replicate as it just requires copying a folder of small files,
-they can easily be maintained in a \emph{Git} repository for example,
+which can easily be maintained in a \emph{Git} repository for example,
 and then running the \texttt{kvm-compose up} command would produce an identical setup.
 The level of automation is
-unfortunately less well developed when it comes to mobile apps, while in the \emph{DP3T} example
+unfortunately less well developed when it comes to mobile apps. 
+While in the \emph{DP3T} example
 the emulators are installed automatically, it still requires the app itself to be launched and driven
 by a user using a window manager. It was also noted in \ref{sect:results} and \ref{sect:failure}
 that the progress and status (success or failure) during the virtual machine \texttt{run\_script}
@@ -1144,8 +1146,8 @@ I have built a virtual testbed solution, capable of deploying
 virtual machines and virtual networks. The testbed can automatically configure
 the virtual machines with SSH keys, files, variables, and a boot script.
 I have demonstrated how the testbed can be used for deploying two different privacy enhancing technologies
-(PETs) including \emph{DP3T} a COVID contact tracing app, and \emph{Signal} an encrypted messaging platform.
-And how the testbed can be used for collecting network traffic data for research purposes.
+(PETs) including \emph{DP3T}, a COVID contact tracing app, and \emph{Signal}, an encrypted messaging platform,
+and how the testbed can be used for collecting network traffic data for research purposes.
 The testbed will be used as a prototype to inform the development of REPHRAIN's PET testbed, 
 as part of a major national programme of research into online safety.
 During the development process I have also made contributions to three open source projects which 
@@ -1154,7 +1156,7 @@ have been accepted by their respective maintainers.
 \section{Open Problems and Future Improvements}
 
 In section \ref{sect:difficulties} I discovered that 
-applications that applications which have been built
+applications which have been built
 to run in the cloud can be difficult to deploy in local environments outside of the 
 commercial cloud infrastructure. With more and more modern applications being architectured 
 as `cloud-native'~\cite{patrizio_2018} this will be a problem the REPHRAIN testbed will have to 
@@ -1168,19 +1170,19 @@ but at present this would require manual configuration using the \emph{OVS} comm
 Future development of the PET testbed could look at providing easily accessible and
 automated support 
 for deploying alternative and more complex topologies to client-server, such as peer-to-peer 
-applications, and multi subnet networks.
+applications and multi subnet networks.
 As well as providing suitable examples for how to use the features. \\
 
 As noted in section \ref{sect:rephrain} the REPHRAIN testbed may look at additional
 forms of data collection such as memory dumps. This itself will be an interesting problem,
 approaches could look at capturing the memory externally from the hypervisor, or from within the
-virtual machine. Both would have to find a solution of selecting the useful / relevant memory
+virtual machine. Both would have to find a solution for selecting the useful / relevant memory
 for the technology being studied, and captures taken inside the virtual machine would need a method
 of communicating the data back out of the virtual machine to the user of the testbed.
 While I have implemented network captures in \emph{kvm-compose}, there is still the
 question of the step of actually analysing the captured data to determine the privacy properties,
 this is an area that may require further investigation, and development to make the processes
-for automated. \\
+more automated. \\
 
 Whilst my project has so far demonstrated desktop \emph{Linux} and \emph{Android} apps running
 in the testbed, it will be a further challenge to support additional platforms. It is possible
@@ -1192,13 +1194,15 @@ virtual machines, since they do not support \emph{cloud-init}\footnote{Alternati
 does not permit installation on non-Apple branded computers~\cite[Part 2, Section I]{yosemite},
 and as such virtualization and emulation solutions are far less developed. \\
 
-Finally there is clear room for improvement when it comes to the automation of mobile apps. 
-Perhaps it is possible to use the \emph{Android} emulators in a command line / headless configuration.
-Or even if the emulators do always require
-a GUI in order to launch, this could be worked around, for example I would recommend
+Finally, there is clear room for improvement when it comes to the automation of mobile apps. 
+Perhaps it is possible to use the \emph{Android} emulators in a command line / headless configuration,
+or even if the emulators do always require
+a GUI in order to launch, this could be worked around. 
+For example I would recommend
 investigating scripting \emph{X} forwarding of the display from the virtual machine, and also
 looking at \emph{X11} command line automation tools such as
 \texttt{xdotool}\footnote{\url{http://manpages.ubuntu.com/manpages/trusty/man1/xdotool.1.html}}.
+
 
 \backmatter
 \printbibliography
